@@ -42,13 +42,31 @@ class CardFace extends StatelessWidget {
           height: cardHeight,
           decoration: BoxDecoration(
             color: AppColors.oceanBlue,
+            gradient: LinearGradient(
+              colors: [
+                AppColors.oceanBlue,
+                AppColors.oceanBlue.withValues(alpha: 0.8),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
             borderRadius: BorderRadius.circular(24.r),
             border: isFront
-                ? null
+                ? Border.all(
+                    color: Colors.white.withValues(alpha: 0.05),
+                    width: 1,
+                  )
                 : Border.all(
                     color: AppColors.accentCyan.withValues(alpha: 0.5),
                     width: 1.5,
                   ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.2),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
           alignment: Alignment.center,
           padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 24.h),
@@ -72,14 +90,16 @@ class CardFace extends StatelessWidget {
             ],
           ),
         ),
-        if (!isInQuiz) ...[
+        // Only show Edit/Delete icons on the FRONT face and when NOT in quiz
+        if (!isInQuiz && isFront) ...[
           Positioned(
-            top: 8.h,
-            left: 8.w,
-            child: IconButton(
+            top: 12.h,
+            left: 12.w,
+            child: _buildActionIcon(
+              icon: CupertinoIcons.pencil,
+              color: AppColors.indigoAccent,
               onPressed: () {
                 final editCubit = context.read<EditCardCubit>();
-
                 showModalBottomSheet(
                   context: context,
                   isScrollControlled: true,
@@ -97,20 +117,16 @@ class CardFace extends StatelessWidget {
                   ),
                 );
               },
-              icon: Icon(
-                CupertinoIcons.pencil_circle_fill,
-                color: AppColors.indigoAccentTransparent(0.8),
-                size: 26.sp,
-              ),
             ),
           ),
           Positioned(
-            top: 8.h,
-            right: 8.w,
-            child: IconButton(
+            top: 12.h,
+            right: 12.w,
+            child: _buildActionIcon(
+              icon: CupertinoIcons.trash,
+              color: AppColors.error,
               onPressed: () {
                 final deleteCubit = context.read<DeleteCardCubit>();
-
                 showDialog(
                   context: context,
                   builder: (context) => ConfirmMessage(
@@ -119,15 +135,32 @@ class CardFace extends StatelessWidget {
                   ),
                 );
               },
-              icon: Icon(
-                CupertinoIcons.trash_circle_fill,
-                color: AppColors.error.withValues(alpha: 0.8),
-                size: 26.sp,
-              ),
             ),
           ),
         ],
       ],
+    );
+  }
+
+  Widget _buildActionIcon({
+    required IconData icon,
+    required Color color,
+    required VoidCallback onPressed,
+  }) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        padding: EdgeInsets.all(8.w),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.1),
+          shape: BoxShape.circle,
+        ),
+        child: Icon(
+          icon,
+          color: color.withValues(alpha: 0.8),
+          size: 18.sp,
+        ),
+      ),
     );
   }
 }

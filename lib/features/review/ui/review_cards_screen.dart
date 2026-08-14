@@ -1,4 +1,5 @@
 import 'package:code_alpha_flash_card_app/core/helpers/snackbar_helper.dart';
+import 'package:code_alpha_flash_card_app/core/helpers/spacing.dart';
 import 'package:code_alpha_flash_card_app/core/theming/app_colors.dart';
 import 'package:code_alpha_flash_card_app/core/theming/app_styles.dart';
 import 'package:code_alpha_flash_card_app/core/widgets/flash_card.dart';
@@ -21,11 +22,12 @@ class ReviewCardsScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.darkBackground,
       appBar: AppBar(
-        elevation: 1,
+        elevation: 0,
         backgroundColor: Colors.transparent,
+        scrolledUnderElevation: 0,
         title: Text(
-          "Review Cards",
-          style: AppStyles.font19BoldIndigoAccent,
+          "Manage Library",
+          style: AppStyles.font18BoldIndigoAccent,
         ),
         centerTitle: true,
         iconTheme: const IconThemeData(color: AppColors.indigoAccent),
@@ -67,29 +69,51 @@ class ReviewCardsScreen extends StatelessWidget {
               if (state is CardsLoadedSuccess) {
                 final cardsList = state.cards;
 
-                if (cardsList.isEmpty) {
-                  return Center(
-                    child: Text(
-                      "No cards found! Add some cards first.",
-                      style: AppStyles.font16LavenderGray,
-                    ),
-                  );
-                }
-
-                return ListView.builder(
-                  physics: const BouncingScrollPhysics(),
-                  itemCount: cardsList.length,
-                  itemBuilder: (context, index) {
-                    final cardModel = cardsList[index];
-
-                    return Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 10.w,
-                        vertical: 8.h,
+                return Column(
+                  children: [
+                    if (cardsList.isNotEmpty)
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
+                        child: Row(
+                          children: [
+                            Text(
+                              "Total: ${cardsList.length} cards",
+                              style: AppStyles.font14White70,
+                            ),
+                            const Spacer(),
+                            Text(
+                              "Flip to see answer",
+                              style: AppStyles.font12LavenderGrayFaded,
+                            ),
+                          ],
+                        ),
                       ),
-                      child: FlashCard(cardModel: cardModel, isInQuiz: false),
-                    );
-                  },
+                    Expanded(
+                      child: cardsList.isEmpty
+                          ? Center(
+                              child: Text(
+                                "No cards found! Add some cards first.",
+                                style: AppStyles.font16LavenderGray,
+                              ),
+                            )
+                          : ListView.builder(
+                              physics: const BouncingScrollPhysics(),
+                              padding: EdgeInsets.only(top: 8.h, bottom: 20.h),
+                              itemCount: cardsList.length,
+                              itemBuilder: (context, index) {
+                                final cardModel = cardsList[index];
+
+                                return Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 16.w,
+                                    vertical: 10.h,
+                                  ),
+                                  child: FlashCard(cardModel: cardModel, isInQuiz: false),
+                                );
+                              },
+                            ),
+                    ),
+                  ],
                 );
               }
 
