@@ -1,4 +1,4 @@
-package com.example.code_alpha_flash_card_app
+package com.ahmed.revio
 
 import io.flutter.embedding.android.FlutterActivity
 

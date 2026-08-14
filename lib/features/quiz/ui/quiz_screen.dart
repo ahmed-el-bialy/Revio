@@ -44,9 +44,7 @@ class _QuizScreenState extends State<QuizScreen> {
         scrolledUnderElevation: 0,
         title: Text(
           "Quiz Mode",
-          style: AppStyles.font24BoldIndigoAccentManrope.copyWith(
-            fontSize: 18.sp,
-          ),
+          style: AppStyles.font18BoldIndigoAccent,
         ),
         centerTitle: true,
         leading: IconButton(
@@ -62,12 +60,11 @@ class _QuizScreenState extends State<QuizScreen> {
             );
           }
 
-
           if (state is CardsError) {
             return Center(
               child: Text(
                 "Error: ${state.errorMessage}",
-                style: const TextStyle(color: Colors.redAccent),
+                style: AppStyles.font16LavenderGray.copyWith(color: AppColors.error),
               ),
             );
           }
@@ -76,10 +73,10 @@ class _QuizScreenState extends State<QuizScreen> {
             final cards = state.cards;
 
             if (cards.isEmpty) {
-              return const Center(
+              return Center(
                 child: Text(
                   "No cards available for quiz! 💡",
-                  style: TextStyle(color: Colors.white70),
+                  style: AppStyles.font14White70,
                 ),
               );
             }
@@ -89,17 +86,13 @@ class _QuizScreenState extends State<QuizScreen> {
                 padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 20.h),
                 child: Column(
                   children: [
-
                     Text(
                       "Card ${_currentPage + 1} of ${cards.length}",
-                      style: AppStyles.font16LavenderGray.copyWith(
-                        fontWeight: FontWeight.w600,
+                      style: AppStyles.font16LavenderGrayBold.copyWith(
                         color: Colors.white,
                       ),
                     ),
-
                     const Spacer(),
-
                     SizedBox(
                       height: 240.h,
                       child: PageView.builder(
@@ -123,63 +116,59 @@ class _QuizScreenState extends State<QuizScreen> {
                         },
                       ),
                     ),
-
                     SizedBox(height: 12.h),
                     Text(
                       "💡 Tap card to flip | Swipe to change",
-                      style: TextStyle(color: Colors.white38, fontSize: 12.sp),
+                      style: AppStyles.font12White38,
                     ),
-
                     const Spacer(),
-
-
                     ElevatedButton.icon(
                       onPressed: () {
                         final currentCard = cards[_currentPage];
 
-
-                        if (currentCard.hint != null && currentCard.hint!
-                            .trim()
-                            .isNotEmpty) {
+                        if (currentCard.hint != null &&
+                            currentCard.hint!.trim().isNotEmpty) {
                           setState(() {
                             _isHintVisible = true;
                           });
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: const Text(
+                              content: Text(
                                 "💡 No hint available for this card!",
-                                style: TextStyle(color: Colors.white),
+                                style: AppStyles.font14WhiteSemiBold,
                               ),
                               behavior: SnackBarBehavior.floating,
-                              backgroundColor: Colors.grey[900],
+                              backgroundColor: AppColors.oceanBlue,
                               duration: const Duration(seconds: 1),
                             ),
                           );
                         }
                       },
                       icon: const Icon(
-                          CupertinoIcons.lightbulb_fill, color: Colors.amber,
-                          size: 18),
+                        CupertinoIcons.lightbulb_fill,
+                        color: Colors.amber,
+                        size: 18,
+                      ),
                       label: const Text("Show Hint"),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white10,
                         foregroundColor: Colors.white,
-                        padding: EdgeInsets.symmetric(horizontal: 20.w,
-                            vertical: 10.h),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 20.w,
+                          vertical: 10.h,
+                        ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12.r),
                         ),
                       ),
                     ),
-
                     const Spacer(),
-
-
-                    ButtonsRow(currentPage: _currentPage,
-                        pageController: _pageController,
-                        cards: cards),
-
+                    ButtonsRow(
+                      currentPage: _currentPage,
+                      pageController: _pageController,
+                      cards: cards,
+                    ),
                     SizedBox(height: 10.h),
                   ],
                 ),
@@ -193,4 +182,3 @@ class _QuizScreenState extends State<QuizScreen> {
     );
   }
 }
-

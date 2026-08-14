@@ -16,10 +16,10 @@ class CardsNumberContainer extends StatelessWidget {
         width: double.infinity,
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
         decoration: BoxDecoration(
-          color: AppColors.indigoAccent.withValues(alpha: 0.08),
+          color: AppColors.indigoAccentTransparent(0.08),
           borderRadius: BorderRadius.circular(16.r),
           border: Border.all(
-            color: AppColors.indigoAccent.withValues(alpha: 0.25),
+            color: AppColors.indigoAccentTransparent(0.25),
             width: 1.w,
           ),
         ),
@@ -44,26 +44,17 @@ class CardsNumberContainer extends StatelessWidget {
                 children: [
                   Text(
                     "Total Cards",
-                    style: AppStyles.font14Gray.copyWith(
-                      color: AppColors.lavenderGray.withValues(alpha: 0.7),
-                      fontWeight: FontWeight.w500,
-                    ),
+                    style: AppStyles.font14LavenderGrayMedium,
                   ),
                   verticalSpacing(2),
                   Text(
                     "$totalCards",
-                    style: AppStyles.font24BoldIceBlueManrope.copyWith(
-                      fontSize: 28.sp,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: AppStyles.font28BoldIceBlue,
                   ),
                   verticalSpacing(2),
                   Text(
                     "Your learning collection",
-                    style: AppStyles.font14Gray.copyWith(
-                      color: AppColors.lavenderGray.withValues(alpha: 0.5),
-                      fontSize: 12.sp,
-                    ),
+                    style: AppStyles.font12LavenderGrayFaded,
                   ),
                 ],
               ),

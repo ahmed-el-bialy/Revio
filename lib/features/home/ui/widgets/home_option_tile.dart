@@ -7,10 +7,10 @@ import '../../../../core/theming/app_styles.dart';
 import '../../models/navigation_model.dart';
 
 class HomeOptionTile extends StatelessWidget {
-
   final NavigationModel model;
   const HomeOptionTile({
-    super.key, required this.model,
+    super.key,
+    required this.model,
   });
 
   @override
@@ -24,11 +24,10 @@ class HomeOptionTile extends StatelessWidget {
           width: double.infinity,
           padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
           decoration: BoxDecoration(
-            color: AppColors.indigoAccent.withValues(alpha: 0.07),
-
+            color: AppColors.indigoAccentTransparent(0.07),
             borderRadius: BorderRadius.circular(16.r),
             border: Border.all(
-              color: AppColors.lavenderGray.withValues(alpha: 0.05),
+              color: AppColors.lavenderGrayTransparent(0.05),
               width: 1.w,
             ),
           ),
@@ -54,17 +53,14 @@ class HomeOptionTile extends StatelessWidget {
                     verticalSpacing(4),
                     Text(
                       model.subtitle,
-                      style: AppStyles.font14Gray.copyWith(
-                        color: AppColors.lavenderGray.withValues(alpha: 0.6),
-                        fontSize: 12.sp,
-                      ),
+                      style: AppStyles.font12LavenderGray,
                     ),
                   ],
                 ),
               ),
               Icon(
                 Icons.arrow_forward_ios_rounded,
-                color: AppColors.lavenderGray.withValues(alpha: 0.5),
+                color: AppColors.lavenderGrayTransparent(0.5),
                 size: 16.sp,
               ),
             ],

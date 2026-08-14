@@ -1,5 +1,6 @@
 import 'package:code_alpha_flash_card_app/core/data/models/card_model.dart';
 import 'package:code_alpha_flash_card_app/core/theming/app_colors.dart';
+import 'package:code_alpha_flash_card_app/core/theming/app_styles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -30,22 +31,21 @@ class ConfirmMessage extends StatelessWidget {
           children: [
             Icon(
               CupertinoIcons.exclamationmark_triangle_fill,
-              color: Colors.redAccent,
+              color: AppColors.error,
               size: 40.sp,
             ),
             SizedBox(height: 16.h),
             Text(
               "Delete Card",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 18.sp,
-                fontWeight: FontWeight.bold,
-              ),
+              style: AppStyles.font17WhiteBold.copyWith(fontSize: 18.sp),
             ),
             SizedBox(height: 12.h),
             Text(
               "Are you sure you want to delete this card?",
-              style: TextStyle(color: Colors.white70, fontSize: 14.sp),
+              style: AppStyles.font14WhiteSemiBold.copyWith(
+                color: Colors.white70,
+                fontWeight: FontWeight.normal,
+              ),
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 24.h),
@@ -59,16 +59,14 @@ class ConfirmMessage extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12.r),
                         side: BorderSide(
-                          color: Colors.grey.withValues(alpha: 0.5),
+                          color: AppColors.gray.withValues(alpha: 0.5),
                           width: 1,
                         ),
                       ),
                     ),
                     child: Text(
                       "Cancel",
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 14.sp,
+                      style: AppStyles.font14Gray.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -82,22 +80,22 @@ class ConfirmMessage extends StatelessWidget {
                       Navigator.pop(context);
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.redAccent.withValues(alpha: 0.2),
-                      foregroundColor: Colors.redAccent,
+                      backgroundColor: AppColors.error.withValues(alpha: 0.2),
+                      foregroundColor: AppColors.error,
                       elevation: 0,
                       padding: EdgeInsets.symmetric(vertical: 12.h),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12.r),
                         side: const BorderSide(
-                          color: Colors.redAccent,
+                          color: AppColors.error,
                           width: 1,
                         ),
                       ),
                     ),
                     child: Text(
                       "Delete",
-                      style: TextStyle(
-                        fontSize: 14.sp,
+                      style: AppStyles.font14WhiteSemiBold.copyWith(
+                        color: AppColors.error,
                         fontWeight: FontWeight.bold,
                       ),
                     ),

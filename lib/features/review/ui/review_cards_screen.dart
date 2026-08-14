@@ -1,7 +1,6 @@
 import 'package:code_alpha_flash_card_app/core/theming/app_colors.dart';
 import 'package:code_alpha_flash_card_app/core/theming/app_styles.dart';
 import 'package:code_alpha_flash_card_app/core/widgets/flash_card.dart';
-import 'package:code_alpha_flash_card_app/core/widgets/refresh_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -25,13 +24,10 @@ class ReviewCardsScreen extends StatelessWidget {
         backgroundColor: Colors.transparent,
         title: Text(
           "Review Cards",
-          style: AppStyles.font24BoldIndigoAccentManrope.copyWith(
-            fontSize: 19.sp,
-          ),
+          style: AppStyles.font19BoldIndigoAccent,
         ),
         centerTitle: true,
         iconTheme: const IconThemeData(color: AppColors.indigoAccent),
-        actions: const [RefreshButton()],
       ),
       body: SafeArea(
         child: MultiBlocListener(
@@ -39,17 +35,13 @@ class ReviewCardsScreen extends StatelessWidget {
             BlocListener<DeleteCardCubit, DeleteCardState>(
               listener: (context, state) {
                 if (state is DeleteCardSuccess) {
-                  context.read<GetAllCardsCubit>().fetchAllCards();
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(
                         "Card deleted successfully",
-                        style: AppStyles.font17WhiteBold.copyWith(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w600,
-                        ),
+                        style: AppStyles.font14WhiteSemiBold,
                       ),
-                      backgroundColor: Colors.green,
+                      backgroundColor: AppColors.success,
                       behavior: SnackBarBehavior.floating,
                       margin: EdgeInsets.symmetric(
                         horizontal: 24.w,
@@ -66,11 +58,9 @@ class ReviewCardsScreen extends StatelessWidget {
                     SnackBar(
                       content: Text(
                         state.error,
-                        style: AppStyles.font17WhiteBold.copyWith(
-                          fontSize: 14.sp,
-                        ),
+                        style: AppStyles.font14WhiteSemiBold,
                       ),
-                      backgroundColor: Colors.redAccent,
+                      backgroundColor: AppColors.error,
                       behavior: SnackBarBehavior.floating,
                       margin: EdgeInsets.symmetric(
                         horizontal: 24.w,
@@ -87,17 +77,13 @@ class ReviewCardsScreen extends StatelessWidget {
             BlocListener<EditCardCubit, EditCardState>(
               listener: (context, state) {
                 if (state is EditCardSuccess) {
-                  context.read<GetAllCardsCubit>().fetchAllCards();
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(
                         "Card updated successfully",
-                        style: AppStyles.font17WhiteBold.copyWith(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w600,
-                        ),
+                        style: AppStyles.font14WhiteSemiBold,
                       ),
-                      backgroundColor: Colors.green,
+                      backgroundColor: AppColors.success,
                       behavior: SnackBarBehavior.floating,
                       margin: EdgeInsets.symmetric(
                         horizontal: 24.w,
@@ -114,11 +100,9 @@ class ReviewCardsScreen extends StatelessWidget {
                     SnackBar(
                       content: Text(
                         state.error,
-                        style: AppStyles.font17WhiteBold.copyWith(
-                          fontSize: 14.sp,
-                        ),
+                        style: AppStyles.font14WhiteSemiBold,
                       ),
-                      backgroundColor: Colors.redAccent,
+                      backgroundColor: AppColors.error,
                       behavior: SnackBarBehavior.floating,
                       margin: EdgeInsets.symmetric(
                         horizontal: 24.w,
@@ -177,7 +161,7 @@ class ReviewCardsScreen extends StatelessWidget {
                   child: Text(
                     state.errorMessage,
                     style: AppStyles.font16LavenderGray.copyWith(
-                      color: Colors.redAccent,
+                      color: AppColors.error,
                     ),
                   ),
                 );

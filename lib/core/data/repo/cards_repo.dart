@@ -24,4 +24,12 @@ class CardsRepo {
     final box = await Hive.openBox<CardModel>(_boxName);
     await box.delete(cardId);
   }
+
+  Stream<List<CardModel>> watchCards() async* {
+    final box = await Hive.openBox<CardModel>(_boxName);
+    yield box.values.toList();
+    await for (final _ in box.watch()) {
+      yield box.values.toList();
+    }
+  }
 }

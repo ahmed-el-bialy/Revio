@@ -1,7 +1,6 @@
 import 'package:code_alpha_flash_card_app/core/helpers/spacing.dart';
 import 'package:code_alpha_flash_card_app/core/theming/app_colors.dart';
 import 'package:code_alpha_flash_card_app/core/theming/app_styles.dart';
-import 'package:code_alpha_flash_card_app/core/widgets/refresh_button.dart';
 import 'package:code_alpha_flash_card_app/features/home/ui/widgets/cards_number_container.dart';
 import 'package:code_alpha_flash_card_app/features/home/ui/widgets/home_option_tile.dart';
 import 'package:flutter/material.dart';
@@ -50,12 +49,6 @@ class _HomeScreenState extends State<HomeScreen> {
   ];
 
   @override
-  void initState() {
-    super.initState();
-    context.read<GetAllCardsCubit>().fetchAllCards();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
@@ -73,19 +66,19 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               backgroundColor: AppColors.darkBackground,
               floating: true,
-              actions: const [RefreshButton()],
+              automaticallyImplyLeading: false,
             ),
             sliverVerticalSpacing(5),
             SliverToBoxAdapter(
               child: Text(
-                "Card Library",
+                "Flashcards Library",
                 style: AppStyles.font24BoldIceBlueManrope,
               ),
             ),
             sliverVerticalSpacing(6),
             SliverToBoxAdapter(
               child: Text(
-                "Manage and organize your study sets efficiently. Choose a set to start or create a new one.",
+                "Manage and organize your flashcards efficiently. Choose a card to start or create a new one.",
                 style: AppStyles.font16LavenderGray,
               ),
             ),
@@ -106,9 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
             SliverToBoxAdapter(
               child: Text(
                 "What would you like to do?",
-                style: AppStyles.font24BoldIceBlueManrope.copyWith(
-                  fontSize: 17.sp,
-                ),
+                style: AppStyles.font17BoldIceBlue,
               ),
             ),
             SliverList(

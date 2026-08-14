@@ -5,7 +5,7 @@ import 'package:code_alpha_flash_card_app/features/add_new_card/ui/widgets/app_t
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../../../../core/helpers/spacing.dart';
+import '../../../../core/helpers/spacing.dart';
 
 class EditCardBottomSheet extends StatefulWidget {
   final CardModel cardModel;
@@ -136,11 +136,7 @@ class _EditCardBottomSheetState extends State<EditCardBottomSheet> {
                   },
                   child: Text(
                     "Save Changes",
-                    style: TextStyle(
-                      fontSize: 16.sp,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: AppStyles.font17WhiteBold.copyWith(fontSize: 16.sp),
                   ),
                 ),
               ),

@@ -37,7 +37,6 @@ class _AddCardScreenState extends State<AddCardScreen> {
       answerController: _answerController,
       child: Scaffold(
         backgroundColor: AppColors.darkBackground,
-
         body: SafeArea(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
@@ -46,16 +45,15 @@ class _AddCardScreenState extends State<AddCardScreen> {
               child: CustomScrollView(
                 physics: const BouncingScrollPhysics(),
                 slivers: [
-
-                  SliverToBoxAdapter(child: AppbarBody(
-                    questionController: _questionController,
-                    hintController: _hintController,
-                    answerController: _answerController,
-                    formKey: _formKey,
-                  ),),
-
+                  SliverToBoxAdapter(
+                    child: AppbarBody(
+                      questionController: _questionController,
+                      hintController: _hintController,
+                      answerController: _answerController,
+                      formKey: _formKey,
+                    ),
+                  ),
                   sliverVerticalSpacing(15),
-
                   SliverToBoxAdapter(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -70,9 +68,7 @@ class _AddCardScreenState extends State<AddCardScreen> {
                           controller: _questionController,
                           hint: "Enter the question here...",
                           validator: (value) {
-                            if (value == null || value
-                                .trim()
-                                .isEmpty) {
+                            if (value == null || value.trim().isEmpty) {
                               return 'Please enter a question';
                             }
                             return null;
@@ -101,9 +97,7 @@ class _AddCardScreenState extends State<AddCardScreen> {
                           maxLines: 4,
                           hint: "Enter the answer or explanation...",
                           validator: (value) {
-                            if (value == null || value
-                                .trim()
-                                .isEmpty) {
+                            if (value == null || value.trim().isEmpty) {
                               return 'Please enter an answer';
                             }
                             return null;

@@ -57,11 +57,7 @@ class CardFace extends StatelessWidget {
             children: [
               Text(
                 isFront ? cardModel.front : cardModel.back,
-                style: AppStyles.font16LavenderGray.copyWith(
-                  color: Colors.white,
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.w500,
-                ),
+                style: AppStyles.font18WhiteMedium,
                 textAlign: TextAlign.center,
               ),
 
@@ -69,11 +65,7 @@ class CardFace extends StatelessWidget {
                 SizedBox(height: 12.h),
                 Text(
                   cardModel.hint!,
-                  style: AppStyles.font16LavenderGray.copyWith(
-                    color: AppColors.accentCyan,
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w400,
-                  ),
+                  style: AppStyles.font14AccentCyan,
                   textAlign: TextAlign.center,
                 ),
               ],
@@ -107,7 +99,7 @@ class CardFace extends StatelessWidget {
               },
               icon: Icon(
                 CupertinoIcons.pencil_circle_fill,
-                color: AppColors.indigoAccent.withValues(alpha: 0.8),
+                color: AppColors.indigoAccentTransparent(0.8),
                 size: 26.sp,
               ),
             ),
@@ -129,7 +121,7 @@ class CardFace extends StatelessWidget {
               },
               icon: Icon(
                 CupertinoIcons.trash_circle_fill,
-                color: Colors.redAccent.withValues(alpha: 0.8),
+                color: AppColors.error.withValues(alpha: 0.8),
                 size: 26.sp,
               ),
             ),
