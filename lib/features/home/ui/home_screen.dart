@@ -24,24 +24,24 @@ class _HomeScreenState extends State<HomeScreen> {
   late final List<NavigationModel> models = [
     NavigationModel(
       imagePath: "assets/images/book.png",
-      title: "Review Cards",
-      subtitle: "Review or manage your flashcards",
+      title: "Master Your Cards",
+      subtitle: "Review and refine your knowledge",
       onTap: () {
         context.pushNamed(AppConstants.reviewCardsScreen, null);
       },
     ),
     NavigationModel(
       imagePath: "assets/images/add.png",
-      title: "Add New Card",
-      subtitle: "Create a new flashcard",
+      title: "Expand Library",
+      subtitle: "Create new powerful flashcards",
       onTap: () {
         context.pushNamed(AppConstants.newCardScreen, null);
       },
     ),
     NavigationModel(
       imagePath: "assets/images/quiz.png",
-      title: "Quiz Yourself",
-      subtitle: "Test your knowledge",
+      title: "Challenge Yourself",
+      subtitle: "Test your speed and accuracy",
       onTap: () {
         context.pushNamed(AppConstants.quizScreen, null);
       },
@@ -53,66 +53,76 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       extendBody: true,
       backgroundColor: AppColors.darkBackground,
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 12.w),
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            sliverVerticalSpacing(3),
-            SliverAppBar(
-              title: Text(
-                "Revio",
-                style: AppStyles.font24BoldIndigoAccentManrope,
+      body: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.w),
+          child: CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              sliverVerticalSpacing(10),
+              SliverToBoxAdapter(
+                child: Text(
+                  "Revio",
+                  style: AppStyles.font24BoldIndigoAccentManrope.copyWith(
+                    fontSize: 22.sp,
+                    letterSpacing: 1.2,
+                  ),
+                ),
               ),
-              backgroundColor: AppColors.darkBackground,
-              floating: true,
-              automaticallyImplyLeading: false,
-            ),
-            sliverVerticalSpacing(5),
-            SliverToBoxAdapter(
-              child: Text(
-                "Flashcards Library",
-                style: AppStyles.font24BoldIceBlueManrope,
+              sliverVerticalSpacing(24),
+              SliverToBoxAdapter(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Your Learning Hub",
+                      style: AppStyles.font24BoldIceBlueManrope.copyWith(
+                        fontSize: 28.sp,
+                      ),
+                    ),
+                    verticalSpacing(8),
+                    Text(
+                      "Elevate your knowledge with ease.",
+                      style: AppStyles.font16LavenderGray.copyWith(
+                        color: AppColors.lavenderGray.withValues(alpha: 0.6),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            sliverVerticalSpacing(6),
-            SliverToBoxAdapter(
-              child: Text(
-                "Manage and organize your flashcards efficiently. Choose a card to start or create a new one.",
-                style: AppStyles.font16LavenderGray,
+              sliverVerticalSpacing(24),
+              BlocBuilder<GetAllCardsCubit, GetAllCardsState>(
+                buildWhen: (previous, current) => current is CardsLoadedSuccess,
+                builder: (context, state) {
+                  final totalCards = (state is CardsLoadedSuccess)
+                      ? state.cards.length
+                      : 0;
+
+                  return CardsNumberContainer(totalCards: totalCards);
+                },
               ),
-            ),
-            sliverVerticalSpacing(20),
-
-            BlocBuilder<GetAllCardsCubit, GetAllCardsState>(
-              buildWhen: (previous, current) => current is CardsLoadedSuccess,
-              builder: (context, state) {
-                final totalCards = (state is CardsLoadedSuccess)
-                    ? state.cards.length
-                    : 0;
-
-                return CardsNumberContainer(totalCards: totalCards);
-              },
-            ),
-
-            sliverVerticalSpacing(20),
-            SliverToBoxAdapter(
-              child: Text(
-                "What would you like to do?",
-                style: AppStyles.font17BoldIceBlue,
+              sliverVerticalSpacing(32),
+              SliverToBoxAdapter(
+                child: Text(
+                  "What's your focus today?",
+                  style: AppStyles.font17BoldIceBlue.copyWith(
+                    fontSize: 18.sp,
+                    letterSpacing: 0.5,
+                  ),
+                ),
               ),
-            ),
-            SliverList(
-              delegate: SliverChildBuilderDelegate(childCount: models.length, (
-                context,
-                index,
-              ) {
-                return HomeOptionTile(model: models[index]);
-              }),
-            ),
-
-            sliverVerticalSpacing(15),
-          ],
+              sliverVerticalSpacing(12),
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  childCount: models.length,
+                  (context, index) {
+                    return HomeOptionTile(model: models[index]);
+                  },
+                ),
+              ),
+              sliverVerticalSpacing(20),
+            ],
+          ),
         ),
       ),
     );

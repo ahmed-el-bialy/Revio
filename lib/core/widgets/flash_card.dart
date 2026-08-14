@@ -10,12 +10,14 @@ class FlashCard extends StatelessWidget {
   final CardModel cardModel;
   final bool isInQuiz;
   final bool showHint;
+  final GlobalKey<FlipCardState>? flipKey;
 
   const FlashCard({
     super.key,
     required this.cardModel,
     required this.isInQuiz,
     this.showHint = false,
+    this.flipKey,
   });
 
   @override
@@ -23,7 +25,7 @@ class FlashCard extends StatelessWidget {
     final double cardHeight = 220.h;
 
     return FlipCard(
-      key: ValueKey('flashcard_${cardModel.id}'),
+      key: flipKey ?? ValueKey('flashcard_${cardModel.id}'),
       direction: FlipDirection.HORIZONTAL,
       side: CardSide.FRONT,
       speed: 400,

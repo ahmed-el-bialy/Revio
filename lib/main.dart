@@ -1,4 +1,5 @@
 import 'package:code_alpha_flash_card_app/core/constants/app_constants.dart';
+import 'package:code_alpha_flash_card_app/core/theming/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_ce_flutter/hive_ce_flutter.dart';
@@ -7,7 +8,7 @@ import 'core/data/models/card_model.dart';
 import 'core/routing/app_router.dart';
 import 'hive_registrar.g.dart';
 
-Future<void> main()  async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Hive.initFlutter();
@@ -36,6 +37,10 @@ class Revio extends StatelessWidget {
           initialRoute: AppConstants.homeScreen,
           onGenerateRoute: appRouter.generateRoute,
           debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            useMaterial3: true,
+            scaffoldBackgroundColor: AppColors.darkBackground,
+          ),
         );
       },
     );

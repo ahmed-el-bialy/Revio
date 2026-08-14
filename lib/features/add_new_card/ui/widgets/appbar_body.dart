@@ -1,3 +1,4 @@
+import 'package:code_alpha_flash_card_app/core/helpers/snackbar_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -44,9 +45,7 @@ class AppbarBody extends StatelessWidget {
             },
             child: Text(
               "Cancel",
-              style: AppStyles.font16LavenderGray.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+              style: AppStyles.font16LavenderGrayBold,
             ),
           ),
         ),
@@ -55,9 +54,7 @@ class AppbarBody extends StatelessWidget {
 
         Text(
           "New Card",
-          style: AppStyles.font24BoldIndigoAccentManrope.copyWith(
-            fontSize: 18.sp,
-          ),
+          style: AppStyles.font18BoldIndigoAccent,
         ),
 
         const Spacer(),
@@ -65,30 +62,16 @@ class AppbarBody extends StatelessWidget {
         BlocConsumer<AddCardCubit, AddCardState>(
           listener: (context, state) {
             if (state is AddCardSuccess) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(15)),
-                  ),
-                  content: Text('The card is saved successfully! 🎉'),
-                  backgroundColor: Colors.green,
-                  behavior: SnackBarBehavior.floating,
-                ),
-              );
+              SnackBarHelper.showSuccess(
+                  context, 'The card is saved successfully! 🎉');
               Navigator.pop(context);
             } else if (state is AddCardError) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Error: ${state.error} ❌'),
-                  backgroundColor: Colors.red,
-                ),
-              );
+              SnackBarHelper.showError(context, state.error);
             }
           },
           builder: (context, state) {
             return InkWell(
               borderRadius: BorderRadius.circular(12.r),
-
               onTap: state is AddCardLoading
                   ? null
                   : () {

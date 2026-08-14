@@ -1,3 +1,4 @@
+import 'package:code_alpha_flash_card_app/core/helpers/snackbar_helper.dart';
 import 'package:code_alpha_flash_card_app/core/theming/app_colors.dart';
 import 'package:code_alpha_flash_card_app/core/theming/app_styles.dart';
 import 'package:code_alpha_flash_card_app/core/widgets/flash_card.dart';
@@ -35,84 +36,20 @@ class ReviewCardsScreen extends StatelessWidget {
             BlocListener<DeleteCardCubit, DeleteCardState>(
               listener: (context, state) {
                 if (state is DeleteCardSuccess) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        "Card deleted successfully",
-                        style: AppStyles.font14WhiteSemiBold,
-                      ),
-                      backgroundColor: AppColors.success,
-                      behavior: SnackBarBehavior.floating,
-                      margin: EdgeInsets.symmetric(
-                        horizontal: 24.w,
-                        vertical: 16.h,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.r),
-                      ),
-                      duration: const Duration(seconds: 2),
-                    ),
-                  );
+                  SnackBarHelper.showSuccess(
+                      context, "Card deleted successfully");
                 } else if (state is DeleteCardError) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        state.error,
-                        style: AppStyles.font14WhiteSemiBold,
-                      ),
-                      backgroundColor: AppColors.error,
-                      behavior: SnackBarBehavior.floating,
-                      margin: EdgeInsets.symmetric(
-                        horizontal: 24.w,
-                        vertical: 16.h,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.r),
-                      ),
-                    ),
-                  );
+                  SnackBarHelper.showError(context, state.error);
                 }
               },
             ),
             BlocListener<EditCardCubit, EditCardState>(
               listener: (context, state) {
                 if (state is EditCardSuccess) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        "Card updated successfully",
-                        style: AppStyles.font14WhiteSemiBold,
-                      ),
-                      backgroundColor: AppColors.success,
-                      behavior: SnackBarBehavior.floating,
-                      margin: EdgeInsets.symmetric(
-                        horizontal: 24.w,
-                        vertical: 16.h,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.r),
-                      ),
-                      duration: const Duration(seconds: 2),
-                    ),
-                  );
+                  SnackBarHelper.showSuccess(
+                      context, "Card updated successfully");
                 } else if (state is EditCardError) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        state.error,
-                        style: AppStyles.font14WhiteSemiBold,
-                      ),
-                      backgroundColor: AppColors.error,
-                      behavior: SnackBarBehavior.floating,
-                      margin: EdgeInsets.symmetric(
-                        horizontal: 24.w,
-                        vertical: 16.h,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.r),
-                      ),
-                    ),
-                  );
+                  SnackBarHelper.showError(context, state.error);
                 }
               },
             ),

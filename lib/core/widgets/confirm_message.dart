@@ -41,11 +41,8 @@ class ConfirmMessage extends StatelessWidget {
             ),
             SizedBox(height: 12.h),
             Text(
-              "Are you sure you want to delete this card?",
-              style: AppStyles.font14WhiteSemiBold.copyWith(
-                color: Colors.white70,
-                fontWeight: FontWeight.normal,
-              ),
+              "Are you sure you want to delete this card? This action cannot be undone.",
+              style: AppStyles.font14White70,
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 24.h),
@@ -59,7 +56,7 @@ class ConfirmMessage extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12.r),
                         side: BorderSide(
-                          color: AppColors.gray.withValues(alpha: 0.5),
+                          color: AppColors.gray.withValues(alpha: 0.3),
                           width: 1,
                         ),
                       ),
@@ -88,7 +85,7 @@ class ConfirmMessage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12.r),
                         side: const BorderSide(
                           color: AppColors.error,
-                          width: 1,
+                          width: 1.5,
                         ),
                       ),
                     ),

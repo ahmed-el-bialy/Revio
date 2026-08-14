@@ -16,23 +16,23 @@ class AppRouter {
   Route generateRoute(RouteSettings setting) {
     switch (setting.name) {
       case AppConstants.homeScreen:
-        return MaterialPageRoute(
-          builder: (_) => BlocProvider(
+        return _fadeRoute(
+          BlocProvider(
             create: (context) => GetAllCardsCubit(CardsRepo())..fetchAllCards(),
-            child: HomeScreen(),
+            child: const HomeScreen(),
           ),
         );
       case AppConstants.newCardScreen:
-        return MaterialPageRoute(
-          builder: (_) => BlocProvider(
+        return _fadeRoute(
+          BlocProvider(
             create: (context) => AddCardCubit(CardsRepo()),
-            child: AddCardScreen(),
+            child: const AddCardScreen(),
           ),
         );
 
       case AppConstants.reviewCardsScreen:
-        return MaterialPageRoute(
-          builder: (_) => MultiBlocProvider(
+        return _fadeRoute(
+          MultiBlocProvider(
             providers: [
               BlocProvider(
                 create: (context) =>
@@ -46,15 +46,28 @@ class AppRouter {
         );
 
       case AppConstants.quizScreen:
-        return MaterialPageRoute(
-          builder: (_) => BlocProvider(
+        return _fadeRoute(
+          BlocProvider(
             create: (context) => GetAllCardsCubit(CardsRepo())..fetchAllCards(),
             child: const QuizScreen(),
           ),
         );
 
       default:
-        return MaterialPageRoute(builder: (_) => const HomeScreen());
+        return _fadeRoute(const HomeScreen());
     }
+  }
+
+  PageRouteBuilder _fadeRoute(Widget child) {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => child,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return FadeTransition(
+          opacity: animation,
+          child: child,
+        );
+      },
+      transitionDuration: const Duration(milliseconds: 250),
+    );
   }
 }
