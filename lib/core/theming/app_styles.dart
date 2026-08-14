@@ -116,4 +116,10 @@ class AppStyles {
     fontSize: 14.sp,
     color: Colors.white70,
   );
+
+  static TextStyle font15IndigoAccentSemiBold = TextStyle(
+    fontSize: 15.sp,
+    fontWeight: FontWeight.w600,
+    color: AppColors.indigoAccent,
+  );
 }

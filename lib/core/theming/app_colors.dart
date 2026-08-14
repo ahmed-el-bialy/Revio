@@ -12,6 +12,22 @@ class AppColors {
   static const Color success = Colors.green;
   static const Color error = Colors.redAccent;
 
+  // Premium Gradients
+  static const LinearGradient primaryGradient = LinearGradient(
+    colors: [Color(0xFF818CF8), Color(0xFF6366F1)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  static LinearGradient cardGradient = LinearGradient(
+    colors: [
+      const Color(0xFF818CF8).withValues(alpha: 0.15),
+      const Color(0xFF818CF8).withValues(alpha: 0.05),
+    ],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
   // Transparent variants
   static Color indigoAccentTransparent(double alpha) =>
       indigoAccent.withValues(alpha: alpha);
