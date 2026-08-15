@@ -22,8 +22,12 @@ class QuizScreen extends StatefulWidget {
 class _QuizScreenState extends State<QuizScreen> {
   late PageController _pageController;
   final TextEditingController _answerController = TextEditingController();
-  final GlobalKey<FlipCardState> _flipKey = GlobalKey<FlipCardState>();
+  
+  final Map<String, GlobalKey<FlipCardState>> _flipKeys = {};
+  final Set<String> _correctCardIds = {};
+  
   int _currentPage = 0;
+  int _correctAnswers = 0;
   bool _isHintVisible = false;
 
   @override
@@ -39,16 +43,27 @@ class _QuizScreenState extends State<QuizScreen> {
     super.dispose();
   }
 
-  void _submitAnswer(String correctAnswer) {
+  GlobalKey<FlipCardState> _getFlipKey(String id) {
+    return _flipKeys.putIfAbsent(id, () => GlobalKey<FlipCardState>());
+  }
+
+  void _submitAnswer(String cardId, String correctAnswer) {
     final userAnswer = _answerController.text.trim().toLowerCase();
     final expectedAnswer = correctAnswer.trim().toLowerCase();
 
-    // Flip the card to show the back
-    if (_flipKey.currentState?.isFront ?? false) {
-      _flipKey.currentState?.toggleCard();
+    // Flip the specific card to show the back
+    final currentFlipKey = _flipKeys[cardId];
+    if (currentFlipKey?.currentState?.isFront ?? false) {
+      currentFlipKey?.currentState?.toggleCard();
     }
 
     if (userAnswer == expectedAnswer) {
+      if (!_correctCardIds.contains(cardId)) {
+        setState(() {
+          _correctCardIds.add(cardId);
+          _correctAnswers++;
+        });
+      }
       SnackBarHelper.showSuccess(context, "Correct! Well done! 🎉");
     } else {
       SnackBarHelper.showError(context, "Incorrect. Keep practicing! 💪");
@@ -108,36 +123,60 @@ class _QuizScreenState extends State<QuizScreen> {
                   padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 20.h),
                   child: Column(
                     children: [
-                      Text(
-                        "Card ${_currentPage + 1} of ${cards.length}",
-                        style: AppStyles.font16LavenderGrayBold.copyWith(
-                          color: Colors.white,
-                        ),
+                      // Updated Header: Correct Answers (Left) | Progress (Right)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                            decoration: BoxDecoration(
+                              color: AppColors.success.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(10.r),
+                              border: Border.all(color: AppColors.success.withValues(alpha: 0.3)),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(Icons.check_circle_outline, color: AppColors.success, size: 16.sp),
+                                SizedBox(width: 6.w),
+                                Text(
+                                  "Correct: $_correctAnswers",
+                                  style: AppStyles.font14WhiteSemiBold.copyWith(color: AppColors.success),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Text(
+                            "Card: ${_currentPage + 1}/${cards.length}",
+                            style: AppStyles.font16LavenderGrayBold.copyWith(
+                              color: Colors.white,
+                              fontSize: 14.sp,
+                            ),
+                          ),
+                        ],
                       ),
+                      
                       SizedBox(height: 30.h),
+                      
                       SizedBox(
                         height: 240.h,
                         child: PageView.builder(
                           controller: _pageController,
-                          physics: const NeverScrollableScrollPhysics(), // Disable swipe to force using buttons
+                          physics: const NeverScrollableScrollPhysics(), 
                           itemCount: cards.length,
                           onPageChanged: (index) {
                             setState(() {
                               _currentPage = index;
                               _isHintVisible = false;
                               _answerController.clear();
-                              // Ensure new card starts from front
-                              if (!(_flipKey.currentState?.isFront ?? true)) {
-                                _flipKey.currentState?.toggleCard();
-                              }
                             });
                           },
                           itemBuilder: (context, index) {
+                            final card = cards[index];
                             return Padding(
                               padding: EdgeInsets.symmetric(horizontal: 4.w),
                               child: FlashCard(
-                                flipKey: _flipKey,
-                                cardModel: cards[index],
+                                flipKey: _getFlipKey(card.id),
+                                cardModel: card,
                                 isInQuiz: true,
                                 showHint: _isHintVisible,
                               ),
@@ -165,14 +204,14 @@ class _QuizScreenState extends State<QuizScreen> {
                             vertical: 14.h,
                           ),
                         ),
-                        onSubmitted: (_) => _submitAnswer(cards[_currentPage].back),
+                        onSubmitted: (_) => _submitAnswer(cards[_currentPage].id, cards[_currentPage].back),
                       ),
                       SizedBox(height: 16.h),
                       
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: () => _submitAnswer(cards[_currentPage].back),
+                          onPressed: () => _submitAnswer(cards[_currentPage].id, cards[_currentPage].back),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.indigoAccent,
                             padding: EdgeInsets.symmetric(vertical: 14.h),

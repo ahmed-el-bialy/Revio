@@ -69,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
-              sliverVerticalSpacing(24),
+              sliverVerticalSpacing(20),
               SliverToBoxAdapter(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
