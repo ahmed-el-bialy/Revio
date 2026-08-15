@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../core/data/models/card_model.dart';
+import '../../../cards/data/models/card_model.dart';
 
 class ButtonsRow extends StatelessWidget {
   const ButtonsRow({

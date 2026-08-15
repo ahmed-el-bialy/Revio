@@ -1,14 +1,13 @@
 import 'package:code_alpha_flash_card_app/core/helpers/snackbar_helper.dart';
-import 'package:code_alpha_flash_card_app/core/helpers/spacing.dart';
 import 'package:code_alpha_flash_card_app/core/theming/app_colors.dart';
 import 'package:code_alpha_flash_card_app/core/theming/app_styles.dart';
-import 'package:code_alpha_flash_card_app/core/widgets/flash_card.dart';
+import 'package:code_alpha_flash_card_app/features/cards/logic/get_all_cards_cubit.dart';
+import 'package:code_alpha_flash_card_app/features/cards/logic/get_all_cards_state.dart';
+import 'package:code_alpha_flash_card_app/features/cards/ui/widgets/flash_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../core/logic/get_all_cards_cubit.dart';
-import '../../../core/logic/get_all_cards_state.dart';
 import '../logic/delete_card/delete_card_cubit.dart';
 import '../logic/delete_card/delete_card_state.dart';
 import '../logic/edit_card/edit_card_cubit.dart';

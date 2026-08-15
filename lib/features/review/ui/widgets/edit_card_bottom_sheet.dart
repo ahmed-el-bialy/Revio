@@ -1,4 +1,4 @@
-import 'package:code_alpha_flash_card_app/core/data/models/card_model.dart';
+import 'package:code_alpha_flash_card_app/features/cards/data/models/card_model.dart';
 import 'package:code_alpha_flash_card_app/core/theming/app_colors.dart';
 import 'package:code_alpha_flash_card_app/core/theming/app_styles.dart';
 import 'package:code_alpha_flash_card_app/features/add_new_card/ui/widgets/app_text_form.dart';

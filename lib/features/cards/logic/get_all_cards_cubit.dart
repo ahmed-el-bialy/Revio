@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../core/data/repo/cards_repo.dart';
+import '../data/repo/cards_repo.dart';
 import 'get_all_cards_state.dart';
 
 class GetAllCardsCubit extends Cubit<GetAllCardsState> {

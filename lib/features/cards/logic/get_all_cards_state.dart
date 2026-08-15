@@ -1,4 +1,4 @@
-import '../../../core/data/models/card_model.dart';
+import '../data/models/card_model.dart';
 
 abstract class GetAllCardsState {}
 

@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../core/data/models/card_model.dart';
 import '../../../../core/theming/app_colors.dart';
 import '../../../../core/theming/app_styles.dart';
+import '../../../cards/data/models/card_model.dart';
 import '../../logic/add_card_cubit.dart';
 import '../../logic/add_card_state.dart';
 

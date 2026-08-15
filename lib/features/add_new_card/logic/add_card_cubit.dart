@@ -1,8 +1,7 @@
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../core/data/models/card_model.dart';
-import '../../../core/data/repo/cards_repo.dart';
+import '../../cards/data/models/card_model.dart';
+import '../../cards/data/repo/cards_repo.dart';
 
 import 'add_card_state.dart';
 
@@ -21,6 +20,4 @@ class AddCardCubit extends Cubit<AddCardState> {
       emit(AddCardError(error: e.toString()));
     }
   }
-
-
 }

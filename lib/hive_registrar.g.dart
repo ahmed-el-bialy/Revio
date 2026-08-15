@@ -3,7 +3,7 @@
 // Check in to version control
 
 import 'package:hive_ce/hive_ce.dart';
-import 'package:code_alpha_flash_card_app/core/data/models/card_model.dart';
+import 'package:code_alpha_flash_card_app/features/cards/data/models/card_model.dart';
 
 extension HiveRegistrar on HiveInterface {
   void registerAdapters() {

@@ -1,11 +1,11 @@
-import 'package:code_alpha_flash_card_app/core/data/models/card_model.dart';
 import 'package:code_alpha_flash_card_app/core/theming/app_colors.dart';
 import 'package:code_alpha_flash_card_app/core/theming/app_styles.dart';
+import 'package:code_alpha_flash_card_app/features/cards/data/models/card_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../features/review/logic/delete_card/delete_card_cubit.dart';
+import '../../../../features/review/logic/delete_card/delete_card_cubit.dart';
 
 class ConfirmMessage extends StatelessWidget {
   const ConfirmMessage({

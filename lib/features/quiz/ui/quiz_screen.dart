@@ -2,15 +2,14 @@ import 'package:code_alpha_flash_card_app/core/helpers/snackbar_helper.dart';
 import 'package:code_alpha_flash_card_app/core/theming/app_colors.dart';
 import 'package:code_alpha_flash_card_app/core/theming/app_styles.dart';
 import 'package:code_alpha_flash_card_app/features/quiz/ui/widgets/buttons_row.dart';
+import 'package:code_alpha_flash_card_app/features/cards/ui/widgets/flash_card.dart';
+import 'package:code_alpha_flash_card_app/features/cards/logic/get_all_cards_cubit.dart';
+import 'package:code_alpha_flash_card_app/features/cards/logic/get_all_cards_state.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import '../../../core/logic/get_all_cards_cubit.dart';
-import '../../../core/logic/get_all_cards_state.dart';
-import '../../../core/widgets/flash_card.dart';
 
 class QuizScreen extends StatefulWidget {
   const QuizScreen({super.key});

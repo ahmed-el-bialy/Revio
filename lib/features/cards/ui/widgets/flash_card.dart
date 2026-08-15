@@ -1,4 +1,4 @@
-import 'package:code_alpha_flash_card_app/core/data/models/card_model.dart';
+import 'package:code_alpha_flash_card_app/features/cards/data/models/card_model.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
