@@ -36,10 +36,11 @@
 
 ## 🎬 Demo Video
 
-### 📱 Watch Sky-Cast in Action
+### 📱 Watch Revio in Action
 
 **[▶️ Watch on YouTube Shorts](https://youtube.com/shorts/qTUR-8kLBWY?si=-91YHm7vhqY5jisE)**
 
+<!-- ⚠️ Ahmed: تأكد إن اللينك ده بتاع Revio فعلاً قبل النشر، أو استبدله بلينك الديمو الصح -->
 
 </div>
 
@@ -97,47 +98,33 @@
 
 <div align="center">
 
-### &#128241; App Launch
+### &#128241; App Launch & Home
 
-| &#127919; App Icon | &#128640; Splash Screen |
-|:------------------:|:----------------------:|
-| <img src="screenshots/app_icon.png" width="200"> | <img src="screenshots/splash_screen.png" width="200"> |
-| Revio on your home screen | Elegant dark splash screen |
+| &#127919; App Icon | &#128640; Splash Screen | &#128202; Home Dashboard |
+|:-------------------:|:-------------------------:|:---------------------------:|
+| <img src="screenshots/app_icon.png" width="200"> | <img src="screenshots/splash_screen.png" width="200"> | <img src="screenshots/home_screen.png" width="200"> |
+| Revio on your home screen | Elegant dark splash screen | Card library with total count and navigation |
 
-### &#127968; Home Screen
+### &#10133; Card Creation & Quiz Start
 
-| &#128202; Dashboard |
-|:-------------------:|
-| <img src="screenshots/home_screen.png" width="200"> |
-| Card Library with total count and navigation options |
+| &#128221; Add New Card | &#127919; Quiz -- First Question | &#127136; Quiz -- Mid Session |
+|:-------------------------:|:------------------------------------:|:---------------------------------:|
+| <img src="screenshots/add_new_card_screen.png" width="200"> | <img src="screenshots/first_q_in_quiz_screen.png" width="200"> | <img src="screenshots/quiz_screen.png" width="200"> |
+| Form with Question, Hint, and Answer fields | Start your quiz | Navigate through cards |
 
-### &#10133; Add New Card
+### &#127136; Quiz Flow & Hints
 
-| &#128221; Create Card |
-|:---------------------:|
-| <img src="screenshots/add_new_card_screen.png" width="200"> |
-| Form with Question, Hint, and Answer fields |
+| &#127136; Quiz -- Last Question | &#128161; Hint Revealed | &#9888; No Hint Available |
+|:------------------------------------:|:--------------------------:|:-----------------------------:|
+| <img src="screenshots/last_q_in_quiz_screen.png" width="200"> | <img src="screenshots/quiz_screen_when_user_use_hint.png" width="200"> | <img src="screenshots/quiz_screen_when_no_hint_exist.png" width="200"> |
+| Finish your session | Helpful hint displayed | Graceful fallback message |
 
-### &#127919; Quiz Mode
+### &#128203; Review & Answer Feedback
 
-| &#127136; First Question | &#127136; Mid Quiz | &#127136; Last Question |
-|:------------------------:|:------------------:|:------------------------:|
-| <img src="screenshots/first_q_in_quiz_screen.png" width="200"> | <img src="screenshots/quiz_screen.png" width="200"> | <img src="screenshots/last_q_in_quiz_screen.png" width="200"> |
-| Start your quiz | Navigate through cards | Finish your session |
-
-### &#128161; Hint System
-
-| &#128161; Hint Revealed | &#9888; No Hint Available |
-|:------------------------:|:-------------------------:|
-| <img src="screenshots/quiz_screen_when_user_use_hint.png" width="200"> | <img src="screenshots/quiz_screen_when_no_hint_exist.png" width="200"> |
-| Helpful hint displayed | Graceful fallback message |
-
-### &#128203; Review Cards
-
-| &#128221; Card List |
-|:--------------------:|
-| <img src="screenshots/review_cards_screen.png" width="200"> |
-| Browse, edit, and delete your flashcards |
+| &#128221; Review Cards | &#9989; Correct Answer | &#10060; Incorrect Answer |
+|:-------------------------:|:--------------------------:|:------------------------------:|
+| <img src="screenshots/review_cards_screen.png" width="200"> | <img src="screenshots/submit_right_answer.png" width="200"> | <img src="screenshots/submit_wrong_answer.png" width="200"> |
+| Browse, edit, and delete your flashcards | Instant success feedback | Instant error feedback with retry encouragement |
 
 > **Note:** Some screenshots use demo data to showcase specific app features and may not reflect your personal card collection.
 
@@ -186,42 +173,22 @@
 ```
 lib/
 |-- main.dart                          # App entry point & Hive initialization
+|-- hive_registrar.g.dart              # Generated Hive adapter registry
 |
-|-- core/                              # Shared core layer
+|-- core/                              # Shared core layer (app-wide only)
 |   |-- constants/
 |   |   |-- app_constants.dart         # Route name constants
-|   |-- data/
-|   |   |-- models/
-|   |   |   |-- card_model.dart        # Hive card model
-|   |   |   |-- card_model.g.dart      # Generated TypeAdapter
-|   |   |-- repo/
-|   |   |   |-- cards_repo.dart        # CRUD operations via Hive
 |   |-- helpers/
 |   |   |-- routing_extension.dart     # Navigation helper extension
+|   |   |-- snackbar_helper.dart       # Success/Error/Info snackbar helper
 |   |   |-- spacing.dart               # Responsive spacing widgets
-|   |-- logic/
-|   |   |-- get_all_cards_cubit.dart   # Fetch all cards logic
-|   |   |-- get_all_cards_state.dart   # State classes
 |   |-- routing/
 |   |   |-- app_router.dart            # Route generation with BLoC providers
 |   |-- theming/
 |   |   |-- app_colors.dart            # Dark theme color palette
 |   |   |-- app_styles.dart            # Typography styles
-|   |-- widgets/
-|   |   |-- card_face.dart             # Card face with hint & actions
-|   |   |-- confirm_message.dart       # Delete confirmation dialog
-|   |   |-- flash_card.dart            # FlipCard wrapper widget
-|   |   |-- refresh_button.dart        # Library refresh with snackbar
 |
 |-- features/                          # Feature modules
-|   |-- home/
-|   |   |-- models/
-|   |   |   |-- navigation_model.dart
-|   |   |-- ui/
-|   |   |   |-- home_screen.dart
-|   |   |   |-- widgets/
-|   |   |   |   |-- cards_number_container.dart
-|   |   |   |   |-- home_option_tile.dart
 |   |-- add_new_card/
 |   |   |-- logic/
 |   |   |   |-- add_card_cubit.dart
@@ -232,6 +199,29 @@ lib/
 |   |   |   |   |-- app_text_form.dart
 |   |   |   |   |-- appbar_body.dart
 |   |   |   |   |-- card_form_back_scope.dart
+|   |-- cards/                         # Shared card data + widgets (used by home/quiz/review)
+|   |   |-- data/
+|   |   |   |-- models/
+|   |   |   |   |-- card_model.dart        # Hive card model
+|   |   |   |   |-- card_model.g.dart      # Generated TypeAdapter
+|   |   |   |-- repo/
+|   |   |   |   |-- cards_repo.dart        # CRUD operations via Hive
+|   |   |-- logic/
+|   |   |   |-- get_all_cards_cubit.dart   # Fetch all cards logic (stream-based)
+|   |   |   |-- get_all_cards_state.dart   # State classes
+|   |   |-- ui/
+|   |   |   |-- widgets/
+|   |   |   |   |-- card_face.dart         # Card face with hint & actions
+|   |   |   |   |-- confirm_message.dart   # Delete confirmation dialog
+|   |   |   |   |-- flash_card.dart        # FlipCard wrapper widget
+|   |-- home/
+|   |   |-- models/
+|   |   |   |-- navigation_model.dart
+|   |   |-- ui/
+|   |   |   |-- home_screen.dart
+|   |   |   |-- widgets/
+|   |   |   |   |-- cards_number_container.dart
+|   |   |   |   |-- home_option_tile.dart
 |   |-- quiz/
 |   |   |-- ui/
 |   |   |   |-- quiz_screen.dart
@@ -249,8 +239,6 @@ lib/
 |   |   |   |-- review_cards_screen.dart
 |   |   |   |-- widgets/
 |   |   |   |   |-- edit_card_bottom_sheet.dart
-|
-|-- hive_registrar.g.dart              # Generated Hive adapter registry
 ```
 
 ### &#128260; Data Flow
@@ -272,35 +260,22 @@ lib/
 // States (used across all features)
 class InitialState extends FeatureState {}           // Feature idle
 class LoadingState extends FeatureState {}           // Operation in progress
-class SuccessState extends FeatureState {}           // Operation completed
-class ErrorState extends FeatureState {              // Error occurred
-  ErrorState(String errorMessage);
+class SuccessState extends FeatureState {}           // Operation succeeded
+class ErrorState extends FeatureState {               // Operation failed
+  final String error;
+  ErrorState({required this.error});
 }
-
-// Cubit usage
-BlocProvider.of<GetAllCardsCubit>(context).fetchAllCards();
-BlocProvider.of<AddCardCubit>(context).emitSaveCard(newCard);
-BlocProvider.of<EditCardCubit>(context).emitUpdateCard(updatedCard);
-BlocProvider.of<DeleteCardCubit>(context).emitDeleteCard(cardId);
 ```
 
----
-
-<div align="center">
-
-## &#128229; Data Models
-
-</div>
-
-### CardModel (Hive Object)
+### CardModel
 ```dart
 @HiveType(typeId: 0)
 class CardModel extends HiveObject {
   @HiveField(0)
-  final String id;                    // Unique identifier
+  final String id;
 
   @HiveField(1)
-  final String? category;             // Optional category
+  final String? category;
 
   @HiveField(2)
   final String front;                 // Question (Front side)
