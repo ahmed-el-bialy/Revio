@@ -7,8 +7,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_ce_flutter/hive_ce_flutter.dart';
 
-import 'features/cards/data/models/card_model.dart';
 import 'core/routing/app_router.dart';
+import 'features/cards/data/models/card_model.dart';
 import 'hive_registrar.g.dart';
 
 Future<void> main() async {
