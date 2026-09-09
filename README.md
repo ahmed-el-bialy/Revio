@@ -15,9 +15,16 @@
   <a href="https://flutter.dev">
     <img src="https://img.shields.io/badge/Platform-Android%20%7C%20iOS-blue.svg?style=for-the-badge" alt="Platform">
   </a>
+  <a href="https://play.google.com/store/apps/details?id=com.ahmed.revio&hl=en_US">
+    <img src="https://img.shields.io/badge/Google%20Play-Available-4285F4.svg?style=for-the-badge&logo=googleplay&logoColor=white" alt="Google Play">
+  </a>
 </p>
 
 <p><strong>A sleek, dark-themed flashcard app built with Flutter, featuring flip card animations, quiz mode with hints, offline storage, and Clean Architecture.</strong></p>
+
+<p>
+  <a href="https://play.google.com/store/apps/details?id=com.ahmed.revio&hl=en_US"><strong>&#128241; Get it on Google Play</strong></a>
+</p>
 
 <p>
   <a href="#-features">&#10024; Features</a> &#8226; 
@@ -38,8 +45,7 @@
 
 ### 📱 Watch Revio in Action
 
-**[▶️ Watch on YouTube Shorts](https://youtube.com/shorts/-9VfbxIcZkU?si=QQEJBxtYDR_acrIy)**
-
+**[▶️ Watch on YouTube Shorts](https://youtube.com/shorts/-9VfbxIcZkU?si=Tcpe0iwRztryd7w4)**
 
 </div>
 
@@ -53,11 +59,7 @@
 
 </div>
 
-**Revio** is a modern Flutter flashcard application designed for efficient learning and
-memorization. Built with Clean Architecture and offline-first storage via Hive, it delivers a
-seamless, beautiful dark-themed user experience with animated flip cards, intelligent quiz mode with
-hints, and full CRUD operations. Designed as a portfolio project demonstrating best practices in
-mobile development.
+**Revio** is a modern Flutter flashcard application designed for efficient learning and memorization. Built with Clean Architecture and offline-first storage via Hive, it delivers a seamless, beautiful dark-themed user experience with animated flip cards, intelligent quiz mode with hints, and full CRUD operations. Designed as a portfolio project demonstrating best practices in mobile development.
 
 ---
 
@@ -68,35 +70,23 @@ mobile development.
 </div>
 
 ### &#127919; Core Features
-
 - **Flashcard Library** &#128218; Create, read, update, and delete flashcards with ease
-- **Flip Card Animation** &#128260; Smooth 3D flip animation to reveal answers (powered by
-  flip_card)
-- **Quiz Mode** &#127919; Test your knowledge with swipeable cards, Previous/Next navigation, and
-  progress tracking
-- **Smart Hints** &#128161; Optional hints for each card -- reveal when stuck, with graceful
-  handling when no hint exists
-- **Add New Cards** &#10133; Intuitive form with Question (Front), optional Hint, and Answer (Back)
-  fields
-- **Review & Manage** &#128221; Browse all cards in a scrollable list with inline Edit and Delete
-  actions
+- **Flip Card Animation** &#128260; Smooth 3D flip animation to reveal answers (powered by flip_card)
+- **Quiz Mode** &#127919; Test your knowledge with swipeable cards, Previous/Next navigation, and progress tracking
+- **Smart Hints** &#128161; Optional hints for each card -- reveal when stuck, with graceful handling when no hint exists
+- **Add New Cards** &#10133; Intuitive form with Question (Front), optional Hint, and Answer (Back) fields
+- **Review & Manage** &#128221; Browse all cards in a scrollable list with inline Edit and Delete actions
 - **Card Counter** &#128290; Real-time total cards display on the home dashboard
-- **Discard Protection** &#128737; Prevents accidental data loss when exiting the add card form with
-  unsaved changes
-- **Snackbar Feedback** &#9989; Visual confirmation for all CRUD operations (save, update, delete,
-  refresh)
+- **Discard Protection** &#128737; Prevents accidental data loss when exiting the add card form with unsaved changes
+- **Snackbar Feedback** &#9989; Visual confirmation for all CRUD operations (save, update, delete, refresh)
 - **Dark Theme UI** &#127769; Elegant dark interface with indigo accents for comfortable studying
 
 ### &#128295; Technical Highlights
-
 - **Clean Architecture** &#127959; Feature-based separation with clear layer boundaries
-- **BLoC (Cubit) State Management** &#129504; Predictable, scalable state with 4 states per
-  feature (Initial, Loading, Success, Error)
-- **Hive Local Database** &#128452; Blazing fast, lightweight NoSQL key-value storage for offline
-  persistence
+- **BLoC (Cubit) State Management** &#129504; Predictable, scalable state with 4 states per feature (Initial, Loading, Success, Error)
+- **Hive Local Database** &#128452; Blazing fast, lightweight NoSQL key-value storage for offline persistence
 - **Flip Card Animation** &#127136; 3D card flip using the flip_card package
-- **Responsive Design** &#128208; flutter_screenutil for pixel-perfect layouts across all screen
-  sizes
+- **Responsive Design** &#128208; flutter_screenutil for pixel-perfect layouts across all screen sizes
 - **Custom Typography** &#128395; Manrope font family for modern, readable text
 - **Navigation Extension** &#129517; Clean routing helper for type-safe navigation
 - **Native Splash & Icons** &#128241; Configured launcher icons and splash screen for Android
@@ -115,34 +105,33 @@ mobile development.
 
 ### &#128241; App Launch & Home
 
-|                &#127919; App Icon                |                &#128640; Splash Screen                |              &#128202; Home Dashboard               |
-|:------------------------------------------------:|:-----------------------------------------------------:|:---------------------------------------------------:|
+| &#127919; App Icon | &#128640; Splash Screen | &#128202; Home Dashboard |
+|:-------------------:|:-------------------------:|:---------------------------:|
 | <img src="screenshots/app_icon.png" width="200"> | <img src="screenshots/splash_screen.png" width="200"> | <img src="screenshots/home_screen.png" width="200"> |
-|            Revio on your home screen             |              Elegant dark splash screen               |    Card library with total count and navigation     |
+| Revio on your home screen | Elegant dark splash screen | Card library with total count and navigation |
 
 ### &#10133; Card Creation & Quiz Start
 
-|                   &#128221; Add New Card                    |                &#127919; Quiz -- First Question                |            &#127136; Quiz -- Mid Session            |
-|:-----------------------------------------------------------:|:--------------------------------------------------------------:|:---------------------------------------------------:|
+| &#128221; Add New Card | &#127919; Quiz -- First Question | &#127136; Quiz -- Mid Session |
+|:-------------------------:|:------------------------------------:|:---------------------------------:|
 | <img src="screenshots/add_new_card_screen.png" width="200"> | <img src="screenshots/first_q_in_quiz_screen.png" width="200"> | <img src="screenshots/quiz_screen.png" width="200"> |
-|         Form with Question, Hint, and Answer fields         |                        Start your quiz                         |               Navigate through cards                |
+| Form with Question, Hint, and Answer fields | Start your quiz | Navigate through cards |
 
 ### &#127136; Quiz Flow & Hints
 
-|                &#127136; Quiz -- Last Question                |                        &#128161; Hint Revealed                         |                       &#9888; No Hint Available                        |
-|:-------------------------------------------------------------:|:----------------------------------------------------------------------:|:----------------------------------------------------------------------:|
+| &#127136; Quiz -- Last Question | &#128161; Hint Revealed | &#9888; No Hint Available |
+|:------------------------------------:|:--------------------------:|:-----------------------------:|
 | <img src="screenshots/last_q_in_quiz_screen.png" width="200"> | <img src="screenshots/quiz_screen_when_user_use_hint.png" width="200"> | <img src="screenshots/quiz_screen_when_no_hint_exist.png" width="200"> |
-|                      Finish your session                      |                         Helpful hint displayed                         |                       Graceful fallback message                        |
+| Finish your session | Helpful hint displayed | Graceful fallback message |
 
 ### &#128203; Review & Answer Feedback
 
-|                   &#128221; Review Cards                    |                   &#9989; Correct Answer                    |                  &#10060; Incorrect Answer                  |
-|:-----------------------------------------------------------:|:-----------------------------------------------------------:|:-----------------------------------------------------------:|
+| &#128221; Review Cards | &#9989; Correct Answer | &#10060; Incorrect Answer |
+|:-------------------------:|:--------------------------:|:------------------------------:|
 | <img src="screenshots/review_cards_screen.png" width="200"> | <img src="screenshots/submit_right_answer.png" width="200"> | <img src="screenshots/submit_wrong_answer.png" width="200"> |
-|          Browse, edit, and delete your flashcards           |                  Instant success feedback                   |       Instant error feedback with retry encouragement       |
+| Browse, edit, and delete your flashcards | Instant success feedback | Instant error feedback with retry encouragement |
 
-> **Note:** Some screenshots use demo data to showcase specific app features and may not reflect
-> your personal card collection.
+> **Note:** Some screenshots use demo data to showcase specific app features and may not reflect your personal card collection.
 
 </div>
 
@@ -156,23 +145,23 @@ mobile development.
 
 <div align="center">
 
-|       Component       |           Technology           |         Purpose          |
-|:---------------------:|:------------------------------:|:------------------------:|
-|     **Framework**     |          Flutter 3.x           |    Cross-platform UI     |
-|     **Language**      |            Dart 3.x            |     Core development     |
-| **State Management**  |       flutter_bloc ^9.x        |    BLoC/Cubit pattern    |
-|  **Local Database**   |          hive_ce ^2.x          |   Offline card storage   |
-| **Database Flutter**  |      hive_ce_flutter ^2.x      | Hive Flutter integration |
-| **Screen Adaptation** |    flutter_screenutil ^5.x     |    Responsive design     |
-|  **Card Animation**   |        flip_card ^0.7.x        |   3D flip card effect    |
-|       **Icons**       |      cupertino_icons ^1.x      |     iOS-style icons      |
-|  **Code Generation**  |     hive_ce_generator ^1.x     |  TypeAdapter generation  |
-|   **Build Runner**    |       build_runner ^2.x        |   Code generation tool   |
-|   **Splash Screen**   |   flutter_native_splash ^2.x   |   Native launch screen   |
-|  **Launcher Icons**   | flutter_launcher_icons ^0.14.x |   App icon generation    |
-|  **Project Rename**   |          rename ^3.x           |  Bundle ID and app name  |
-|      **Design**       |           Material 3           |    Latest UI patterns    |
-|       **Font**        |            Manrope             |    Custom typography     |
+| Component | Technology | Purpose |
+|:---------:|:----------:|:-------:|
+| **Framework** | Flutter 3.x | Cross-platform UI |
+| **Language** | Dart 3.x | Core development |
+| **State Management** | flutter_bloc ^9.x | BLoC/Cubit pattern |
+| **Local Database** | hive_ce ^2.x | Offline card storage |
+| **Database Flutter** | hive_ce_flutter ^2.x | Hive Flutter integration |
+| **Screen Adaptation** | flutter_screenutil ^5.x | Responsive design |
+| **Card Animation** | flip_card ^0.7.x | 3D flip card effect |
+| **Icons** | cupertino_icons ^1.x | iOS-style icons |
+| **Code Generation** | hive_ce_generator ^1.x | TypeAdapter generation |
+| **Build Runner** | build_runner ^2.x | Code generation tool |
+| **Splash Screen** | flutter_native_splash ^2.x | Native launch screen |
+| **Launcher Icons** | flutter_launcher_icons ^0.14.x | App icon generation |
+| **Project Rename** | rename ^3.x | Bundle ID and app name |
+| **Design** | Material 3 | Latest UI patterns |
+| **Font** | Manrope | Custom typography |
 
 </div>
 
@@ -274,22 +263,16 @@ lib/
 
 ```dart
 // States (used across all features)
-class InitialState extends FeatureState {} // Feature idle
-
-class LoadingState extends FeatureState {} // Operation in progress
-
-class SuccessState extends FeatureState {} // Operation succeeded
-
-class ErrorState extends FeatureState {
-  // Operation failed
+class InitialState extends FeatureState {}           // Feature idle
+class LoadingState extends FeatureState {}           // Operation in progress
+class SuccessState extends FeatureState {}           // Operation succeeded
+class ErrorState extends FeatureState {               // Operation failed
   final String error;
-
   ErrorState({required this.error});
 }
 ```
 
 ### CardModel
-
 ```dart
 @HiveType(typeId: 0)
 class CardModel extends HiveObject {
@@ -300,24 +283,23 @@ class CardModel extends HiveObject {
   final String? category;
 
   @HiveField(2)
-  final String front; // Question (Front side)
+  final String front;                 // Question (Front side)
 
   @HiveField(3)
-  final String? hint; // Optional hint
+  final String? hint;                 // Optional hint
 
   @HiveField(4)
-  final String back; // Answer (Back side)
+  final String back;                  // Answer (Back side)
 }
 ```
 
 ### NavigationModel
-
 ```dart
 class NavigationModel {
-  final String imagePath; // Tile icon asset
-  final String title; // Tile title
-  final String subtitle; // Tile description
-  final VoidCallback onTap; // Navigation action
+  final String imagePath;             // Tile icon asset
+  final String title;                 // Tile title
+  final String subtitle;              // Tile description
+  final VoidCallback onTap;           // Navigation action
 }
 ```
 
@@ -330,21 +312,19 @@ class NavigationModel {
 </div>
 
 ### Color Palette
-
 ```dart
 class AppColors {
-  static const Color darkBackground = Color(0xFF0B1326); // Main background
-  static const Color indigoAccent = Color(0xFF818CF8); // Primary accent
-  static const Color iceBlue = Color(0xFFDAE2FD); // Headlines
-  static const Color lavenderGray = Color(0xFFC6C5D5); // Subtitles
-  static const Color gray = Color(0xFF9CA3AF); // Secondary text
-  static const Color oceanBlue = Color(0xFF1E293B); // Card surfaces
-  static const Color accentCyan = Color(0xFF00D1FF); // Hints & borders
+  static const Color darkBackground = Color(0xFF0B1326);  // Main background
+  static const Color indigoAccent = Color(0xFF818CF8);    // Primary accent
+  static const Color iceBlue = Color(0xFFDAE2FD);         // Headlines
+  static const Color lavenderGray = Color(0xFFC6C5D5);    // Subtitles
+  static const Color gray = Color(0xFF9CA3AF);            // Secondary text
+  static const Color oceanBlue = Color(0xFF1E293B);       // Card surfaces
+  static const Color accentCyan = Color(0xFF00D1FF);      // Hints & borders
 }
 ```
 
 ### Typography
-
 ```dart
 class AppStyles {
   static TextStyle font24BoldIndigoAccentManrope = TextStyle(
@@ -363,8 +343,7 @@ class AppStyles {
 }
 ```
 
-**Applied dynamically to:** AppBar, card backgrounds, text, icons, input borders, buttons, and
-snackbars.
+**Applied dynamically to:** AppBar, card backgrounds, text, icons, input borders, buttons, and snackbars.
 
 ---
 
@@ -375,7 +354,6 @@ snackbars.
 </div>
 
 ### Launcher Icons (flutter_launcher_icons.yaml)
-
 ```yaml
 flutter_launcher_icons:
   image_path: "assets/images/app_icon.png"
@@ -386,7 +364,6 @@ flutter_launcher_icons:
 ```
 
 ### Splash Screen (flutter_native_splash.yaml)
-
 ```yaml
 flutter_native_splash:
   color: "#030114"
@@ -444,10 +421,10 @@ flutter pub get
 
 ### &#128203; Prerequisites
 
-| Requirement | Version  |  Purpose  |
-|:-----------:|:--------:|:---------:|
+| Requirement | Version | Purpose |
+|:-----------:|:-------:|:-------:|
 | Flutter SDK | >=3.12.1 | Framework |
-|  Dart SDK   | >=3.12.1 | Language  |
+| Dart SDK | >=3.12.1 | Language |
 
 ### &#9881; Installation
 
@@ -478,14 +455,14 @@ flutter build ios --release      # iOS
 
 </div>
 
-| Issue                | Details                                     |      Status       |
-|:---------------------|:--------------------------------------------|:-----------------:|
-| No categories/tags   | Cards are not organized by category         | &#128295; Planned |
-| No search/filter     | Cannot search within card library           | &#128295; Planned |
-| No import/export     | Cards cannot be backed up or shared         | &#128295; Planned |
-| No spaced repetition | No SRS algorithm for optimal review timing  | &#128295; Planned |
-| No statistics        | No progress tracking or performance metrics | &#128295; Planned |
-| Single device only   | No cloud sync across devices                | &#128295; Planned |
+| Issue | Details | Status |
+|:------|:--------|:------:|
+| No categories/tags | Cards are not organized by category | &#128295; Planned |
+| No search/filter | Cannot search within card library | &#128295; Planned |
+| No import/export | Cards cannot be backed up or shared | &#128295; Planned |
+| No spaced repetition | No SRS algorithm for optimal review timing | &#128295; Planned |
+| No statistics | No progress tracking or performance metrics | &#128295; Planned |
+| Single device only | No cloud sync across devices | &#128295; Planned |
 
 ---
 
