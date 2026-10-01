@@ -33,7 +33,7 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.9
+  cupertino_icons: ^2.0.0
   # Customize Flutter's default white native splash screen with background color and splash image.
   flutter_native_splash: ^2.4.8
   # A package which simplifies the task of updating your Flutter app's launcher icon.

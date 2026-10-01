@@ -8,27 +8,24 @@ import '../../models/navigation_model.dart';
 
 class HomeOptionTile extends StatelessWidget {
   final NavigationModel model;
-  const HomeOptionTile({
-    super.key,
-    required this.model,
-  });
+  const HomeOptionTile({super.key, required this.model});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 10.h),
+    return Padding(
+      padding: EdgeInsets.only(bottom: 12.h),
       child: InkWell(
         onTap: model.onTap,
-        borderRadius: BorderRadius.circular(20.r),
+        borderRadius: BorderRadius.circular(18.r),
         child: Ink(
           width: double.infinity,
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 18.h),
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
           decoration: BoxDecoration(
-            color: AppColors.oceanBlue.withValues(alpha: 0.4),
-            borderRadius: BorderRadius.circular(20.r),
+            color: AppColors.cardSurface,
+            borderRadius: BorderRadius.circular(18.r),
             border: Border.all(
-              color: Colors.white.withValues(alpha: 0.05),
-              width: 1.w,
+              color: AppColors.white.withValues(alpha: 0.06),
+              width: 1,
             ),
           ),
           child: Row(
@@ -37,17 +34,20 @@ class HomeOptionTile extends StatelessWidget {
               Container(
                 padding: EdgeInsets.all(10.w),
                 decoration: BoxDecoration(
-                  gradient: AppColors.cardGradient,
-                  borderRadius: BorderRadius.circular(14.r),
+                  color: AppColors.primaryTeal.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(12.r),
+                  border: Border.all(
+                    color: AppColors.primaryTeal.withValues(alpha: 0.2),
+                  ),
                 ),
                 child: Image.asset(
                   model.imagePath,
-                  height: 32.h,
-                  width: 32.w,
-                  fit: BoxFit.cover,
+                  height: 28.h,
+                  width: 28.w,
+                  fit: BoxFit.contain,
                 ),
               ),
-              horizontalSpacing(16),
+              horizontalSpacing(14),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,25 +55,20 @@ class HomeOptionTile extends StatelessWidget {
                   children: [
                     Text(
                       model.title,
-                      style: AppStyles.font17WhiteBold.copyWith(
-                        fontSize: 16.sp,
-                        letterSpacing: 0.3,
-                      ),
+                      style: AppStyles.font16WhiteSemiBold,
                     ),
-                    verticalSpacing(4),
+                    verticalSpacing(3),
                     Text(
                       model.subtitle,
-                      style: AppStyles.font12LavenderGray.copyWith(
-                        color: AppColors.lavenderGray.withValues(alpha: 0.5),
-                      ),
+                      style: AppStyles.font12LavenderGrayFaded,
                     ),
                   ],
                 ),
               ),
               Icon(
                 Icons.arrow_forward_ios_rounded,
-                color: Colors.white.withValues(alpha: 0.2),
-                size: 14.sp,
+                color: AppColors.white.withValues(alpha: 0.18),
+                size: 13.sp,
               ),
             ],
           ),

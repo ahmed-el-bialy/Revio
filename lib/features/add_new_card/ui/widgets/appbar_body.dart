@@ -29,43 +29,26 @@ class AppbarBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Align(
-          alignment: Alignment.centerLeft,
-          child: TextButton(
-            style: TextButton.styleFrom(
-              padding: EdgeInsets.zero,
-              minimumSize: Size.zero,
-              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            ),
-            onPressed: () {
-              if (_questionController.text.isNotEmpty ||
-                  _hintController.text.isNotEmpty ||
-                  _answerController.text.isNotEmpty) {
-                FocusScope.of(context).unfocus();
-              }
-              Navigator.maybePop(context);
-            },
-            child: Text(
-              "Cancel",
-              style: AppStyles.font16LavenderGrayBold,
-            ),
+        TextButton(
+          style: TextButton.styleFrom(
+            padding: EdgeInsets.zero,
+            minimumSize: Size.zero,
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
           ),
+          onPressed: () {
+            FocusScope.of(context).unfocus();
+            Navigator.maybePop(context);
+          },
+          child: Text("Cancel", style: AppStyles.font16LavenderGrayBold),
         ),
-
         const Spacer(),
-
-        Text(
-          "New Card",
-          style: AppStyles.font18BoldIndigoAccent,
-        ),
-
+        Text("New Card", style: AppStyles.font18BoldIndigoAccent),
         const Spacer(),
-
         BlocConsumer<AddCardCubit, AddCardState>(
           listener: (context, state) {
             if (state is AddCardSuccess) {
               SnackBarHelper.showSuccess(
-                  context, 'The card is saved successfully! 🎉');
+                  context, 'Card saved successfully! 🎉');
               Navigator.pop(context);
             } else if (state is AddCardError) {
               SnackBarHelper.showError(context, state.error);
@@ -79,7 +62,9 @@ class AppbarBody extends StatelessWidget {
                   : () {
                       if (_formKey.currentState!.validate()) {
                         final newCard = CardModel(
-                          id: DateTime.now().millisecondsSinceEpoch.toString(),
+                          id: DateTime.now()
+                              .millisecondsSinceEpoch
+                              .toString(),
                           category: selectedCategory,
                           front: _questionController.text.trim(),
                           hint: _hintController.text.trim().isEmpty
@@ -95,12 +80,12 @@ class AppbarBody extends StatelessWidget {
               child: Container(
                 constraints: BoxConstraints(minWidth: 60.w),
                 alignment: Alignment.center,
-                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 7.h),
                 decoration: BoxDecoration(
-                  color: AppColors.indigoAccent.withValues(alpha: 0.15),
+                  color: AppColors.primaryTeal.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(12.r),
                   border: Border.all(
-                    color: AppColors.indigoAccent.withValues(alpha: 0.3),
+                    color: AppColors.primaryTeal.withValues(alpha: 0.4),
                     width: 1,
                   ),
                 ),
@@ -108,17 +93,17 @@ class AppbarBody extends StatelessWidget {
                     ? SizedBox(
                         height: 16.h,
                         width: 16.w,
-                        child: const CircularProgressIndicator(
+                        child: CircularProgressIndicator(
                           strokeWidth: 2,
                           valueColor: AlwaysStoppedAnimation<Color>(
-                            AppColors.indigoAccent,
+                            AppColors.primaryTeal,
                           ),
                         ),
                       )
                     : Text(
                         "Save",
-                        style: AppStyles.font24BoldIndigoAccentManrope.copyWith(
-                          fontSize: 14.sp,
+                        style: AppStyles.font14WhiteSemiBold.copyWith(
+                          color: AppColors.primaryTeal,
                         ),
                       ),
               ),

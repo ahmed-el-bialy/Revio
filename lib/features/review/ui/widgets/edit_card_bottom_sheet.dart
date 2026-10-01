@@ -1,3 +1,5 @@
+import 'package:code_alpha_flash_card_app/core/constants/app_constants.dart';
+import 'package:code_alpha_flash_card_app/core/widgets/genre_chip_picker.dart';
 import 'package:code_alpha_flash_card_app/features/cards/data/models/card_model.dart';
 import 'package:code_alpha_flash_card_app/core/theming/app_colors.dart';
 import 'package:code_alpha_flash_card_app/core/theming/app_styles.dart';
@@ -26,6 +28,7 @@ class _EditCardBottomSheetState extends State<EditCardBottomSheet> {
   late final TextEditingController _questionController;
   late final TextEditingController _hintController;
   late final TextEditingController _answerController;
+  late String _selectedCategory;
 
   @override
   void initState() {
@@ -33,6 +36,7 @@ class _EditCardBottomSheetState extends State<EditCardBottomSheet> {
     _questionController = TextEditingController(text: widget.cardModel.front);
     _hintController = TextEditingController(text: widget.cardModel.hint ?? '');
     _answerController = TextEditingController(text: widget.cardModel.back);
+    _selectedCategory = widget.cardModel.category ?? AppConstants.categories.first;
   }
 
   @override
@@ -61,17 +65,47 @@ class _EditCardBottomSheetState extends State<EditCardBottomSheet> {
             children: [
               Center(
                 child: Container(
-                  width: 50.w,
+                  width: 48.w,
                   height: 4.h,
                   decoration: BoxDecoration(
-                    color: Colors.grey[600],
+                    color: AppColors.gray.withValues(alpha: 0.4),
                     borderRadius: BorderRadius.circular(10.r),
                   ),
                 ),
               ),
+              verticalSpacing(16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Edit Flashcard",
+                    style: AppStyles.font18BoldIndigoAccent.copyWith(
+                      color: AppColors.primaryTeal,
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.close, color: AppColors.lavenderGray, size: 20.sp),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+              verticalSpacing(12),
+              Text(
+                "Genre / Category",
+                style: AppStyles.font16LavenderGray,
+              ),
+              verticalSpacing(10),
+              GenreChipPicker(
+                selectedCategory: _selectedCategory,
+                onCategorySelected: (category) {
+                  setState(() {
+                    _selectedCategory = category;
+                  });
+                },
+              ),
               verticalSpacing(20),
               Text(
-                "Edit Question (Front)",
+                "Question (Front)",
                 style: AppStyles.font16LavenderGray,
               ),
               verticalSpacing(10),
@@ -86,16 +120,16 @@ class _EditCardBottomSheetState extends State<EditCardBottomSheet> {
                   return null;
                 },
               ),
-              verticalSpacing(15),
-              Text("Edit Hint (Optional)", style: AppStyles.font16LavenderGray),
+              verticalSpacing(16),
+              Text("Hint (Optional)", style: AppStyles.font16LavenderGray),
               verticalSpacing(10),
               AppTextForm(
                 controller: _hintController,
                 hint: "Enter a helpful hint...",
                 maxLines: 2,
               ),
-              verticalSpacing(15),
-              Text("Edit Answer (Back)", style: AppStyles.font16LavenderGray),
+              verticalSpacing(16),
+              Text("Answer (Back)", style: AppStyles.font16LavenderGray),
               verticalSpacing(10),
               AppTextForm(
                 controller: _answerController,
@@ -113,7 +147,7 @@ class _EditCardBottomSheetState extends State<EditCardBottomSheet> {
                 width: double.infinity,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.oceanBlue,
+                    backgroundColor: AppColors.primaryTeal,
                     padding: EdgeInsets.symmetric(vertical: 14.h),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.r),
@@ -123,11 +157,15 @@ class _EditCardBottomSheetState extends State<EditCardBottomSheet> {
                     if (_formKey.currentState!.validate()) {
                       final updatedCard = CardModel(
                         id: widget.cardModel.id,
+                        category: _selectedCategory,
                         front: _questionController.text.trim(),
                         hint: _hintController.text.trim().isEmpty
                             ? null
                             : _hintController.text.trim(),
                         back: _answerController.text.trim(),
+                        isFavorite: widget.cardModel.isFavorite,
+                        difficulty: widget.cardModel.difficulty,
+                        createdAt: widget.cardModel.createdAt,
                       );
 
                       widget.onCardUpdated(updatedCard);
@@ -136,7 +174,10 @@ class _EditCardBottomSheetState extends State<EditCardBottomSheet> {
                   },
                   child: Text(
                     "Save Changes",
-                    style: AppStyles.font17WhiteBold.copyWith(fontSize: 16.sp),
+                    style: AppStyles.font17WhiteBold.copyWith(
+                      color: AppColors.darkBackground,
+                      fontSize: 16.sp,
+                    ),
                   ),
                 ),
               ),

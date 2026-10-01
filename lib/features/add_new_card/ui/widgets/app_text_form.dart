@@ -1,8 +1,8 @@
-import 'package:code_alpha_flash_card_app/core/theming/app_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/theming/app_colors.dart';
+import '../../../../core/theming/app_styles.dart';
 
 class AppTextForm extends StatelessWidget {
   const AppTextForm({
@@ -28,27 +28,33 @@ class AppTextForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
-      style:
-          textStyle ??
-          AppStyles.font24BoldIceBlueManrope.copyWith(fontSize: 15.sp),
+      style: textStyle ?? AppStyles.font16WhiteSemiBold,
       maxLines: maxLines,
       decoration: InputDecoration(
         hintText: hint,
-        hintStyle:
-            hintStyle ?? AppStyles.font16LavenderGray.copyWith(fontSize: 13.sp),
-        fillColor: fillColor ?? Colors.white.withValues(alpha: 0.05),
+        hintStyle: hintStyle ?? AppStyles.font14White70,
+        fillColor: fillColor ?? AppColors.white.withValues(alpha: 0.05),
         filled: true,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16.r),
+          borderRadius: BorderRadius.circular(14.r),
           borderSide: BorderSide.none,
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16.r),
+          borderRadius: BorderRadius.circular(14.r),
           borderSide: const BorderSide(
-            color: AppColors.indigoAccent,
+            color: AppColors.primaryTeal,
             width: 1.5,
           ),
         ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14.r),
+          borderSide: const BorderSide(color: AppColors.errorRed, width: 1),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14.r),
+          borderSide: const BorderSide(color: AppColors.errorRed, width: 1.5),
+        ),
+        contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
       ),
       validator: validator,
     );

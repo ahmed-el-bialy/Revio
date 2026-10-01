@@ -1,8 +1,12 @@
 import '../../cards/data/models/card_model.dart';
 
+enum QuizMode { multipleChoice, typing }
+
 abstract class QuizState {}
 
 class QuizInitial extends QuizState {}
+
+class QuizModeSelection extends QuizState {}
 
 class QuizInProgress extends QuizState {
   final List<CardModel> cards;
@@ -13,6 +17,9 @@ class QuizInProgress extends QuizState {
   final bool isShuffled;
   final bool showCorrectAnswer;
   final String? lastCorrectAnswer;
+  final QuizMode quizMode;
+  final List<String>? currentOptions;
+  final String? selectedOption;
 
   QuizInProgress({
     required this.cards,
@@ -20,10 +27,16 @@ class QuizInProgress extends QuizState {
     required this.correctCount,
     required this.wrongCount,
     required this.answeredCardIds,
+    required this.quizMode,
     this.isShuffled = false,
     this.showCorrectAnswer = false,
     this.lastCorrectAnswer,
+    this.currentOptions,
+    this.selectedOption,
   });
+
+  CardModel get currentCard => cards[currentIndex];
+  bool get isCurrentAnswered => answeredCardIds.contains(currentCard.id);
 }
 
 class QuizCompleted extends QuizState {
@@ -32,6 +45,7 @@ class QuizCompleted extends QuizState {
   final int wrongCount;
   final int skippedCount;
   final Duration timeTaken;
+  final QuizMode quizMode;
 
   QuizCompleted({
     required this.totalCards,
@@ -39,7 +53,9 @@ class QuizCompleted extends QuizState {
     required this.wrongCount,
     required this.skippedCount,
     required this.timeTaken,
+    required this.quizMode,
   });
 
-  double get scorePercentage => totalCards > 0 ? (correctCount / totalCards) * 100 : 0;
+  double get scorePercentage =>
+      totalCards > 0 ? (correctCount / totalCards) * 100 : 0;
 }

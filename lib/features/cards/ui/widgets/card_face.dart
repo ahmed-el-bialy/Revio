@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../core/helpers/spacing.dart';
 import '../../../../features/review/logic/delete_card/delete_card_cubit.dart';
 import '../../../../features/review/logic/edit_card/edit_card_cubit.dart';
 import '../../../../features/review/ui/widgets/edit_card_bottom_sheet.dart';
@@ -30,15 +31,15 @@ class CardFace extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool shouldDisplayHint =
-        isFront &&
+    final bool shouldDisplayHint = isFront &&
         cardModel.hint != null &&
         cardModel.hint!.trim().isNotEmpty &&
         (!isInQuiz || (isInQuiz && showHint));
 
     final isFav = cardModel.isFavorite ?? false;
     final cat = cardModel.category;
-    final catColor = AppColors.categoryColors[cat] ?? AppColors.indigoAccent;
+    final catColor =
+        AppColors.categoryColors[cat] ?? AppColors.primaryTeal;
 
     return Stack(
       children: [
@@ -46,93 +47,105 @@ class CardFace extends StatelessWidget {
           width: double.infinity,
           height: cardHeight,
           decoration: BoxDecoration(
-            color: AppColors.oceanBlue,
-            gradient: LinearGradient(
-              colors: [
-                AppColors.oceanBlue,
-                AppColors.oceanBlue.withValues(alpha: 0.8),
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
+            color: AppColors.cardSurface,
             borderRadius: BorderRadius.circular(24.r),
             border: isFront
                 ? Border.all(
                     color: isFav
                         ? AppColors.softAmber.withValues(alpha: 0.5)
-                        : Colors.white.withValues(alpha: 0.05),
+                        : AppColors.white.withValues(alpha: 0.06),
                     width: isFav ? 1.5 : 1,
                   )
                 : Border.all(
-                    color: AppColors.accentCyan.withValues(alpha: 0.5),
+                    color: AppColors.primaryTeal.withValues(alpha: 0.4),
                     width: 1.5,
                   ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.2),
-                blurRadius: 10,
+                color: isFront
+                    ? AppColors.darkBackground.withValues(alpha: 0.4)
+                    : AppColors.primaryTeal.withValues(alpha: 0.08),
+                blurRadius: 12,
                 offset: const Offset(0, 4),
               ),
             ],
           ),
-          alignment: Alignment.center,
-          padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 24.h),
+          padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 20.h),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (cat != null && cat.isNotEmpty) ...[
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),
                   decoration: BoxDecoration(
-                    color: catColor.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(6.r),
+                    color: catColor.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(8.r),
+                    border: Border.all(
+                        color: catColor.withValues(alpha: 0.3)),
                   ),
                   child: Text(
                     cat,
                     style: AppStyles.font11GrayRegular.copyWith(
                       color: catColor,
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0.3,
                     ),
                   ),
                 ),
-                SizedBox(height: 8.h),
+                verticalSpacing(10),
               ],
-
               Text(
                 isFront ? cardModel.front : cardModel.back,
                 style: AppStyles.font18WhiteMedium,
                 textAlign: TextAlign.center,
               ),
-
               if (shouldDisplayHint) ...[
-                SizedBox(height: 12.h),
-                Text(
-                  cardModel.hint!,
-                  style: AppStyles.font14AccentCyan,
-                  textAlign: TextAlign.center,
+                verticalSpacing(12),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(CupertinoIcons.lightbulb,
+                        color: AppColors.softAmber, size: 14.sp),
+                    horizontalSpacing(4),
+                    Flexible(
+                      child: Text(
+                        cardModel.hint!,
+                        style: AppStyles.font14AccentCyan.copyWith(
+                          color: AppColors.softAmber,
+                          fontSize: 13.sp,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ],
           ),
         ),
 
+        // Action buttons — review mode only, front face only
         if (!isInQuiz && isFront) ...[
           Positioned(
-            top: 12.h,
-            left: 12.w,
+            top: 10.h,
+            left: 10.w,
             child: Row(
               children: [
-                _buildActionIcon(
-                  icon: isFav ? CupertinoIcons.heart_fill : CupertinoIcons.heart,
-                  color: isFav ? AppColors.softAmber : AppColors.lavenderGray,
-                  onPressed: () {
-                    CardsRepo().toggleFavorite(cardModel.id);
-                  },
+                _ActionIcon(
+                  icon: isFav
+                      ? CupertinoIcons.heart_fill
+                      : CupertinoIcons.heart,
+                  color: isFav
+                      ? AppColors.softAmber
+                      : AppColors.lavenderGray,
+                  onPressed: () =>
+                      CardsRepo().toggleFavorite(cardModel.id),
                 ),
-                SizedBox(width: 6.w),
-                _buildActionIcon(
+                horizontalSpacing(6),
+                _ActionIcon(
                   icon: CupertinoIcons.pencil,
-                  color: AppColors.indigoAccent,
+                  color: AppColors.primaryTeal,
                   onPressed: () {
                     final editCubit = context.read<EditCardCubit>();
                     showModalBottomSheet(
@@ -141,14 +154,13 @@ class CardFace extends StatelessWidget {
                       backgroundColor: AppColors.darkBackground,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(24.r),
+                          top: Radius.circular(28.r),
                         ),
                       ),
                       builder: (_) => EditCardBottomSheet(
                         cardModel: cardModel,
-                        onCardUpdated: (updatedCard) {
-                          editCubit.emitUpdateCard(updatedCard);
-                        },
+                        onCardUpdated: (updated) =>
+                            editCubit.emitUpdateCard(updated),
                       ),
                     );
                   },
@@ -157,9 +169,9 @@ class CardFace extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: 12.h,
-            right: 12.w,
-            child: _buildActionIcon(
+            top: 10.h,
+            right: 10.w,
+            child: _ActionIcon(
               icon: CupertinoIcons.trash,
               color: AppColors.error,
               onPressed: () {
@@ -178,24 +190,36 @@ class CardFace extends StatelessWidget {
       ],
     );
   }
+}
 
-  Widget _buildActionIcon({
-    required IconData icon,
-    required Color color,
-    required VoidCallback onPressed,
-  }) {
+class _ActionIcon extends StatelessWidget {
+  final IconData icon;
+  final Color color;
+  final VoidCallback onPressed;
+
+  const _ActionIcon({
+    required this.icon,
+    required this.color,
+    required this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onPressed,
       child: Container(
-        padding: EdgeInsets.all(8.w),
+        padding: EdgeInsets.all(7.w),
         decoration: BoxDecoration(
           color: color.withValues(alpha: 0.1),
           shape: BoxShape.circle,
+          border: Border.all(
+            color: color.withValues(alpha: 0.2),
+          ),
         ),
         child: Icon(
           icon,
-          color: color.withValues(alpha: 0.8),
-          size: 18.sp,
+          color: color.withValues(alpha: 0.85),
+          size: 16.sp,
         ),
       ),
     );

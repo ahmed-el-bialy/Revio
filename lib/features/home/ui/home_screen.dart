@@ -24,135 +24,144 @@ class _HomeScreenState extends State<HomeScreen> {
   late final List<NavigationModel> models = [
     NavigationModel(
       imagePath: "assets/images/book.png",
-      title: "Master Your Cards",
-      subtitle: "Review, filter and organize your library",
-      onTap: () {
-        context.pushNamed(AppConstants.reviewCardsScreen, null);
-      },
+      title: "My Library",
+      subtitle: "Browse, search & manage all your flashcards",
+      onTap: () => context.pushNamed(AppConstants.reviewCardsScreen, null),
     ),
     NavigationModel(
       imagePath: "assets/images/add.png",
-      title: "Expand Library",
-      subtitle: "Create new flashcards with categories",
-      onTap: () {
-        context.pushNamed(AppConstants.newCardScreen, null);
-      },
+      title: "New Card",
+      subtitle: "Create a new flashcard with a category",
+      onTap: () => context.pushNamed(AppConstants.newCardScreen, null),
     ),
     NavigationModel(
       imagePath: "assets/images/quiz.png",
-      title: "Smart Quiz Mode",
-      subtitle: "Smart answer matching, timer & results",
-      onTap: () {
-        context.pushNamed(AppConstants.quizScreen, null);
-      },
+      title: "Start Quiz",
+      subtitle: "MCQ or Typing mode — smart answer matching",
+      onTap: () => context.pushNamed(AppConstants.quizScreen, null),
     ),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBody: true,
       backgroundColor: AppColors.darkBackground,
       body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.w),
-          child: CustomScrollView(
-            physics: const BouncingScrollPhysics(),
-            slivers: [
-              sliverVerticalSpacing(10),
-              SliverToBoxAdapter(
-                child: Row(
-                  children: [
-                    Text(
-                      "Revio",
-                      style: AppStyles.font24BoldIndigoAccentManrope.copyWith(
-                        fontSize: 22.sp,
-                        letterSpacing: 1.2,
-                      ),
-                    ),
-                    const Spacer(),
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
-                      decoration: BoxDecoration(
-                        color: AppColors.indigoAccent.withValues(alpha: 0.15),
-                        borderRadius: BorderRadius.circular(12.r),
-                        border: Border.all(
-                          color: AppColors.indigoAccent.withValues(alpha: 0.3),
-                        ),
-                      ),
-                      child: Text(
-                        "v2.0",
-                        style: AppStyles.font14WhiteSemiBold.copyWith(
-                          color: AppColors.indigoAccent,
-                          fontSize: 12.sp,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              sliverVerticalSpacing(20),
-              SliverToBoxAdapter(
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "Your Learning Hub",
-                      style: AppStyles.font24BoldIceBlueManrope.copyWith(
-                        fontSize: 28.sp,
-                      ),
-                    ),
-                    verticalSpacing(8),
-                    Text(
-                      "Elevate your knowledge with ease.",
-                      style: AppStyles.font16LavenderGray.copyWith(
-                        color: AppColors.lavenderGray.withValues(alpha: 0.6),
-                      ),
-                    ),
+                    verticalSpacing(16),
+                    _buildHeader(),
+                    verticalSpacing(24),
+                    _buildHeroSection(),
                   ],
                 ),
               ),
-              sliverVerticalSpacing(24),
-              BlocBuilder<GetAllCardsCubit, GetAllCardsState>(
-                buildWhen: (previous, current) => current is CardsLoadedSuccess,
-                builder: (context, state) {
-                  final totalCards = (state is CardsLoadedSuccess)
-                      ? state.cards.length
-                      : 0;
-                  final favCards = (state is CardsLoadedSuccess)
-                      ? state.cards.where((c) => c.isFavorite == true).length
-                      : 0;
-
-                  return CardsNumberContainer(
-                    totalCards: totalCards,
-                    favoriteCards: favCards,
-                  );
-                },
-              ),
-              sliverVerticalSpacing(32),
-              SliverToBoxAdapter(
+            ),
+            sliverVerticalSpacing(20),
+            BlocBuilder<GetAllCardsCubit, GetAllCardsState>(
+              buildWhen: (previous, current) => current is CardsLoadedSuccess,
+              builder: (context, state) {
+                final cards =
+                    state is CardsLoadedSuccess ? state.cards : const [];
+                final favCount =
+                    cards.where((c) => c.isFavorite == true).length;
+                return CardsNumberContainer(
+                  totalCards: cards.length,
+                  favoriteCards: favCount,
+                );
+              },
+            ),
+            sliverVerticalSpacing(28),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w),
                 child: Text(
-                  "What's your focus today?",
+                  "Quick Actions",
                   style: AppStyles.font17BoldIceBlue.copyWith(
-                    fontSize: 18.sp,
-                    letterSpacing: 0.5,
+                    fontSize: 17.sp,
+                    letterSpacing: 0.4,
                   ),
                 ),
               ),
-              sliverVerticalSpacing(12),
-              SliverList(
+            ),
+            sliverVerticalSpacing(12),
+            SliverPadding(
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              sliver: SliverList(
                 delegate: SliverChildBuilderDelegate(
                   childCount: models.length,
-                  (context, index) {
-                    return HomeOptionTile(model: models[index]);
-                  },
+                  (context, index) => HomeOptionTile(model: models[index]),
                 ),
               ),
-              sliverVerticalSpacing(20),
-            ],
-          ),
+            ),
+            sliverVerticalSpacing(30),
+          ],
         ),
       ),
+    );
+  }
+
+  Widget _buildHeader() {
+    return Row(
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Revio",
+              style: AppStyles.font24BoldPrimaryManrope.copyWith(
+                fontSize: 20.sp,
+                letterSpacing: 2,
+              ),
+            ),
+          ],
+        ),
+        const Spacer(),
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+          decoration: BoxDecoration(
+            color: AppColors.primaryTeal.withValues(alpha: 0.12),
+            borderRadius: BorderRadius.circular(10.r),
+            border: Border.all(
+                color: AppColors.primaryTeal.withValues(alpha: 0.3)),
+          ),
+          child: Text(
+            "v2.0",
+            style: AppStyles.font11GrayRegular.copyWith(
+              color: AppColors.primaryTeal,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.5,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildHeroSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Your Learning\nHub",
+          style: AppStyles.font24BoldIceBlueManrope.copyWith(
+            fontSize: 30.sp,
+            height: 1.25,
+          ),
+        ),
+        verticalSpacing(8),
+        Text(
+          "Elevate your knowledge, one card at a time.",
+          style: AppStyles.font14White70,
+        ),
+      ],
     );
   }
 }

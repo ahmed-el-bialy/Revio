@@ -1,4 +1,5 @@
 import 'package:code_alpha_flash_card_app/core/constants/app_constants.dart';
+import 'package:code_alpha_flash_card_app/core/widgets/genre_chip_picker.dart';
 import 'package:code_alpha_flash_card_app/features/add_new_card/ui/widgets/app_text_form.dart';
 import 'package:code_alpha_flash_card_app/features/add_new_card/ui/widgets/appbar_body.dart';
 import 'package:flutter/material.dart';
@@ -56,98 +57,58 @@ class _AddCardScreenState extends State<AddCardScreen> {
                       formKey: _formKey,
                     ),
                   ),
-                  sliverVerticalSpacing(15),
+                  sliverVerticalSpacing(20),
                   SliverToBoxAdapter(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          "Category",
-                          style: AppStyles.font16LavenderGray,
-                        ),
+                        _SectionLabel(label: "Genre / Category"),
                         verticalSpacing(10),
-                        SizedBox(
-                          height: 38.h,
-                          child: ListView.separated(
-                            scrollDirection: Axis.horizontal,
-                            physics: const BouncingScrollPhysics(),
-                            itemCount: AppConstants.categories.length,
-                            separatorBuilder: (context, index) => horizontalSpacing(8),
-                            itemBuilder: (context, index) {
-                              final cat = AppConstants.categories[index];
-                              final isSelected = cat == _selectedCategory;
-                              final catColor = AppColors.categoryColors[cat] ?? AppColors.indigoAccent;
-                              
-                              return ChoiceChip(
-                                label: Text(cat),
-                                selected: isSelected,
-                                selectedColor: catColor.withValues(alpha: 0.25),
-                                backgroundColor: AppColors.oceanBlue.withValues(alpha: 0.4),
-                                side: BorderSide(
-                                  color: isSelected ? catColor : AppColors.gray.withValues(alpha: 0.2),
-                                  width: isSelected ? 1.5 : 1,
-                                ),
-                                labelStyle: AppStyles.font14White70.copyWith(
-                                  color: isSelected ? catColor : AppColors.lavenderGray,
-                                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                                  fontSize: 13.sp,
-                                ),
-                                onSelected: (selected) {
-                                  if (selected) {
-                                    setState(() {
-                                      _selectedCategory = cat;
-                                    });
-                                  }
-                                },
-                              );
-                            },
-                          ),
+                        GenreChipPicker(
+                          selectedCategory: _selectedCategory,
+                          onCategorySelected: (cat) =>
+                              setState(() => _selectedCategory = cat),
                         ),
-                        verticalSpacing(20),
-                        Text(
-                          "Question (Front)",
-                          style: AppStyles.font16LavenderGray,
-                        ),
+                        verticalSpacing(24),
+                        _SectionLabel(label: "Question (Front)"),
                         verticalSpacing(10),
                         AppTextForm(
                           controller: _questionController,
-                          hint: "Enter the question here...",
-                          validator: (value) {
-                            if (value == null || value.trim().isEmpty) {
+                          hint: "What do you want to remember?",
+                          maxLines: 3,
+                          validator: (v) {
+                            if (v == null || v.trim().isEmpty) {
                               return 'Please enter a question';
                             }
                             return null;
                           },
-                          maxLines: 3,
                         ),
                         verticalSpacing(20),
-                        Text(
-                          "Hint (Optional)",
-                          style: AppStyles.font16LavenderGray,
+                        _SectionLabel(
+                          label: "Hint",
+                          badge: "Optional",
                         ),
                         verticalSpacing(10),
                         AppTextForm(
                           controller: _hintController,
                           maxLines: 2,
-                          hint: "Enter a helpful hint...",
+                          hint: "A small clue to help recall...",
                         ),
                         verticalSpacing(20),
-                        Text(
-                          "Answer (Back)",
-                          style: AppStyles.font16LavenderGray,
-                        ),
+                        _SectionLabel(label: "Answer (Back)"),
                         verticalSpacing(10),
                         AppTextForm(
                           controller: _answerController,
                           maxLines: 4,
-                          hint: "Enter the answer or explanation...",
-                          validator: (value) {
-                            if (value == null || value.trim().isEmpty) {
+                          hint: "The answer or explanation...",
+                          validator: (v) {
+                            if (v == null || v.trim().isEmpty) {
                               return 'Please enter an answer';
                             }
                             return null;
                           },
                         ),
+                        verticalSpacing(24),
                       ],
                     ),
                   ),
@@ -157,6 +118,37 @@ class _AddCardScreenState extends State<AddCardScreen> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _SectionLabel extends StatelessWidget {
+  final String label;
+  final String? badge;
+
+  const _SectionLabel({required this.label, this.badge});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Text(label, style: AppStyles.font16LavenderGray),
+        if (badge != null) ...[
+          horizontalSpacing(8),
+          Container(
+            padding:
+                EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
+            decoration: BoxDecoration(
+              color: AppColors.gray.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(6.r),
+            ),
+            child: Text(
+              badge!,
+              style: AppStyles.font11GrayRegular,
+            ),
+          ),
+        ],
+      ],
     );
   }
 }
