@@ -66,19 +66,20 @@ class _GenreChipPickerState extends State<GenreChipPicker> {
         backgroundColor: AppColors.surfaceDark,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20.r),
-          side: BorderSide(color: AppColors.primaryTeal.withValues(alpha: 0.3)),
+          side: BorderSide(
+            color: AppColors.primaryTeal.withValues(alpha: 0.3),
+          ),
         ),
         title: Row(
           children: [
-            Icon(
-              CupertinoIcons.tag_fill,
-              color: AppColors.primaryTeal,
-              size: 20.sp,
-            ),
+            Icon(CupertinoIcons.tag_fill,
+                color: AppColors.primaryTeal, size: 20.sp),
             horizontalSpacing(8),
             Text(
               "Add Custom Topic",
-              style: AppStyles.font18BoldIndigoAccent.copyWith(fontSize: 18.sp),
+              style: AppStyles.font18BoldIndigoAccent.copyWith(
+                fontSize: 18.sp,
+              ),
             ),
           ],
         ),
@@ -87,7 +88,7 @@ class _GenreChipPickerState extends State<GenreChipPicker> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Create a specific category for your flashcards (e.g., Biology, Medicine, History, Code).",
+              "Create a specific category for your flashcards (e.g., Biology, Medicine, Code, History).",
               style: AppStyles.font14White70.copyWith(fontSize: 13.sp),
             ),
             verticalSpacing(14),
@@ -107,14 +108,10 @@ class _GenreChipPickerState extends State<GenreChipPicker> {
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12.r),
                   borderSide: const BorderSide(
-                    color: AppColors.primaryTeal,
-                    width: 1.5,
-                  ),
+                      color: AppColors.primaryTeal, width: 1.5),
                 ),
-                contentPadding: EdgeInsets.symmetric(
-                  horizontal: 14.w,
-                  vertical: 12.h,
-                ),
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
               ),
             ),
           ],
@@ -164,7 +161,7 @@ class _GenreChipPickerState extends State<GenreChipPicker> {
         : _userCategories;
 
     return SizedBox(
-      height: 42.h,
+      height: 40.h,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
@@ -174,25 +171,22 @@ class _GenreChipPickerState extends State<GenreChipPicker> {
           if (index == categoriesList.length) {
             return GestureDetector(
               onTap: _showAddCustomCategoryDialog,
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
                 decoration: BoxDecoration(
-                  color: AppColors.primaryTeal.withValues(alpha: 0.1),
+                  color: AppColors.primaryTeal.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(14.r),
                   border: Border.all(
-                    color: AppColors.primaryTeal.withValues(alpha: 0.35),
-                    style: BorderStyle.solid,
+                    color: AppColors.primaryTeal.withValues(alpha: 0.4),
                     width: 1.2,
                   ),
                 ),
                 child: Row(
                   children: [
-                    Icon(
-                      CupertinoIcons.add,
-                      color: AppColors.primaryTeal,
-                      size: 14.sp,
-                    ),
-                    horizontalSpacing(4),
+                    Icon(CupertinoIcons.add,
+                        color: AppColors.primaryTeal, size: 14.sp),
+                    horizontalSpacing(5),
                     Text(
                       "Custom",
                       style: AppStyles.font13GrayMedium.copyWith(
@@ -211,29 +205,57 @@ class _GenreChipPickerState extends State<GenreChipPicker> {
           final isSelected = cat == widget.selectedCategory;
           final catColor = cat == 'All'
               ? AppColors.primaryTeal
-              : (AppColors.categoryColors[cat] ?? AppColors.primaryTeal);
+              : (AppColors.categoryColors[cat] ?? AppColors.skyBlue);
 
-          return ChoiceChip(
-            label: Text(cat),
-            selected: isSelected,
-            selectedColor: catColor.withValues(alpha: 0.2),
-            backgroundColor: AppColors.surfaceDark.withValues(alpha: 0.6),
-            side: BorderSide(
-              color: isSelected
-                  ? catColor
-                  : AppColors.gray.withValues(alpha: 0.2),
-              width: isSelected ? 1.5 : 1,
+          return GestureDetector(
+            onTap: () => widget.onCategorySelected(cat),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 220),
+              padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? catColor.withValues(alpha: 0.28)
+                    : catColor.withValues(alpha: 0.10),
+                borderRadius: BorderRadius.circular(14.r),
+                border: Border.all(
+                  color: isSelected
+                      ? catColor
+                      : catColor.withValues(alpha: 0.25),
+                  width: isSelected ? 1.6 : 1.0,
+                ),
+                boxShadow: isSelected
+                    ? [
+                        BoxShadow(
+                          color: catColor.withValues(alpha: 0.25),
+                          blurRadius: 10,
+                          offset: const Offset(0, 3),
+                        ),
+                      ]
+                    : [],
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 7.w,
+                    height: 7.h,
+                    decoration: BoxDecoration(
+                      color: catColor,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  horizontalSpacing(7),
+                  Text(
+                    cat,
+                    style: AppStyles.font13GrayMedium.copyWith(
+                      color: isSelected ? AppColors.white : catColor,
+                      fontWeight:
+                          isSelected ? FontWeight.w800 : FontWeight.w600,
+                      fontSize: 12.5.sp,
+                    ),
+                  ),
+                ],
+              ),
             ),
-            labelStyle: AppStyles.font14White70.copyWith(
-              color: isSelected ? catColor : AppColors.lavenderGray,
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-              fontSize: 12.5.sp,
-            ),
-            onSelected: (selected) {
-              if (selected) {
-                widget.onCategorySelected(cat);
-              }
-            },
           );
         },
       ),
