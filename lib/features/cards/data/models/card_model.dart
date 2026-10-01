@@ -19,11 +19,23 @@ class CardModel extends HiveObject {
   @HiveField(4)
   final String back;
 
+  @HiveField(5)
+  final bool? isFavorite;
+
+  @HiveField(6)
+  final int? difficulty;
+
+  @HiveField(7)
+  final DateTime? createdAt;
+
   CardModel({
     required this.id,
     this.category,
     required this.front,
     this.hint,
     required this.back,
+    this.isFavorite,
+    this.difficulty,
+    this.createdAt,
   });
 }

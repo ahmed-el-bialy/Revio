@@ -1,6 +1,7 @@
 import 'package:code_alpha_flash_card_app/core/theming/app_colors.dart';
 import 'package:code_alpha_flash_card_app/core/theming/app_styles.dart';
 import 'package:code_alpha_flash_card_app/features/cards/data/models/card_model.dart';
+import 'package:code_alpha_flash_card_app/features/cards/data/repo/cards_repo.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,6 +36,10 @@ class CardFace extends StatelessWidget {
         cardModel.hint!.trim().isNotEmpty &&
         (!isInQuiz || (isInQuiz && showHint));
 
+    final isFav = cardModel.isFavorite ?? false;
+    final cat = cardModel.category;
+    final catColor = AppColors.categoryColors[cat] ?? AppColors.indigoAccent;
+
     return Stack(
       children: [
         Container(
@@ -53,8 +58,10 @@ class CardFace extends StatelessWidget {
             borderRadius: BorderRadius.circular(24.r),
             border: isFront
                 ? Border.all(
-                    color: Colors.white.withValues(alpha: 0.05),
-                    width: 1,
+                    color: isFav
+                        ? AppColors.softAmber.withValues(alpha: 0.5)
+                        : Colors.white.withValues(alpha: 0.05),
+                    width: isFav ? 1.5 : 1,
                   )
                 : Border.all(
                     color: AppColors.accentCyan.withValues(alpha: 0.5),
@@ -73,6 +80,24 @@ class CardFace extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              if (cat != null && cat.isNotEmpty) ...[
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
+                  decoration: BoxDecoration(
+                    color: catColor.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(6.r),
+                  ),
+                  child: Text(
+                    cat,
+                    style: AppStyles.font11GrayRegular.copyWith(
+                      color: catColor,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 8.h),
+              ],
+
               Text(
                 isFront ? cardModel.front : cardModel.back,
                 style: AppStyles.font18WhiteMedium,
@@ -90,33 +115,45 @@ class CardFace extends StatelessWidget {
             ],
           ),
         ),
-        // Only show Edit/Delete icons on the FRONT face and when NOT in quiz
+
         if (!isInQuiz && isFront) ...[
           Positioned(
             top: 12.h,
             left: 12.w,
-            child: _buildActionIcon(
-              icon: CupertinoIcons.pencil,
-              color: AppColors.indigoAccent,
-              onPressed: () {
-                final editCubit = context.read<EditCardCubit>();
-                showModalBottomSheet(
-                  context: context,
-                  isScrollControlled: true,
-                  backgroundColor: AppColors.darkBackground,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(24.r),
-                    ),
-                  ),
-                  builder: (_) => EditCardBottomSheet(
-                    cardModel: cardModel,
-                    onCardUpdated: (updatedCard) {
-                      editCubit.emitUpdateCard(updatedCard);
-                    },
-                  ),
-                );
-              },
+            child: Row(
+              children: [
+                _buildActionIcon(
+                  icon: isFav ? CupertinoIcons.heart_fill : CupertinoIcons.heart,
+                  color: isFav ? AppColors.softAmber : AppColors.lavenderGray,
+                  onPressed: () {
+                    CardsRepo().toggleFavorite(cardModel.id);
+                  },
+                ),
+                SizedBox(width: 6.w),
+                _buildActionIcon(
+                  icon: CupertinoIcons.pencil,
+                  color: AppColors.indigoAccent,
+                  onPressed: () {
+                    final editCubit = context.read<EditCardCubit>();
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      backgroundColor: AppColors.darkBackground,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(24.r),
+                        ),
+                      ),
+                      builder: (_) => EditCardBottomSheet(
+                        cardModel: cardModel,
+                        onCardUpdated: (updatedCard) {
+                          editCubit.emitUpdateCard(updatedCard);
+                        },
+                      ),
+                    );
+                  },
+                ),
+              ],
             ),
           ),
           Positioned(

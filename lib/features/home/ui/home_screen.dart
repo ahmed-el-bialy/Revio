@@ -25,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
     NavigationModel(
       imagePath: "assets/images/book.png",
       title: "Master Your Cards",
-      subtitle: "Review and refine your knowledge",
+      subtitle: "Review, filter and organize your library",
       onTap: () {
         context.pushNamed(AppConstants.reviewCardsScreen, null);
       },
@@ -33,15 +33,15 @@ class _HomeScreenState extends State<HomeScreen> {
     NavigationModel(
       imagePath: "assets/images/add.png",
       title: "Expand Library",
-      subtitle: "Create new powerful flashcards",
+      subtitle: "Create new flashcards with categories",
       onTap: () {
         context.pushNamed(AppConstants.newCardScreen, null);
       },
     ),
     NavigationModel(
       imagePath: "assets/images/quiz.png",
-      title: "Challenge Yourself",
-      subtitle: "Test your speed and accuracy",
+      title: "Smart Quiz Mode",
+      subtitle: "Smart answer matching, timer & results",
       onTap: () {
         context.pushNamed(AppConstants.quizScreen, null);
       },
@@ -61,12 +61,34 @@ class _HomeScreenState extends State<HomeScreen> {
             slivers: [
               sliverVerticalSpacing(10),
               SliverToBoxAdapter(
-                child: Text(
-                  "Revio",
-                  style: AppStyles.font24BoldIndigoAccentManrope.copyWith(
-                    fontSize: 22.sp,
-                    letterSpacing: 1.2,
-                  ),
+                child: Row(
+                  children: [
+                    Text(
+                      "Revio",
+                      style: AppStyles.font24BoldIndigoAccentManrope.copyWith(
+                        fontSize: 22.sp,
+                        letterSpacing: 1.2,
+                      ),
+                    ),
+                    const Spacer(),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+                      decoration: BoxDecoration(
+                        color: AppColors.indigoAccent.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(12.r),
+                        border: Border.all(
+                          color: AppColors.indigoAccent.withValues(alpha: 0.3),
+                        ),
+                      ),
+                      child: Text(
+                        "v2.0",
+                        style: AppStyles.font14WhiteSemiBold.copyWith(
+                          color: AppColors.indigoAccent,
+                          fontSize: 12.sp,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               sliverVerticalSpacing(20),
@@ -97,8 +119,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   final totalCards = (state is CardsLoadedSuccess)
                       ? state.cards.length
                       : 0;
+                  final favCards = (state is CardsLoadedSuccess)
+                      ? state.cards.where((c) => c.isFavorite == true).length
+                      : 0;
 
-                  return CardsNumberContainer(totalCards: totalCards);
+                  return CardsNumberContainer(
+                    totalCards: totalCards,
+                    favoriteCards: favCards,
+                  );
                 },
               ),
               sliverVerticalSpacing(32),

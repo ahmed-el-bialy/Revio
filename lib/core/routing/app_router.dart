@@ -6,6 +6,8 @@ import 'package:code_alpha_flash_card_app/features/quiz/ui/quiz_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../features/quiz/logic/quiz_cubit.dart';
+import '../../features/quiz/ui/quiz_results_screen.dart';
 import '../../features/review/logic/delete_card/delete_card_cubit.dart';
 import '../../features/review/logic/edit_card/edit_card_cubit.dart';
 import '../../features/review/ui/review_cards_screen.dart';
@@ -37,7 +39,16 @@ class AppRouter {
         );
 
       case AppConstants.quizScreen:
-        return _fadeRoute(const QuizScreen());
+        return _fadeRoute(
+          BlocProvider(
+            create: (context) => QuizCubit(),
+            child: const QuizScreen(),
+          ),
+        );
+
+      case AppConstants.quizResultsScreen:
+        final args = setting.arguments as QuizResultsArguments;
+        return _fadeRoute(QuizResultsScreen(args: args));
 
       default:
         return _fadeRoute(const HomeScreen());

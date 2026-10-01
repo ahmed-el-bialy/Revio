@@ -15,12 +15,14 @@ class AppbarBody extends StatelessWidget {
     required this._questionController,
     required this._hintController,
     required this._answerController,
+    required this.selectedCategory,
     required this._formKey,
   });
 
   final TextEditingController _questionController;
   final TextEditingController _hintController;
   final TextEditingController _answerController;
+  final String selectedCategory;
   final GlobalKey<FormState> _formKey;
 
   @override
@@ -78,11 +80,14 @@ class AppbarBody extends StatelessWidget {
                       if (_formKey.currentState!.validate()) {
                         final newCard = CardModel(
                           id: DateTime.now().millisecondsSinceEpoch.toString(),
+                          category: selectedCategory,
                           front: _questionController.text.trim(),
                           hint: _hintController.text.trim().isEmpty
                               ? null
                               : _hintController.text.trim(),
                           back: _answerController.text.trim(),
+                          isFavorite: false,
+                          createdAt: DateTime.now(),
                         );
                         context.read<AddCardCubit>().emitSaveCard(newCard);
                       }

@@ -22,13 +22,16 @@ class CardModelAdapter extends TypeAdapter<CardModel> {
       front: fields[2] as String,
       hint: fields[3] as String?,
       back: fields[4] as String,
+      isFavorite: fields[5] as bool?,
+      difficulty: (fields[6] as num?)?.toInt(),
+      createdAt: fields[7] as DateTime?,
     );
   }
 
   @override
   void write(BinaryWriter writer, CardModel obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -38,7 +41,13 @@ class CardModelAdapter extends TypeAdapter<CardModel> {
       ..writeByte(3)
       ..write(obj.hint)
       ..writeByte(4)
-      ..write(obj.back);
+      ..write(obj.back)
+      ..writeByte(5)
+      ..write(obj.isFavorite)
+      ..writeByte(6)
+      ..write(obj.difficulty)
+      ..writeByte(7)
+      ..write(obj.createdAt);
   }
 
   @override

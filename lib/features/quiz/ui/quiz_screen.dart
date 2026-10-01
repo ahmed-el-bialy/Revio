@@ -1,15 +1,19 @@
-import 'package:code_alpha_flash_card_app/core/helpers/snackbar_helper.dart';
-import 'package:code_alpha_flash_card_app/core/theming/app_colors.dart';
-import 'package:code_alpha_flash_card_app/core/theming/app_styles.dart';
-import 'package:code_alpha_flash_card_app/features/quiz/ui/widgets/buttons_row.dart';
-import 'package:code_alpha_flash_card_app/features/cards/ui/widgets/flash_card.dart';
-import 'package:code_alpha_flash_card_app/features/cards/logic/get_all_cards_cubit.dart';
-import 'package:code_alpha_flash_card_app/features/cards/logic/get_all_cards_state.dart';
-import 'package:flip_card/flip_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flip_card/flip_card.dart';
+
+import '../../../core/constants/app_constants.dart';
+import '../../../core/helpers/snackbar_helper.dart';
+import '../../../core/theming/app_colors.dart';
+import '../../../core/theming/app_styles.dart';
+import '../../cards/logic/get_all_cards_cubit.dart';
+import '../../cards/logic/get_all_cards_state.dart';
+import '../../cards/ui/widgets/flash_card.dart';
+import '../logic/quiz_cubit.dart';
+import '../logic/quiz_state.dart';
+import 'quiz_results_screen.dart';
 
 class QuizScreen extends StatefulWidget {
   const QuizScreen({super.key});
@@ -19,25 +23,21 @@ class QuizScreen extends StatefulWidget {
 }
 
 class _QuizScreenState extends State<QuizScreen> {
-  late PageController _pageController;
   final TextEditingController _answerController = TextEditingController();
-  
   final Map<String, GlobalKey<FlipCardState>> _flipKeys = {};
-  final Set<String> _correctCardIds = {};
-  
-  int _currentPage = 0;
-  int _correctAnswers = 0;
   bool _isHintVisible = false;
 
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(initialPage: 0);
+    final cardsState = context.read<GetAllCardsCubit>().state;
+    if (cardsState is CardsLoadedSuccess) {
+      context.read<QuizCubit>().emitStartQuiz(cardsState.cards);
+    }
   }
 
   @override
   void dispose() {
-    _pageController.dispose();
     _answerController.dispose();
     super.dispose();
   }
@@ -46,27 +46,17 @@ class _QuizScreenState extends State<QuizScreen> {
     return _flipKeys.putIfAbsent(id, () => GlobalKey<FlipCardState>());
   }
 
-  void _submitAnswer(String cardId, String correctAnswer) {
-    final userAnswer = _answerController.text.trim().toLowerCase();
-    final expectedAnswer = correctAnswer.trim().toLowerCase();
-
-    // Flip the specific card to show the back
-    final currentFlipKey = _flipKeys[cardId];
-    if (currentFlipKey?.currentState?.isFront ?? false) {
-      currentFlipKey?.currentState?.toggleCard();
+  void _submitAnswer() {
+    final text = _answerController.text;
+    if (text.trim().isEmpty) {
+      SnackBarHelper.showInfo(context, "Please enter an answer first!");
+      return;
     }
-
-    if (userAnswer == expectedAnswer) {
-      if (!_correctCardIds.contains(cardId)) {
-        setState(() {
-          _correctCardIds.add(cardId);
-          _correctAnswers++;
-        });
-      }
-      SnackBarHelper.showSuccess(context, "Correct! Well done! 🎉");
-    } else {
-      SnackBarHelper.showError(context, "Incorrect. Keep practicing! 💪");
-    }
+    context.read<QuizCubit>().emitSubmitAnswer(text);
+    _answerController.clear();
+    setState(() {
+      _isHintVisible = false;
+    });
   }
 
   @override
@@ -86,184 +76,298 @@ class _QuizScreenState extends State<QuizScreen> {
           icon: const Icon(CupertinoIcons.back, color: Colors.white),
           onPressed: () => Navigator.maybePop(context),
         ),
+        actions: [
+          BlocBuilder<QuizCubit, QuizState>(
+            builder: (context, state) {
+              if (state is QuizInProgress) {
+                return IconButton(
+                  icon: Icon(
+                    CupertinoIcons.shuffle,
+                    color: state.isShuffled ? AppColors.accentCyan : AppColors.gray,
+                  ),
+                  tooltip: "Shuffle Cards",
+                  onPressed: () {
+                    context.read<QuizCubit>().emitStartQuiz(
+                          state.cards,
+                          shuffle: !state.isShuffled,
+                        );
+                    SnackBarHelper.showInfo(
+                      context,
+                      state.isShuffled ? "Normal order restored" : "Cards shuffled!",
+                    );
+                  },
+                );
+              }
+              return const SizedBox.shrink();
+            },
+          ),
+        ],
       ),
-      body: BlocBuilder<GetAllCardsCubit, GetAllCardsState>(
-        builder: (context, state) {
-          if (state is CardsLoading) {
-            return const Center(
-              child: CircularProgressIndicator(color: AppColors.indigoAccent),
-            );
-          }
-
-          if (state is CardsError) {
-            return Center(
-              child: Text(
-                "Error: ${state.errorMessage}",
-                style: AppStyles.font16LavenderGray.copyWith(color: AppColors.error),
+      body: BlocListener<QuizCubit, QuizState>(
+        listener: (context, state) {
+          if (state is QuizCompleted) {
+            Navigator.pushReplacementNamed(
+              context,
+              AppConstants.quizResultsScreen,
+              arguments: QuizResultsArguments(
+                totalCards: state.totalCards,
+                correctCount: state.correctCount,
+                wrongCount: state.wrongCount,
+                skippedCount: state.skippedCount,
+                timeTaken: state.timeTaken,
               ),
             );
           }
-
-          if (state is CardsLoadedSuccess) {
-            final cards = state.cards;
-
-            if (cards.isEmpty) {
-              return Center(
-                child: Text(
-                  "No cards available for quiz! 💡",
-                  style: AppStyles.font14White70,
-                ),
+        },
+        child: BlocBuilder<GetAllCardsCubit, GetAllCardsState>(
+          builder: (context, cardsState) {
+            if (cardsState is CardsLoading) {
+              return const Center(
+                child: CircularProgressIndicator(color: AppColors.indigoAccent),
               );
             }
 
-            return SafeArea(
-              child: SingleChildScrollView(
+            if (cardsState is CardsLoadedSuccess && cardsState.cards.isEmpty) {
+              return Center(
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 20.h),
+                  padding: EdgeInsets.all(24.w),
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // Updated Header: Correct Answers (Left) | Progress (Right)
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-                            decoration: BoxDecoration(
-                              color: AppColors.success.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(10.r),
-                              border: Border.all(color: AppColors.success.withValues(alpha: 0.3)),
-                            ),
-                            child: Row(
-                              children: [
-                                Icon(Icons.check_circle_outline, color: AppColors.success, size: 16.sp),
-                                SizedBox(width: 6.w),
-                                Text(
-                                  "Correct: $_correctAnswers",
-                                  style: AppStyles.font14WhiteSemiBold.copyWith(color: AppColors.success),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Text(
-                            "Card: ${_currentPage + 1}/${cards.length}",
-                            style: AppStyles.font16LavenderGrayBold.copyWith(
-                              color: Colors.white,
-                              fontSize: 14.sp,
-                            ),
-                          ),
-                        ],
-                      ),
-                      
-                      SizedBox(height: 30.h),
-                      
-                      SizedBox(
-                        height: 240.h,
-                        child: PageView.builder(
-                          controller: _pageController,
-                          physics: const NeverScrollableScrollPhysics(), 
-                          itemCount: cards.length,
-                          onPageChanged: (index) {
-                            setState(() {
-                              _currentPage = index;
-                              _isHintVisible = false;
-                              _answerController.clear();
-                            });
-                          },
-                          itemBuilder: (context, index) {
-                            final card = cards[index];
-                            return Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 4.w),
-                              child: FlashCard(
-                                flipKey: _getFlipKey(card.id),
-                                cardModel: card,
-                                isInQuiz: true,
-                                showHint: _isHintVisible,
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                      SizedBox(height: 20.h),
-                      
-                      // Answer Input Section
-                      TextField(
-                        controller: _answerController,
-                        style: const TextStyle(color: Colors.white),
-                        decoration: InputDecoration(
-                          hintText: "Type your answer here...",
-                          hintStyle: AppStyles.font14White70,
-                          filled: true,
-                          fillColor: AppColors.oceanBlue.withValues(alpha: 0.5),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12.r),
-                            borderSide: BorderSide.none,
-                          ),
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: 16.w,
-                            vertical: 14.h,
-                          ),
-                        ),
-                        onSubmitted: (_) => _submitAnswer(cards[_currentPage].id, cards[_currentPage].back),
-                      ),
+                      Icon(CupertinoIcons.rectangle_stack_badge_minus,
+                          size: 64.sp, color: AppColors.lavenderGray),
                       SizedBox(height: 16.h),
-                      
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () => _submitAnswer(cards[_currentPage].id, cards[_currentPage].back),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.indigoAccent,
-                            padding: EdgeInsets.symmetric(vertical: 14.h),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12.r),
-                            ),
-                          ),
-                          child: Text(
-                            "Submit Answer",
-                            style: AppStyles.font14WhiteSemiBold.copyWith(fontSize: 16.sp),
-                          ),
-                        ),
-                      ),
-                      
-                      SizedBox(height: 20.h),
-                      
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          TextButton.icon(
-                            onPressed: () {
-                              final currentCard = cards[_currentPage];
-                              if (currentCard.hint != null &&
-                                  currentCard.hint!.trim().isNotEmpty) {
-                                setState(() {
-                                  _isHintVisible = true;
-                                });
-                              } else {
-                                SnackBarHelper.showInfo(context, "No hint available for this card!");
-                              }
-                            },
-                            icon: const Icon(CupertinoIcons.lightbulb, color: Colors.amber, size: 20),
-                            label: Text("Need a Hint?", style: AppStyles.font14White70),
-                          ),
-                        ],
-                      ),
-
-                      SizedBox(height: 30.h),
-                      
-                      ButtonsRow(
-                        currentPage: _currentPage,
-                        pageController: _pageController,
-                        cards: cards,
+                      Text("No Cards Available", style: AppStyles.font20BoldWhite),
+                      SizedBox(height: 8.h),
+                      Text(
+                        "Add some cards first to start a quiz!",
+                        style: AppStyles.font14White70,
+                        textAlign: TextAlign.center,
                       ),
                     ],
                   ),
                 ),
-              ),
-            );
-          }
+              );
+            }
 
-          return const SizedBox.shrink();
-        },
+            return BlocBuilder<QuizCubit, QuizState>(
+              builder: (context, quizState) {
+                if (quizState is! QuizInProgress) {
+                  return const Center(
+                    child: CircularProgressIndicator(color: AppColors.indigoAccent),
+                  );
+                }
+
+                final currentCard = quizState.cards[quizState.currentIndex];
+                final isAnswered = quizState.answeredCardIds.contains(currentCard.id);
+
+                return SafeArea(
+                  child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                              decoration: BoxDecoration(
+                                color: AppColors.success.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(10.r),
+                                border: Border.all(
+                                    color: AppColors.success.withValues(alpha: 0.3)),
+                              ),
+                              child: Row(
+                                children: [
+                                  Icon(Icons.check_circle_outline,
+                                      color: AppColors.success, size: 16.sp),
+                                  SizedBox(width: 6.w),
+                                  Text(
+                                    "Score: ${quizState.correctCount}",
+                                    style: AppStyles.font14WhiteSemiBold
+                                        .copyWith(color: AppColors.success),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Text(
+                              "Card ${quizState.currentIndex + 1} of ${quizState.cards.length}",
+                              style: AppStyles.font14WhiteSemiBold,
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 12.h),
+
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(4.r),
+                          child: LinearProgressIndicator(
+                            value: (quizState.currentIndex + 1) / quizState.cards.length,
+                            backgroundColor: AppColors.oceanBlue,
+                            valueColor: const AlwaysStoppedAnimation<Color>(
+                                AppColors.indigoAccent),
+                            minHeight: 6.h,
+                          ),
+                        ),
+                        SizedBox(height: 24.h),
+
+                        SizedBox(
+                          height: 240.h,
+                          child: FlashCard(
+                            flipKey: _getFlipKey(currentCard.id),
+                            cardModel: currentCard,
+                            isInQuiz: true,
+                            showHint: _isHintVisible,
+                          ),
+                        ),
+                        SizedBox(height: 20.h),
+
+                        if (quizState.showCorrectAnswer && quizState.lastCorrectAnswer != null) ...[
+                          Container(
+                            padding: EdgeInsets.all(12.w),
+                            decoration: BoxDecoration(
+                              color: AppColors.error.withValues(alpha: 0.15),
+                              borderRadius: BorderRadius.circular(12.r),
+                              border: Border.all(color: AppColors.error.withValues(alpha: 0.4)),
+                            ),
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(CupertinoIcons.xmark_circle,
+                                        color: AppColors.error, size: 18.sp),
+                                    SizedBox(width: 6.w),
+                                    Text(
+                                      "Not quite right!",
+                                      style: AppStyles.font14WhiteSemiBold
+                                          .copyWith(color: AppColors.error),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 4.h),
+                                Text(
+                                  "Correct answer: ${quizState.lastCorrectAnswer}",
+                                  style: AppStyles.font14WhiteSemiBold,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 16.h),
+                        ],
+
+                        TextField(
+                          controller: _answerController,
+                          enabled: !isAnswered,
+                          style: const TextStyle(color: Colors.white),
+                          decoration: InputDecoration(
+                            hintText: isAnswered ? "Answer submitted" : "Type your answer...",
+                            hintStyle: AppStyles.font14White70,
+                            filled: true,
+                            fillColor: AppColors.oceanBlue.withValues(alpha: 0.5),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12.r),
+                              borderSide: BorderSide.none,
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12.r),
+                              borderSide: const BorderSide(color: AppColors.indigoAccent),
+                            ),
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 16.w,
+                              vertical: 14.h,
+                            ),
+                          ),
+                          onSubmitted: (_) => _submitAnswer(),
+                        ),
+                        SizedBox(height: 16.h),
+
+                        Row(
+                          children: [
+                            Expanded(
+                              flex: 2,
+                              child: ElevatedButton(
+                                onPressed: isAnswered ? null : _submitAnswer,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColors.indigoAccent,
+                                  disabledBackgroundColor: AppColors.gray.withValues(alpha: 0.3),
+                                  padding: EdgeInsets.symmetric(vertical: 14.h),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12.r),
+                                  ),
+                                ),
+                                child: Text(
+                                  "Submit Answer",
+                                  style: AppStyles.font14WhiteSemiBold
+                                      .copyWith(fontSize: 15.sp),
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 10.w),
+                            Expanded(
+                              flex: 1,
+                              child: OutlinedButton(
+                                onPressed: isAnswered
+                                    ? null
+                                    : () {
+                                        context.read<QuizCubit>().emitSkipCard();
+                                        _answerController.clear();
+                                      },
+                                style: OutlinedButton.styleFrom(
+                                  side: BorderSide(
+                                      color: AppColors.lavenderGray.withValues(alpha: 0.3)),
+                                  padding: EdgeInsets.symmetric(vertical: 14.h),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12.r),
+                                  ),
+                                ),
+                                child: Text(
+                                  "Skip",
+                                  style: AppStyles.font14White70,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        SizedBox(height: 16.h),
+
+                        Center(
+                          child: TextButton.icon(
+                            onPressed: () {
+                              if (currentCard.hint != null &&
+                                  currentCard.hint!.trim().isNotEmpty) {
+                                setState(() {
+                                  _isHintVisible = !_isHintVisible;
+                                });
+                              } else {
+                                SnackBarHelper.showInfo(
+                                    context, "No hint available for this card!");
+                              }
+                            },
+                            icon: Icon(
+                              CupertinoIcons.lightbulb,
+                              color: _isHintVisible ? AppColors.softAmber : AppColors.gray,
+                              size: 20.sp,
+                            ),
+                            label: Text(
+                              _isHintVisible ? "Hide Hint" : "Need a Hint?",
+                              style: AppStyles.font14White70.copyWith(
+                                color: _isHintVisible ? AppColors.softAmber : AppColors.lavenderGray,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }

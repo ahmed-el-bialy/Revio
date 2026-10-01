@@ -122,4 +122,46 @@ class AppStyles {
     fontWeight: FontWeight.w600,
     color: AppColors.indigoAccent,
   );
+
+  static TextStyle font20BoldWhite = TextStyle(
+    fontSize: 20.sp,
+    fontWeight: FontWeight.bold,
+    fontFamily: "Manrope",
+    color: Colors.white,
+  );
+
+  static TextStyle font13GrayMedium = TextStyle(
+    fontSize: 13.sp,
+    fontWeight: FontWeight.w500,
+    fontFamily: "Manrope",
+    color: AppColors.warmGray,
+  );
+
+  static TextStyle font40BoldWhite = TextStyle(
+    fontSize: 40.sp,
+    fontWeight: FontWeight.w800,
+    fontFamily: "Manrope",
+    color: Colors.white,
+  );
+
+  static TextStyle font11GrayRegular = TextStyle(
+    fontSize: 11.sp,
+    fontWeight: FontWeight.w400,
+    fontFamily: "Manrope",
+    color: AppColors.warmGray,
+  );
+
+  static TextStyle font16WhiteSemiBold = TextStyle(
+    fontSize: 16.sp,
+    fontWeight: FontWeight.w600,
+    fontFamily: "Manrope",
+    color: Colors.white,
+  );
+
+  static TextStyle font22BoldIceBlue = TextStyle(
+    fontSize: 22.sp,
+    fontWeight: FontWeight.bold,
+    fontFamily: "Manrope",
+    color: AppColors.iceBlue,
+  );
 }
