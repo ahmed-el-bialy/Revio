@@ -1,47 +1,51 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  // Midnight Cyber Teal Dark Theme Palette
-  static const Color darkBackground = Color(0xFF080D1A);
-  static const Color surfaceDark = Color(0xFF0F172A);
-  static const Color cardSurface = Color(0xFF141E33);
-  static const Color oceanBlue = Color(0xFF1E293B);
+  // Midnight Slate Premium Theme Palette
+  static const Color darkBackground = Color(0xFF090D16);
+  static const Color surfaceDark = Color(0xFF111827);
+  static const Color cardSurface = Color(0xFF1E293B);
+  static const Color oceanBlue = Color(0xFF334155);
 
-  // Accent Colors
-  static const Color primaryTeal = Color(0xFF00E5FF);
+  // Brand & Accent Colors
+  static const Color primaryTeal = Color(0xFF00D2C2);
   static const Color cyberCyan = Color(0xFF06B6D4);
-  static const Color skyBlue = Color(0xFF0EA5E9);
+  static const Color skyBlue = Color(0xFF38BDF8);
   static const Color emeraldGold = Color(0xFF10B981);
   static const Color softAmber = Color(0xFFFBBF24);
-  static const Color warmGray = Color(0xFF6B7280);
+  static const Color warmGray = Color(0xFF64748B);
   static const Color lavenderGray = Color(0xFF94A3B8);
   static const Color gray = Color(0xFF64748B);
   static const Color white = Colors.white;
 
+  // Favorite Heart Color (Warm Eye-Friendly Crimson Rose)
+  static const Color favoriteColor = Color(0xFFF43F5E);
+  static const Color favoriteGlow = Color(0xFFFB7185);
+
   // Backward compatibility alias colors
-  static const Color indigoAccent = Color(0xFF00E5FF);
-  static const Color iceBlue = Color(0xFFE0F2FE);
+  static const Color indigoAccent = Color(0xFF00D2C2);
+  static const Color iceBlue = Color(0xFFF1F5F9);
 
   // Status & Feedback
   static const Color success = Color(0xFF10B981);
   static const Color successGreen = Color(0xFF10B981);
-  static const Color error = Color(0xFFF87171);
-  static const Color errorRed = Color(0xFFF87171);
+  static const Color error = Color(0xFFF43F5E);
+  static const Color errorRed = Color(0xFFF43F5E);
 
-  // Category & Genre Specific Colors
+  // Category & Genre Specific Accent Colors
   static const Map<String, Color> categoryColors = {
     'Science': Color(0xFF10B981),
-    'Math': Color(0xFF38BDF8),
-    'Language': Color(0xFFFBBF24),
-    'History': Color(0xFFF87171),
-    'Geography': Color(0xFFA855F7),
-    'Technology': Color(0xFF00E5FF),
+    'Math': Color(0xFF3B82F6),
+    'Language': Color(0xFFF59E0B),
+    'History': Color(0xFFEC4899),
+    'Geography': Color(0xFF8B5CF6),
+    'Technology': Color(0xFF06B6D4),
     'General': Color(0xFF94A3B8),
   };
 
   // Modern Gradients
   static const LinearGradient primaryGradient = LinearGradient(
-    colors: [Color(0xFF00E5FF), Color(0xFF0284C7)],
+    colors: [Color(0xFF00D2C2), Color(0xFF2563EB)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
@@ -54,9 +58,15 @@ class AppColors {
 
   static LinearGradient cardGradient = LinearGradient(
     colors: [
-      const Color(0xFF00E5FF).withValues(alpha: 0.12),
-      const Color(0xFF00E5FF).withValues(alpha: 0.03),
+      const Color(0xFF00D2C2).withValues(alpha: 0.12),
+      const Color(0xFF00D2C2).withValues(alpha: 0.02),
     ],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  static const LinearGradient heroGradient = LinearGradient(
+    colors: [Color(0xFF1E293B), Color(0xFF0F172A)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
@@ -80,4 +90,6 @@ class AppColors {
       indigoAccent.withValues(alpha: alpha);
   static Color lavenderGrayTransparent(double alpha) =>
       lavenderGray.withValues(alpha: alpha);
+  static Color favoriteTransparent(double alpha) =>
+      favoriteColor.withValues(alpha: alpha);
 }

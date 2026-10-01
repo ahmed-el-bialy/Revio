@@ -10,10 +10,12 @@ class CardsNumberContainer extends StatelessWidget {
     super.key,
     required this.totalCards,
     this.favoriteCards = 0,
+    this.categoriesCount = 0,
   });
 
   final int totalCards;
   final int favoriteCards;
+  final int categoriesCount;
 
   @override
   Widget build(BuildContext context) {
@@ -22,56 +24,80 @@ class CardsNumberContainer extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 20.w),
         child: Container(
           width: double.infinity,
-          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
+          padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 18.h),
           decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [Color(0xFF0A2540), Color(0xFF0F3460)],
+            gradient: LinearGradient(
+              colors: [
+                AppColors.cardSurface,
+                AppColors.surfaceDark,
+              ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
             borderRadius: BorderRadius.circular(24.r),
             border: Border.all(
-              color: AppColors.primaryTeal.withValues(alpha: 0.2),
+              color: AppColors.primaryTeal.withValues(alpha: 0.18),
+              width: 1.2,
             ),
             boxShadow: [
               BoxShadow(
-                color: AppColors.primaryTeal.withValues(alpha: 0.08),
-                blurRadius: 20,
-                spreadRadius: 2,
-                offset: const Offset(0, 6),
+                color: AppColors.primaryTeal.withValues(alpha: 0.06),
+                blurRadius: 24,
+                spreadRadius: 1,
+                offset: const Offset(0, 8),
               ),
             ],
           ),
-          child: Row(
+          child: Column(
             children: [
-              Expanded(
-                child: _StatItem(
-                  icon: Icons.style_rounded,
-                  iconColor: AppColors.primaryTeal,
-                  label: "Total Cards",
-                  value: "$totalCards",
-                ),
-              ),
-              Container(
-                width: 1,
-                height: 48.h,
-                color: AppColors.white.withValues(alpha: 0.1),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.only(left: 16.w),
-                  child: _StatItem(
-                    icon: CupertinoIcons.heart_fill,
-                    iconColor: AppColors.softAmber,
-                    label: "Starred",
-                    value: "$favoriteCards",
+              Row(
+                children: [
+                  Expanded(
+                    child: _StatItem(
+                      icon: Icons.style_rounded,
+                      iconColor: AppColors.primaryTeal,
+                      label: "Total Cards",
+                      value: "$totalCards",
+                    ),
                   ),
-                ),
+                  _buildDivider(),
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 12.w),
+                      child: _StatItem(
+                        icon: CupertinoIcons.heart_fill,
+                        iconColor: AppColors.favoriteColor,
+                        label: "Favorites",
+                        value: "$favoriteCards",
+                      ),
+                    ),
+                  ),
+                  _buildDivider(),
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 12.w),
+                      child: _StatItem(
+                        icon: CupertinoIcons.grid,
+                        iconColor: AppColors.softAmber,
+                        label: "Topics",
+                        value: "$categoriesCount",
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildDivider() {
+    return Container(
+      width: 1,
+      height: 42.h,
+      color: AppColors.white.withValues(alpha: 0.08),
     );
   }
 }
@@ -97,29 +123,33 @@ class _StatItem extends StatelessWidget {
         Row(
           children: [
             Container(
-              padding: EdgeInsets.all(6.w),
+              padding: EdgeInsets.all(5.w),
               decoration: BoxDecoration(
                 color: iconColor.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(8.r),
               ),
-              child: Icon(icon, color: iconColor, size: 18.sp),
+              child: Icon(icon, color: iconColor, size: 15.sp),
             ),
-            horizontalSpacing(8),
-            Text(
-              label,
-              style: AppStyles.font12LavenderGray.copyWith(
-                color: AppColors.white.withValues(alpha: 0.55),
-                fontSize: 11.sp,
+            horizontalSpacing(6),
+            Flexible(
+              child: Text(
+                label,
+                overflow: TextOverflow.ellipsis,
+                style: AppStyles.font12LavenderGray.copyWith(
+                  color: AppColors.white.withValues(alpha: 0.6),
+                  fontSize: 11.sp,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
           ],
         ),
-        verticalSpacing(8),
+        verticalSpacing(6),
         Text(
           value,
           style: AppStyles.font28BoldIceBlue.copyWith(
             color: AppColors.white,
-            fontSize: 28.sp,
+            fontSize: 24.sp,
             fontWeight: FontWeight.w800,
           ),
         ),
