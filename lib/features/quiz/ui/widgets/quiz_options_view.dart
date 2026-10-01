@@ -25,10 +25,11 @@ class QuizOptionsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
       children: List.generate(options.length, (index) {
         final option = options[index];
         return Padding(
-          padding: EdgeInsets.only(bottom: 10.h),
+          padding: EdgeInsets.only(bottom: 8.h),
           child: _OptionTile(
             option: option,
             label: _optionLabel(index),
@@ -90,14 +91,14 @@ class _OptionTile extends StatelessWidget {
     return GestureDetector(
       onTap: isAnswered ? null : onTap,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+        duration: const Duration(milliseconds: 250),
+        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
         decoration: BoxDecoration(
           color: fillColor,
           borderRadius: BorderRadius.circular(14.r),
           border: Border.all(
             color: isAnswered && (isCorrect || isSelected)
-                ? accentColor.withValues(alpha: 0.5)
+                ? accentColor.withValues(alpha: 0.6)
                 : AppColors.gray.withValues(alpha: 0.15),
             width: showResult ? 1.5 : 1,
           ),
@@ -105,8 +106,8 @@ class _OptionTile extends StatelessWidget {
         child: Row(
           children: [
             Container(
-              width: 32.w,
-              height: 32.w,
+              width: 30.w,
+              height: 30.w,
               alignment: Alignment.center,
               decoration: BoxDecoration(
                 color: accentColor.withValues(alpha: 0.15),
@@ -134,9 +135,8 @@ class _OptionTile extends StatelessWidget {
                   color: isAnswered && !isCorrect && !isSelected
                       ? AppColors.gray
                       : AppColors.white,
-                  fontWeight: isCorrect
-                      ? FontWeight.bold
-                      : FontWeight.w500,
+                  fontWeight: isCorrect ? FontWeight.bold : FontWeight.w500,
+                  fontSize: 13.5.sp,
                 ),
               ),
             ),

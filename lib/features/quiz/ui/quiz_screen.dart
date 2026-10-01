@@ -181,14 +181,14 @@ class _QuizScreenState extends State<QuizScreen> {
             top: false,
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
-              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
+              padding: EdgeInsets.only(left: 20.w, right: 20.w, top: 12.h, bottom: 60.h),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   _buildProgressRow(state),
-                  verticalSpacing(16),
+                  verticalSpacing(14),
                   SizedBox(
-                    height: 220.h,
+                    height: 180.h,
                     child: FlashCard(
                       flipKey: _getFlipKey(currentCard.id),
                       cardModel: currentCard,

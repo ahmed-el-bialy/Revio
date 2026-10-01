@@ -1,10 +1,10 @@
 import 'package:code_alpha_flash_card_app/core/helpers/spacing.dart';
 import 'package:code_alpha_flash_card_app/core/theming/app_colors.dart';
 import 'package:code_alpha_flash_card_app/core/theming/app_styles.dart';
-import 'package:code_alpha_flash_card_app/features/home/ui/widgets/cards_number_container.dart';
-import 'package:code_alpha_flash_card_app/features/home/ui/widgets/home_option_tile.dart';
+import 'package:code_alpha_flash_card_app/core/widgets/genre_chip_picker.dart';
 import 'package:code_alpha_flash_card_app/features/cards/logic/get_all_cards_cubit.dart';
 import 'package:code_alpha_flash_card_app/features/cards/logic/get_all_cards_state.dart';
+import 'package:code_alpha_flash_card_app/features/home/ui/widgets/cards_number_container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,7 +13,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/helpers/routing_extension.dart';
 import '../../cards/data/models/card_model.dart';
-import '../models/navigation_model.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -24,33 +23,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String _selectedCategoryFilter = "All";
-
-  late final List<NavigationModel> models = [
-    NavigationModel(
-      imagePath: "assets/images/book.png",
-      title: "My Library",
-      subtitle: "Browse, search & organize all flashcards",
-      onTap: () => context.pushNamed(AppConstants.reviewCardsScreen, null),
-    ),
-    NavigationModel(
-      imagePath: "assets/images/add.png",
-      title: "New Flashcard",
-      subtitle: "Create a new question & hint card",
-      onTap: () => context.pushNamed(AppConstants.newCardScreen, null),
-    ),
-    NavigationModel(
-      imagePath: "assets/images/quiz.png",
-      title: "Start Quiz",
-      subtitle: "MCQ or Smart Typing with fuzzy matching",
-      onTap: () => context.pushNamed(AppConstants.quizScreen, null),
-    ),
-  ];
-
-  static const List<Color> _optionAccents = [
-    AppColors.primaryTeal,
-    AppColors.emeraldGold,
-    AppColors.softAmber,
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -77,11 +49,13 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             BlocBuilder<GetAllCardsCubit, GetAllCardsState>(
               builder: (context, state) {
-                final cards =
-                    state is CardsLoadedSuccess ? state.cards : <CardModel>[];
-                final favCount =
-                    cards.where((c) => c.isFavorite == true).length;
-                final categories = cards
+                final cards = state is CardsLoadedSuccess
+                    ? state.cards
+                    : <CardModel>[];
+                final favCount = cards
+                    .where((c) => c.isFavorite == true)
+                    .length;
+                final categoriesCount = cards
                     .map((c) => c.category ?? 'General')
                     .toSet()
                     .length;
@@ -89,7 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 return CardsNumberContainer(
                   totalCards: cards.length,
                   favoriteCards: favCount,
-                  categoriesCount: categories,
+                  categoriesCount: categoriesCount,
                 );
               },
             ),
@@ -108,10 +82,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     Text(
-                      "Tap to filter",
+                      "Core & Custom",
                       style: AppStyles.font12LavenderGray.copyWith(
-                        color: AppColors.lavenderGray.withValues(alpha: 0.6),
+                        color: AppColors.primaryTeal,
                         fontSize: 12.sp,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ],
@@ -125,11 +100,25 @@ class _HomeScreenState extends State<HomeScreen> {
                   final cards = state is CardsLoadedSuccess
                       ? state.cards
                       : <CardModel>[];
-                  return _buildCategoryChipsRow(cards);
+                  final customCats = cards
+                      .map((c) => c.category ?? 'General')
+                      .where((cat) => cat != 'All')
+                      .toSet()
+                      .toList();
+
+                  return GenreChipPicker(
+                    selectedCategory: _selectedCategoryFilter,
+                    includeAllOption: true,
+                    customCategories: customCats,
+                    onCategorySelected: (cat) {
+                      setState(() => _selectedCategoryFilter = cat);
+                      context.pushNamed(AppConstants.reviewCardsScreen, null);
+                    },
+                  );
                 },
               ),
             ),
-            sliverVerticalSpacing(24),
+            sliverVerticalSpacing(28),
             SliverToBoxAdapter(
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20.w),
@@ -142,20 +131,56 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-            sliverVerticalSpacing(12),
+            sliverVerticalSpacing(14),
             SliverPadding(
               padding: EdgeInsets.symmetric(horizontal: 20.w),
-              sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  childCount: models.length,
-                  (context, index) => HomeOptionTile(
-                    model: models[index],
-                    accentColor: _optionAccents[index % _optionAccents.length],
-                  ),
+              sliver: SliverToBoxAdapter(
+                child: Column(
+                  children: [
+                    _buildHeroQuizCard(),
+                    verticalSpacing(14),
+                    Row(
+                      children: [
+                        Expanded(
+                          child:
+                              BlocBuilder<GetAllCardsCubit, GetAllCardsState>(
+                                builder: (context, state) {
+                                  final cards = state is CardsLoadedSuccess
+                                      ? state.cards
+                                      : <CardModel>[];
+                                  return _buildQuickGridCard(
+                                    icon: CupertinoIcons.book_fill,
+                                    title: "My Library",
+                                    subtitle: "${cards.length} Flashcards",
+                                    accentColor: AppColors.primaryTeal,
+                                    onTap: () => context.pushNamed(
+                                      AppConstants.reviewCardsScreen,
+                                      null,
+                                    ),
+                                  );
+                                },
+                              ),
+                        ),
+                        horizontalSpacing(14),
+                        Expanded(
+                          child: _buildQuickGridCard(
+                            icon: CupertinoIcons.add_circled_solid,
+                            title: "New Card",
+                            subtitle: "Create Question",
+                            accentColor: AppColors.emeraldGold,
+                            onTap: () => context.pushNamed(
+                              AppConstants.newCardScreen,
+                              null,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
             ),
-            sliverVerticalSpacing(24),
+            sliverVerticalSpacing(30),
           ],
         ),
       ),
@@ -231,94 +256,198 @@ class _HomeScreenState extends State<HomeScreen> {
         verticalSpacing(6),
         Text(
           "Master your decks & test your memory effortlessly.",
-          style: AppStyles.font14White70.copyWith(
-            fontSize: 13.5.sp,
-          ),
+          style: AppStyles.font14White70.copyWith(fontSize: 13.5.sp),
         ),
       ],
     );
   }
 
-  Widget _buildCategoryChipsRow(List<CardModel> cards) {
-    final categories = ["All", ...AppConstants.categories];
-
-    return SizedBox(
-      height: 38.h,
-      child: ListView.separated(
-        padding: EdgeInsets.symmetric(horizontal: 20.w),
-        scrollDirection: Axis.horizontal,
-        physics: const BouncingScrollPhysics(),
-        itemCount: categories.length,
-        separatorBuilder: (context, index) => horizontalSpacing(8),
-        itemBuilder: (context, index) {
-          final cat = categories[index];
-          final isSelected = _selectedCategoryFilter == cat;
-          final catColor = AppColors.categoryColors[cat] ?? AppColors.primaryTeal;
-          final count = cat == "All"
-              ? cards.length
-              : cards.where((c) => c.category == cat).length;
-
-          return GestureDetector(
-            onTap: () {
-              setState(() => _selectedCategoryFilter = cat);
-              context.pushNamed(AppConstants.reviewCardsScreen, null);
-            },
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
+  Widget _buildHeroQuizCard() {
+    return GestureDetector(
+      onTap: () => context.pushNamed(AppConstants.quizScreen, null),
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Color(0xFF1E1B4B), Color(0xFF0F172A)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(24.r),
+          border: Border.all(
+            color: AppColors.softAmber.withValues(alpha: 0.3),
+            width: 1.2,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.softAmber.withValues(alpha: 0.08),
+              blurRadius: 20,
+              offset: const Offset(0, 6),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: EdgeInsets.all(14.w),
               decoration: BoxDecoration(
-                color: isSelected
-                    ? catColor.withValues(alpha: 0.2)
-                    : AppColors.cardSurface,
-                borderRadius: BorderRadius.circular(14.r),
+                gradient: LinearGradient(
+                  colors: [
+                    AppColors.softAmber.withValues(alpha: 0.25),
+                    AppColors.softAmber.withValues(alpha: 0.08),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(18.r),
                 border: Border.all(
-                  color: isSelected
-                      ? catColor
-                      : AppColors.white.withValues(alpha: 0.08),
-                  width: isSelected ? 1.4 : 1,
+                  color: AppColors.softAmber.withValues(alpha: 0.4),
                 ),
               ),
-              child: Row(
+              child: Icon(
+                CupertinoIcons.bolt_fill,
+                color: AppColors.softAmber,
+                size: 28.sp,
+              ),
+            ),
+            horizontalSpacing(16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    width: 7.w,
-                    height: 7.h,
-                    decoration: BoxDecoration(
-                      color: catColor,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                  horizontalSpacing(7),
-                  Text(
-                    cat,
-                    style: AppStyles.font13GrayMedium.copyWith(
-                      color: isSelected ? AppColors.white : AppColors.lavenderGray,
-                      fontWeight:
-                          isSelected ? FontWeight.w700 : FontWeight.w500,
-                      fontSize: 12.5.sp,
-                    ),
-                  ),
-                  horizontalSpacing(6),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
-                    decoration: BoxDecoration(
-                      color: catColor.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(8.r),
-                    ),
-                    child: Text(
-                      "$count",
-                      style: AppStyles.font11GrayRegular.copyWith(
-                        color: catColor,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 10.sp,
+                  Row(
+                    children: [
+                      Text(
+                        "Start Quiz Challenge",
+                        style: AppStyles.font18WhiteBold.copyWith(
+                          fontSize: 16.5.sp,
+                          fontWeight: FontWeight.w800,
+                        ),
                       ),
+                      horizontalSpacing(6),
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 6.w,
+                          vertical: 2.h,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.softAmber.withValues(alpha: 0.2),
+                          borderRadius: BorderRadius.circular(6.r),
+                        ),
+                        child: Text(
+                          "SMART",
+                          style: AppStyles.font11GrayRegular.copyWith(
+                            color: AppColors.softAmber,
+                            fontWeight: FontWeight.w800,
+                            fontSize: 9.sp,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  verticalSpacing(4),
+                  Text(
+                    "MCQ & Smart Typing with fuzzy matching",
+                    style: AppStyles.font12LavenderGrayFaded.copyWith(
+                      fontSize: 12.sp,
                     ),
+                  ),
+                  verticalSpacing(10),
+                  Row(
+                    children: [
+                      Text(
+                        "Play Quiz Now",
+                        style: AppStyles.font13GrayMedium.copyWith(
+                          color: AppColors.softAmber,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 12.5.sp,
+                        ),
+                      ),
+                      horizontalSpacing(4),
+                      Icon(
+                        CupertinoIcons.arrow_right,
+                        color: AppColors.softAmber,
+                        size: 13.sp,
+                      ),
+                    ],
                   ),
                 ],
               ),
             ),
-          );
-        },
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildQuickGridCard({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required Color accentColor,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 18.h),
+        decoration: BoxDecoration(
+          color: AppColors.cardSurface,
+          borderRadius: BorderRadius.circular(22.r),
+          border: Border.all(
+            color: accentColor.withValues(alpha: 0.18),
+            width: 1.2,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: accentColor.withValues(alpha: 0.04),
+              blurRadius: 16,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  padding: EdgeInsets.all(10.w),
+                  decoration: BoxDecoration(
+                    color: accentColor.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(14.r),
+                    border: Border.all(
+                      color: accentColor.withValues(alpha: 0.25),
+                    ),
+                  ),
+                  child: Icon(icon, color: accentColor, size: 22.sp),
+                ),
+                Icon(
+                  CupertinoIcons.chevron_forward,
+                  color: accentColor.withValues(alpha: 0.6),
+                  size: 14.sp,
+                ),
+              ],
+            ),
+            verticalSpacing(14),
+            Text(
+              title,
+              style: AppStyles.font16WhiteSemiBold.copyWith(
+                fontSize: 15.sp,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            verticalSpacing(3),
+            Text(
+              subtitle,
+              style: AppStyles.font12LavenderGrayFaded.copyWith(
+                fontSize: 11.5.sp,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
