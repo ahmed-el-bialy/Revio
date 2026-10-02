@@ -6,6 +6,8 @@ import 'package:code_alpha_flash_card_app/features/cards/logic/get_all_cards_cub
 import 'package:code_alpha_flash_card_app/features/cards/logic/get_all_cards_state.dart';
 import 'package:code_alpha_flash_card_app/features/cards/ui/widgets/flash_card.dart';
 import 'package:code_alpha_flash_card_app/core/widgets/genre_chip_picker.dart';
+import 'package:code_alpha_flash_card_app/features/review/ui/widgets/card_search_bar.dart';
+import 'package:code_alpha_flash_card_app/features/review/ui/widgets/library_empty_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -45,11 +47,19 @@ class _ReviewCardsScreenState extends State<ReviewCardsScreen> {
   List<CardModel> _filterCards(List<CardModel> cards) {
     return cards.where((card) {
       final matchesSearch = _searchController.text.trim().isEmpty ||
-          card.front.toLowerCase().contains(_searchController.text.trim().toLowerCase()) ||
-          card.back.toLowerCase().contains(_searchController.text.trim().toLowerCase()) ||
-          (card.hint?.toLowerCase().contains(_searchController.text.trim().toLowerCase()) ?? false);
+          card.front
+              .toLowerCase()
+              .contains(_searchController.text.trim().toLowerCase()) ||
+          card.back
+              .toLowerCase()
+              .contains(_searchController.text.trim().toLowerCase()) ||
+          (card.hint
+                  ?.toLowerCase()
+                  .contains(_searchController.text.trim().toLowerCase()) ??
+              false);
 
-      final matchesCategory = _selectedCategory == 'All' || card.category == _selectedCategory;
+      final matchesCategory =
+          _selectedCategory == 'All' || card.category == _selectedCategory;
 
       final matchesFavorites = !_onlyFavorites || (card.isFavorite ?? false);
 
@@ -111,60 +121,16 @@ class _ReviewCardsScreenState extends State<ReviewCardsScreen> {
 
                 return Column(
                   children: [
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                              controller: _searchController,
-                              style: const TextStyle(color: Colors.white),
-                              onChanged: (_) => setState(() {}),
-                              decoration: InputDecoration(
-                                hintText: "Search cards...",
-                                hintStyle: AppStyles.font14White70,
-                                prefixIcon: Icon(CupertinoIcons.search,
-                                    color: AppColors.lavenderGray, size: 20.sp),
-                                suffixIcon: _searchController.text.isNotEmpty
-                                    ? IconButton(
-                                        icon: Icon(CupertinoIcons.clear_circled,
-                                            color: AppColors.lavenderGray, size: 18.sp),
-                                        onPressed: () {
-                                          _searchController.clear();
-                                          setState(() {});
-                                        },
-                                      )
-                                    : null,
-                                filled: true,
-                                fillColor: AppColors.oceanBlue.withValues(alpha: 0.5),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(14.r),
-                                  borderSide: BorderSide.none,
-                                ),
-                                contentPadding: EdgeInsets.symmetric(
-                                  horizontal: 14.w,
-                                  vertical: 10.h,
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: 8.w),
-                          IconButton(
-                            icon: Icon(
-                              _onlyFavorites ? CupertinoIcons.heart_fill : CupertinoIcons.heart,
-                              color: _onlyFavorites ? AppColors.softAmber : AppColors.gray,
-                            ),
-                            tooltip: "Favorites Only",
-                            onPressed: () {
-                              setState(() {
-                                _onlyFavorites = !_onlyFavorites;
-                              });
-                            },
-                          ),
-                        ],
-                      ),
+                    CardSearchBar(
+                      searchController: _searchController,
+                      onlyFavorites: _onlyFavorites,
+                      onToggleFavorites: () {
+                        setState(() {
+                          _onlyFavorites = !_onlyFavorites;
+                        });
+                      },
+                      onChanged: (_) => setState(() {}),
                     ),
-
                     GenreChipPicker(
                       selectedCategory: _selectedCategory,
                       includeAllOption: true,
@@ -179,9 +145,9 @@ class _ReviewCardsScreenState extends State<ReviewCardsScreen> {
                         });
                       },
                     ),
-
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 20.w, vertical: 8.h),
                       child: Row(
                         children: [
                           Text(
@@ -196,26 +162,13 @@ class _ReviewCardsScreenState extends State<ReviewCardsScreen> {
                         ],
                       ),
                     ),
-
                     Expanded(
                       child: filteredCards.isEmpty
-                          ? Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(CupertinoIcons.search,
-                                      size: 48.sp, color: AppColors.gray),
-                                  SizedBox(height: 12.h),
-                                  Text(
-                                    "No cards match your filters",
-                                    style: AppStyles.font16LavenderGray,
-                                  ),
-                                ],
-                              ),
-                            )
+                          ? const LibraryEmptyState()
                           : ListView.builder(
                               physics: const BouncingScrollPhysics(),
-                              padding: EdgeInsets.only(top: 4.h, bottom: 20.h),
+                              padding: EdgeInsets.only(
+                                  top: 4.h, bottom: 20.h),
                               itemCount: filteredCards.length,
                               itemBuilder: (context, index) {
                                 final cardModel = filteredCards[index];
@@ -227,23 +180,29 @@ class _ReviewCardsScreenState extends State<ReviewCardsScreen> {
                                     margin: EdgeInsets.symmetric(
                                         horizontal: 16.w, vertical: 10.h),
                                     decoration: BoxDecoration(
-                                      color: AppColors.errorRed.withValues(alpha: 0.2),
-                                      borderRadius: BorderRadius.circular(24.r),
-                                      border: Border.all(color: AppColors.errorRed),
+                                      color: AppColors.errorRed
+                                          .withValues(alpha: 0.2),
+                                      borderRadius:
+                                          BorderRadius.circular(24.r),
+                                      border: Border.all(
+                                          color: AppColors.errorRed),
                                     ),
                                     alignment: Alignment.centerRight,
                                     padding: EdgeInsets.only(right: 24.w),
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.end,
                                       children: [
                                         Text(
                                           "Delete",
                                           style: AppStyles.font14WhiteSemiBold
-                                              .copyWith(color: AppColors.errorRed),
+                                              .copyWith(
+                                                  color: AppColors.errorRed),
                                         ),
                                         SizedBox(width: 8.w),
                                         Icon(CupertinoIcons.trash,
-                                            color: AppColors.errorRed, size: 22.sp),
+                                            color: AppColors.errorRed,
+                                            size: 22.sp),
                                       ],
                                     ),
                                   ),
@@ -257,7 +216,10 @@ class _ReviewCardsScreenState extends State<ReviewCardsScreen> {
                                       horizontal: 16.w,
                                       vertical: 10.h,
                                     ),
-                                    child: FlashCard(cardModel: cardModel, isInQuiz: false),
+                                    child: FlashCard(
+                                      cardModel: cardModel,
+                                      isInQuiz: false,
+                                    ),
                                   ),
                                 );
                               },
