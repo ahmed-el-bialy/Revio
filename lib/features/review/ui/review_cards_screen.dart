@@ -1,4 +1,3 @@
-import 'package:code_alpha_flash_card_app/core/constants/app_constants.dart';
 import 'package:code_alpha_flash_card_app/core/helpers/snackbar_helper.dart';
 import 'package:code_alpha_flash_card_app/core/theming/app_colors.dart';
 import 'package:code_alpha_flash_card_app/core/theming/app_styles.dart';
@@ -6,6 +5,7 @@ import 'package:code_alpha_flash_card_app/features/cards/data/models/card_model.
 import 'package:code_alpha_flash_card_app/features/cards/logic/get_all_cards_cubit.dart';
 import 'package:code_alpha_flash_card_app/features/cards/logic/get_all_cards_state.dart';
 import 'package:code_alpha_flash_card_app/features/cards/ui/widgets/flash_card.dart';
+import 'package:code_alpha_flash_card_app/core/widgets/genre_chip_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,7 +17,9 @@ import '../logic/edit_card/edit_card_cubit.dart';
 import '../logic/edit_card/edit_card_state.dart';
 
 class ReviewCardsScreen extends StatefulWidget {
-  const ReviewCardsScreen({super.key});
+  final String? initialCategory;
+
+  const ReviewCardsScreen({super.key, this.initialCategory});
 
   @override
   State<ReviewCardsScreen> createState() => _ReviewCardsScreenState();
@@ -25,8 +27,14 @@ class ReviewCardsScreen extends StatefulWidget {
 
 class _ReviewCardsScreenState extends State<ReviewCardsScreen> {
   final TextEditingController _searchController = TextEditingController();
-  String _selectedCategory = 'All';
+  late String _selectedCategory;
   bool _onlyFavorites = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedCategory = widget.initialCategory ?? 'All';
+  }
 
   @override
   void dispose() {
@@ -51,8 +59,6 @@ class _ReviewCardsScreenState extends State<ReviewCardsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final allCategories = ['All', ...AppConstants.categories];
-
     return Scaffold(
       backgroundColor: AppColors.darkBackground,
       appBar: AppBar(
@@ -159,44 +165,19 @@ class _ReviewCardsScreenState extends State<ReviewCardsScreen> {
                       ),
                     ),
 
-                    SizedBox(
-                      height: 36.h,
-                      child: ListView.separated(
-                        padding: EdgeInsets.symmetric(horizontal: 16.w),
-                        scrollDirection: Axis.horizontal,
-                        physics: const BouncingScrollPhysics(),
-                        itemCount: allCategories.length,
-                        separatorBuilder: (context, index) => SizedBox(width: 6.w),
-                        itemBuilder: (context, index) {
-                          final cat = allCategories[index];
-                          final isSelected = cat == _selectedCategory;
-                          final catColor = cat == 'All'
-                              ? AppColors.indigoAccent
-                              : (AppColors.categoryColors[cat] ?? AppColors.indigoAccent);
-
-                          return ChoiceChip(
-                            label: Text(cat),
-                            selected: isSelected,
-                            selectedColor: catColor.withValues(alpha: 0.25),
-                            backgroundColor: AppColors.oceanBlue.withValues(alpha: 0.4),
-                            side: BorderSide(
-                              color: isSelected ? catColor : AppColors.gray.withValues(alpha: 0.2),
-                            ),
-                            labelStyle: AppStyles.font14White70.copyWith(
-                              color: isSelected ? catColor : AppColors.lavenderGray,
-                              fontSize: 12.sp,
-                              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                            ),
-                            onSelected: (selected) {
-                              if (selected) {
-                                setState(() {
-                                  _selectedCategory = cat;
-                                });
-                              }
-                            },
-                          );
-                        },
-                      ),
+                    GenreChipPicker(
+                      selectedCategory: _selectedCategory,
+                      includeAllOption: true,
+                      customCategories: state.cards
+                          .map((c) => c.category ?? 'General')
+                          .where((cat) => cat != 'All')
+                          .toSet()
+                          .toList(),
+                      onCategorySelected: (cat) {
+                        setState(() {
+                          _selectedCategory = cat;
+                        });
+                      },
                     ),
 
                     Padding(

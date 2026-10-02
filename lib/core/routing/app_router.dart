@@ -28,13 +28,14 @@ class AppRouter {
         );
 
       case AppConstants.reviewCardsScreen:
+        final initialCategory = setting.arguments as String?;
         return _fadeRoute(
           MultiBlocProvider(
             providers: [
               BlocProvider(create: (context) => DeleteCardCubit(CardsRepo())),
               BlocProvider(create: (context) => EditCardCubit(CardsRepo())),
             ],
-            child: const ReviewCardsScreen(),
+            child: ReviewCardsScreen(initialCategory: initialCategory),
           ),
         );
 

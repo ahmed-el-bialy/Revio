@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../helpers/category_manager.dart';
+import '../helpers/snackbar_helper.dart';
 import '../helpers/spacing.dart';
 import '../theming/app_colors.dart';
 import '../theming/app_styles.dart';
@@ -24,14 +26,7 @@ class GenreChipPicker extends StatefulWidget {
 }
 
 class _GenreChipPickerState extends State<GenreChipPicker> {
-  static const List<String> _defaultCoreCategories = [
-    'General',
-    'Science',
-    'Math',
-    'Language',
-  ];
-
-  late List<String> _userCategories;
+  late List<String> _categoriesList;
 
   @override
   void initState() {
@@ -46,7 +41,10 @@ class _GenreChipPickerState extends State<GenreChipPicker> {
   }
 
   void _initCategories() {
-    final set = <String>{..._defaultCoreCategories};
+    final set = <String>{
+      ...CategoryManager.coreCategories,
+      ...CategoryManager.getCustomCategories(),
+    };
     if (widget.customCategories != null) {
       set.addAll(widget.customCategories!);
     }
@@ -55,120 +53,156 @@ class _GenreChipPickerState extends State<GenreChipPicker> {
         !set.contains(widget.selectedCategory)) {
       set.add(widget.selectedCategory);
     }
-    _userCategories = set.toList();
+    _categoriesList = set.toList();
   }
 
   void _showAddCustomCategoryDialog() {
     final textController = TextEditingController();
+    String? errorMessage;
+
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: AppColors.surfaceDark,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.r),
-          side: BorderSide(
-            color: AppColors.primaryTeal.withValues(alpha: 0.3),
-          ),
-        ),
-        title: Row(
-          children: [
-            Icon(CupertinoIcons.tag_fill,
-                color: AppColors.primaryTeal, size: 20.sp),
-            horizontalSpacing(8),
-            Text(
-              "Add Custom Topic",
-              style: AppStyles.font18BoldIndigoAccent.copyWith(
-                fontSize: 18.sp,
+      builder: (ctx) => StatefulBuilder(
+        builder: (context, setDialogState) {
+          return AlertDialog(
+            backgroundColor: AppColors.surfaceDark,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.r),
+              side: BorderSide(
+                color: AppColors.primaryTeal.withValues(alpha: 0.3),
               ),
             ),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Create a specific category for your flashcards (e.g., Biology, Medicine, Code, History).",
-              style: AppStyles.font14White70.copyWith(fontSize: 13.sp),
-            ),
-            verticalSpacing(14),
-            TextField(
-              controller: textController,
-              autofocus: true,
-              style: AppStyles.font16WhiteSemiBold,
-              decoration: InputDecoration(
-                hintText: "Category name...",
-                hintStyle: AppStyles.font14White70,
-                filled: true,
-                fillColor: AppColors.cardSurface,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12.r),
-                  borderSide: BorderSide.none,
+            title: Row(
+              children: [
+                Icon(CupertinoIcons.tag_fill,
+                    color: AppColors.primaryTeal, size: 20.sp),
+                horizontalSpacing(8),
+                Text(
+                  "Add Custom Topic",
+                  style: AppStyles.font18BoldIndigoAccent.copyWith(
+                    fontSize: 18.sp,
+                  ),
                 ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12.r),
-                  borderSide: const BorderSide(
-                      color: AppColors.primaryTeal, width: 1.5),
+              ],
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Create a specific category for your flashcards (e.g., Biology, Medicine, Code).",
+                  style: AppStyles.font14White70.copyWith(fontSize: 13.sp),
                 ),
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
-              ),
+                verticalSpacing(14),
+                TextField(
+                  controller: textController,
+                  autofocus: true,
+                  style: AppStyles.font16WhiteSemiBold,
+                  onChanged: (_) {
+                    if (errorMessage != null) {
+                      setDialogState(() => errorMessage = null);
+                    }
+                  },
+                  decoration: InputDecoration(
+                    hintText: "Category name...",
+                    hintStyle: AppStyles.font14White70,
+                    filled: true,
+                    fillColor: AppColors.cardSurface,
+                    errorText: errorMessage,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                      borderSide: BorderSide.none,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                      borderSide: const BorderSide(
+                          color: AppColors.primaryTeal, width: 1.5),
+                    ),
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text("Cancel", style: AppStyles.font14Gray),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primaryTeal,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.r),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: Text("Cancel", style: AppStyles.font14Gray),
               ),
-            ),
-            onPressed: () {
-              final newCat = textController.text.trim();
-              if (newCat.isNotEmpty) {
-                setState(() {
-                  if (!_userCategories.contains(newCat)) {
-                    _userCategories.add(newCat);
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primaryTeal,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.r),
+                  ),
+                ),
+                onPressed: () async {
+                  final newCat = textController.text.trim();
+                  if (newCat.isEmpty) {
+                    setDialogState(
+                        () => errorMessage = "Please enter a topic name");
+                    return;
                   }
-                });
-                widget.onCategorySelected(newCat);
-                Navigator.pop(ctx);
-              }
-            },
-            child: Text(
-              "Add",
-              style: AppStyles.font16WhiteSemiBold.copyWith(
-                color: AppColors.darkBackground,
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w700,
+
+                  if (CategoryManager.categoryExists(newCat, _categoriesList)) {
+                    // Category already exists -> Select existing category & close
+                    final existingCat = _categoriesList.firstWhere(
+                      (c) => c.trim().toLowerCase() == newCat.toLowerCase(),
+                    );
+                    widget.onCategorySelected(existingCat);
+                    Navigator.pop(ctx);
+                    SnackBarHelper.showInfo(
+                        context, "Topic '$existingCat' already exists!");
+                    return;
+                  }
+
+                  // Add permanently to Hive
+                  await CategoryManager.addCustomCategory(newCat);
+
+                  if (!ctx.mounted) return;
+
+                  setState(() {
+                    if (!_categoriesList.contains(newCat)) {
+                      _categoriesList.add(newCat);
+                    }
+                  });
+
+                  widget.onCategorySelected(newCat);
+                  Navigator.pop(ctx);
+                  SnackBarHelper.showSuccess(
+                      ctx, "Added new topic '$newCat'");
+                },
+                child: Text(
+                  "Add",
+                  style: AppStyles.font16WhiteSemiBold.copyWith(
+                    color: AppColors.darkBackground,
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
               ),
-            ),
-          ),
-        ],
+            ],
+          );
+        },
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final categoriesList = widget.includeAllOption
-        ? ['All', ..._userCategories]
-        : _userCategories;
+    final displayCategories = widget.includeAllOption
+        ? ['All', ..._categoriesList]
+        : _categoriesList;
 
     return SizedBox(
       height: 40.h,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
-        itemCount: categoriesList.length + 1,
+        itemCount: displayCategories.length + 1,
         separatorBuilder: (context, index) => horizontalSpacing(8),
         itemBuilder: (context, index) {
-          if (index == categoriesList.length) {
+          if (index == displayCategories.length) {
             return GestureDetector(
               onTap: _showAddCustomCategoryDialog,
               child: AnimatedContainer(
@@ -201,7 +235,7 @@ class _GenreChipPickerState extends State<GenreChipPicker> {
             );
           }
 
-          final cat = categoriesList[index];
+          final cat = displayCategories[index];
           final isSelected = cat == widget.selectedCategory;
           final catColor = cat == 'All'
               ? AppColors.primaryTeal

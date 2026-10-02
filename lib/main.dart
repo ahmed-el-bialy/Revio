@@ -19,6 +19,7 @@ Future<void> main() async {
   Hive.registerAdapters();
 
   await Hive.openBox<CardModel>('flash_cards_box');
+  await Hive.openBox<String>('custom_categories_box');
 
   runApp(Revio(appRouter: AppRouter()));
 }
