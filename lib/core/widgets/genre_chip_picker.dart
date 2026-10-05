@@ -41,9 +41,12 @@ class _GenreChipPickerState extends State<GenreChipPicker> {
   }
 
   void _initCategories() {
+    final activeCore = CategoryManager.getActiveCoreCategories();
+    final custom = CategoryManager.getCustomCategories();
+    
     final set = <String>{
-      ...CategoryManager.coreCategories,
-      ...CategoryManager.getCustomCategories(),
+      ...activeCore,
+      ...custom,
     };
     if (widget.customCategories != null) {
       set.addAll(widget.customCategories!);
@@ -54,6 +57,159 @@ class _GenreChipPickerState extends State<GenreChipPicker> {
       set.add(widget.selectedCategory);
     }
     _categoriesList = set.toList();
+  }
+
+  void _showManageTopicsDialog() {
+    showDialog(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (context, setDialogState) {
+          final activeCore = CategoryManager.getActiveCoreCategories();
+          final custom = CategoryManager.getCustomCategories();
+          final allCurrent = [...activeCore, ...custom];
+
+          return AlertDialog(
+            backgroundColor: AppColors.surfaceDark,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(24.r),
+              side: BorderSide(
+                color: AppColors.primaryTeal.withValues(alpha: 0.35),
+                width: 1.5,
+              ),
+            ),
+            title: Row(
+              children: [
+                Container(
+                  padding: EdgeInsets.all(8.w),
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryTeal.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(10.r),
+                  ),
+                  child: Icon(CupertinoIcons.tag_fill,
+                      color: AppColors.primaryTeal, size: 18.sp),
+                ),
+                horizontalSpacing(10),
+                Text(
+                  "Manage Topics",
+                  style: AppStyles.font18BoldIndigoAccent.copyWith(
+                    fontSize: 18.sp,
+                    color: AppColors.white,
+                  ),
+                ),
+              ],
+            ),
+            content: SizedBox(
+              width: 300.w,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Add new topics or delete existing ones below.",
+                    style: AppStyles.font14White70.copyWith(fontSize: 13.sp),
+                  ),
+                  verticalSpacing(14),
+                  SizedBox(
+                    height: 200.h,
+                    child: ListView.separated(
+                      physics: const BouncingScrollPhysics(),
+                      itemCount: allCurrent.length,
+                      separatorBuilder: (context, index) => verticalSpacing(8),
+                      itemBuilder: (context, index) {
+                        final cat = allCurrent[index];
+                        return Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 12.w, vertical: 8.h),
+                          decoration: BoxDecoration(
+                            color: AppColors.cardSurface,
+                            borderRadius: BorderRadius.circular(12.r),
+                            border: Border.all(
+                              color: AppColors.white.withValues(alpha: 0.08),
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 8.w,
+                                height: 8.h,
+                                decoration: BoxDecoration(
+                                  color: AppColors.categoryColors[cat] ??
+                                      AppColors.primaryTeal,
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                              horizontalSpacing(10),
+                              Expanded(
+                                child: Text(
+                                  cat,
+                                  style: AppStyles.font16WhiteSemiBold.copyWith(
+                                    fontSize: 14.sp,
+                                  ),
+                                ),
+                              ),
+                              IconButton(
+                                constraints: const BoxConstraints(),
+                                padding: EdgeInsets.all(4.w),
+                                icon: Icon(
+                                  CupertinoIcons.trash,
+                                  color: AppColors.errorRed.withValues(alpha: 0.8),
+                                  size: 16.sp,
+                                ),
+                                onPressed: () async {
+                                  await CategoryManager.deleteCategory(cat);
+                                  if (!context.mounted) return;
+                                  setDialogState(() {});
+                                  setState(() {
+                                    _categoriesList.remove(cat);
+                                  });
+                                  if (widget.selectedCategory == cat) {
+                                    widget.onCategorySelected('All');
+                                  }
+                                  SnackBarHelper.showInfo(
+                                      context, "Deleted topic '$cat'");
+                                },
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: Text("Done", style: AppStyles.font14Gray),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primaryTeal,
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
+                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+                ),
+                onPressed: () {
+                  Navigator.pop(ctx);
+                  _showAddCustomCategoryDialog();
+                },
+                child: Text(
+                  "+ Add New",
+                  style: AppStyles.font16WhiteSemiBold.copyWith(
+                    color: AppColors.darkBackground,
+                    fontSize: 13.5.sp,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
   }
 
   void _showAddCustomCategoryDialog() {
@@ -67,20 +223,29 @@ class _GenreChipPickerState extends State<GenreChipPicker> {
           return AlertDialog(
             backgroundColor: AppColors.surfaceDark,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20.r),
+              borderRadius: BorderRadius.circular(24.r),
               side: BorderSide(
-                color: AppColors.primaryTeal.withValues(alpha: 0.3),
+                color: AppColors.primaryTeal.withValues(alpha: 0.35),
+                width: 1.5,
               ),
             ),
             title: Row(
               children: [
-                Icon(CupertinoIcons.tag_fill,
-                    color: AppColors.primaryTeal, size: 20.sp),
-                horizontalSpacing(8),
+                Container(
+                  padding: EdgeInsets.all(8.w),
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryTeal.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(10.r),
+                  ),
+                  child: Icon(CupertinoIcons.tag_fill,
+                      color: AppColors.primaryTeal, size: 18.sp),
+                ),
+                horizontalSpacing(10),
                 Text(
                   "Add Custom Topic",
                   style: AppStyles.font18BoldIndigoAccent.copyWith(
                     fontSize: 18.sp,
+                    color: AppColors.white,
                   ),
                 ),
               ],
@@ -90,10 +255,10 @@ class _GenreChipPickerState extends State<GenreChipPicker> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Create a specific category for your flashcards (e.g., Biology, Medicine, Code).",
+                  "Create a specific topic for your flashcards (e.g., Physics, Medicine, Coding).",
                   style: AppStyles.font14White70.copyWith(fontSize: 13.sp),
                 ),
-                verticalSpacing(14),
+                verticalSpacing(16),
                 TextField(
                   controller: textController,
                   autofocus: true,
@@ -104,22 +269,22 @@ class _GenreChipPickerState extends State<GenreChipPicker> {
                     }
                   },
                   decoration: InputDecoration(
-                    hintText: "Category name...",
+                    hintText: "Topic name...",
                     hintStyle: AppStyles.font14White70,
                     filled: true,
                     fillColor: AppColors.cardSurface,
                     errorText: errorMessage,
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12.r),
+                      borderRadius: BorderRadius.circular(14.r),
                       borderSide: BorderSide.none,
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12.r),
+                      borderRadius: BorderRadius.circular(14.r),
                       borderSide: const BorderSide(
                           color: AppColors.primaryTeal, width: 1.5),
                     ),
                     contentPadding:
-                        EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
+                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
                   ),
                 ),
               ],
@@ -132,9 +297,11 @@ class _GenreChipPickerState extends State<GenreChipPicker> {
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primaryTeal,
+                  elevation: 0,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.r),
+                    borderRadius: BorderRadius.circular(12.r),
                   ),
+                  padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
                 ),
                 onPressed: () async {
                   final newCat = textController.text.trim();
@@ -144,19 +311,6 @@ class _GenreChipPickerState extends State<GenreChipPicker> {
                     return;
                   }
 
-                  if (CategoryManager.categoryExists(newCat, _categoriesList)) {
-                    // Category already exists -> Select existing category & close
-                    final existingCat = _categoriesList.firstWhere(
-                      (c) => c.trim().toLowerCase() == newCat.toLowerCase(),
-                    );
-                    widget.onCategorySelected(existingCat);
-                    Navigator.pop(ctx);
-                    SnackBarHelper.showInfo(
-                        context, "Topic '$existingCat' already exists!");
-                    return;
-                  }
-
-                  // Add permanently to Hive
                   await CategoryManager.addCustomCategory(newCat);
 
                   if (!ctx.mounted) return;
@@ -167,17 +321,18 @@ class _GenreChipPickerState extends State<GenreChipPicker> {
                     }
                   });
 
+                  // Automatically select the newly added category and close dialog
                   widget.onCategorySelected(newCat);
                   Navigator.pop(ctx);
                   SnackBarHelper.showSuccess(
-                      ctx, "Added new topic '$newCat'");
+                      ctx, "Added & selected topic '$newCat'");
                 },
                 child: Text(
-                  "Add",
+                  "Add & Select",
                   style: AppStyles.font16WhiteSemiBold.copyWith(
                     color: AppColors.darkBackground,
                     fontSize: 14.sp,
-                    fontWeight: FontWeight.w700,
+                    fontWeight: FontWeight.w800,
                   ),
                 ),
               ),
@@ -194,104 +349,109 @@ class _GenreChipPickerState extends State<GenreChipPicker> {
         ? ['All', ..._categoriesList]
         : _categoriesList;
 
-    return SizedBox(
-      height: 40.h,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        physics: const BouncingScrollPhysics(),
-        itemCount: displayCategories.length + 1,
-        separatorBuilder: (context, index) => horizontalSpacing(8),
-        itemBuilder: (context, index) {
-          if (index == displayCategories.length) {
-            return GestureDetector(
-              onTap: _showAddCustomCategoryDialog,
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
-                decoration: BoxDecoration(
-                  color: AppColors.primaryTeal.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(14.r),
-                  border: Border.all(
-                    color: AppColors.primaryTeal.withValues(alpha: 0.4),
-                    width: 1.2,
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: SizedBox(
+        height: 44.h,
+        child: ListView.separated(
+          scrollDirection: Axis.horizontal,
+          physics: const BouncingScrollPhysics(),
+          itemCount: displayCategories.length + 1,
+          separatorBuilder: (context, index) => horizontalSpacing(8),
+          itemBuilder: (context, index) {
+            if (index == displayCategories.length) {
+              return GestureDetector(
+                onTap: _showManageTopicsDialog,
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryTeal.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(16.r),
+                    border: Border.all(
+                      color: AppColors.primaryTeal.withValues(alpha: 0.5),
+                      width: 1.2,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(CupertinoIcons.gear_alt_fill,
+                          color: AppColors.primaryTeal, size: 14.sp),
+                      horizontalSpacing(6),
+                      Text(
+                        "Manage / Add",
+                        style: AppStyles.font13GrayMedium.copyWith(
+                          color: AppColors.primaryTeal,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 13.sp,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
+              );
+            }
+
+            final cat = displayCategories[index];
+            final isSelected = cat == widget.selectedCategory;
+            final catColor = cat == 'All'
+                ? AppColors.primaryTeal
+                : (AppColors.categoryColors[cat] ?? AppColors.skyBlue);
+
+            return GestureDetector(
+              onTap: () => widget.onCategorySelected(cat),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 220),
+                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+                decoration: BoxDecoration(
+                  color: isSelected
+                      ? catColor.withValues(alpha: 0.32)
+                      : catColor.withValues(alpha: 0.10),
+                  borderRadius: BorderRadius.circular(16.r),
+                  border: Border.all(
+                    color: isSelected
+                        ? catColor
+                        : catColor.withValues(alpha: 0.28),
+                    width: isSelected ? 1.6 : 1.0,
+                  ),
+                  boxShadow: isSelected
+                      ? [
+                          BoxShadow(
+                            color: catColor.withValues(alpha: 0.3),
+                            blurRadius: 10,
+                            offset: const Offset(0, 3),
+                          ),
+                        ]
+                      : [],
+                ),
                 child: Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(CupertinoIcons.add,
-                        color: AppColors.primaryTeal, size: 14.sp),
-                    horizontalSpacing(5),
+                    Container(
+                      width: 8.w,
+                      height: 8.h,
+                      decoration: BoxDecoration(
+                        color: catColor,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    horizontalSpacing(8),
                     Text(
-                      "Custom",
+                      cat,
                       style: AppStyles.font13GrayMedium.copyWith(
-                        color: AppColors.primaryTeal,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 12.5.sp,
+                        color: isSelected ? AppColors.white : catColor,
+                        fontWeight:
+                            isSelected ? FontWeight.w800 : FontWeight.w600,
+                        fontSize: 13.sp,
                       ),
                     ),
                   ],
                 ),
               ),
             );
-          }
-
-          final cat = displayCategories[index];
-          final isSelected = cat == widget.selectedCategory;
-          final catColor = cat == 'All'
-              ? AppColors.primaryTeal
-              : (AppColors.categoryColors[cat] ?? AppColors.skyBlue);
-
-          return GestureDetector(
-            onTap: () => widget.onCategorySelected(cat),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 220),
-              padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
-              decoration: BoxDecoration(
-                color: isSelected
-                    ? catColor.withValues(alpha: 0.28)
-                    : catColor.withValues(alpha: 0.10),
-                borderRadius: BorderRadius.circular(14.r),
-                border: Border.all(
-                  color: isSelected
-                      ? catColor
-                      : catColor.withValues(alpha: 0.25),
-                  width: isSelected ? 1.6 : 1.0,
-                ),
-                boxShadow: isSelected
-                    ? [
-                        BoxShadow(
-                          color: catColor.withValues(alpha: 0.25),
-                          blurRadius: 10,
-                          offset: const Offset(0, 3),
-                        ),
-                      ]
-                    : [],
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    width: 7.w,
-                    height: 7.h,
-                    decoration: BoxDecoration(
-                      color: catColor,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                  horizontalSpacing(7),
-                  Text(
-                    cat,
-                    style: AppStyles.font13GrayMedium.copyWith(
-                      color: isSelected ? AppColors.white : catColor,
-                      fontWeight:
-                          isSelected ? FontWeight.w800 : FontWeight.w600,
-                      fontSize: 12.5.sp,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
+          },
+        ),
       ),
     );
   }

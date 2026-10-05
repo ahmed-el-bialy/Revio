@@ -8,6 +8,7 @@ import '../../../core/constants/app_constants.dart';
 import '../../../core/helpers/spacing.dart';
 import '../../../core/theming/app_colors.dart';
 import '../../../core/theming/app_styles.dart';
+import '../../../core/widgets/app_background_glow.dart';
 import '../../cards/data/models/card_model.dart';
 import '../../cards/logic/get_all_cards_cubit.dart';
 import '../../cards/logic/get_all_cards_state.dart';
@@ -60,46 +61,49 @@ class _QuizScreenState extends State<QuizScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.darkBackground,
-      body: BlocListener<QuizCubit, QuizState>(
-        listener: (context, state) {
-          if (state is QuizCompleted) {
-            Navigator.pushReplacementNamed(
-              context,
-              AppConstants.quizResultsScreen,
-              arguments: QuizResultsArguments(
-                totalCards: state.totalCards,
-                correctCount: state.correctCount,
-                wrongCount: state.wrongCount,
-                skippedCount: state.skippedCount,
-                timeTaken: state.timeTaken,
-              ),
-            );
-          }
-        },
-        child: BlocBuilder<GetAllCardsCubit, GetAllCardsState>(
-          builder: (context, cardsState) {
-            return BlocBuilder<QuizCubit, QuizState>(
-              builder: (context, quizState) {
-                if (quizState is QuizModeSelection) {
-                  final cards = cardsState is CardsLoadedSuccess
-                      ? cardsState.cards
-                      : <CardModel>[];
-                  return QuizModeSelectionView(
-                    cards: cards,
-                    onSelectMode: (mode) => _startQuiz(mode, cards),
-                  );
-                }
-
-                if (quizState is QuizInProgress) {
-                  return _buildQuizInProgress(quizState);
-                }
-
-                return const SizedBox.shrink();
-              },
-            );
+    return AppBackgroundGlow(
+      variant: GlowVariant.quiz,
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: BlocListener<QuizCubit, QuizState>(
+          listener: (context, state) {
+            if (state is QuizCompleted) {
+              Navigator.pushReplacementNamed(
+                context,
+                AppConstants.quizResultsScreen,
+                arguments: QuizResultsArguments(
+                  totalCards: state.totalCards,
+                  correctCount: state.correctCount,
+                  wrongCount: state.wrongCount,
+                  skippedCount: state.skippedCount,
+                  timeTaken: state.timeTaken,
+                ),
+              );
+            }
           },
+          child: BlocBuilder<GetAllCardsCubit, GetAllCardsState>(
+            builder: (context, cardsState) {
+              return BlocBuilder<QuizCubit, QuizState>(
+                builder: (context, quizState) {
+                  if (quizState is QuizModeSelection) {
+                    final cards = cardsState is CardsLoadedSuccess
+                        ? cardsState.cards
+                        : <CardModel>[];
+                    return QuizModeSelectionView(
+                      cards: cards,
+                      onSelectMode: (mode) => _startQuiz(mode, cards),
+                    );
+                  }
+
+                  if (quizState is QuizInProgress) {
+                    return _buildQuizInProgress(quizState);
+                  }
+
+                  return const SizedBox.shrink();
+                },
+              );
+            },
+          ),
         ),
       ),
     );

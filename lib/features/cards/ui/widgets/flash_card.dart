@@ -29,6 +29,7 @@ class FlashCard extends StatelessWidget {
       direction: FlipDirection.HORIZONTAL,
       side: CardSide.FRONT,
       speed: 400,
+      flipOnTouch: !isInQuiz, // Prevent cheating / manual card flipping during quiz mode!
       front: CardFace(
         cardHeight: cardHeight,
         cardModel: cardModel,

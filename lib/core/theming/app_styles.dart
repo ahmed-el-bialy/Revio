@@ -9,6 +9,7 @@ class AppStyles {
     fontWeight: FontWeight.bold,
     fontFamily: "Manrope",
     color: AppColors.primaryTeal,
+    height: 1.2,
   );
 
   // Backward-compat alias
@@ -17,6 +18,7 @@ class AppStyles {
     fontWeight: FontWeight.bold,
     fontFamily: "Manrope",
     color: AppColors.primaryTeal,
+    height: 1.2,
   );
 
   static TextStyle font19BoldIndigoAccent = TextStyle(
@@ -24,6 +26,7 @@ class AppStyles {
     fontWeight: FontWeight.bold,
     fontFamily: "Manrope",
     color: AppColors.primaryTeal,
+    height: 1.2,
   );
 
   static TextStyle font18BoldIndigoAccent = TextStyle(
@@ -31,6 +34,7 @@ class AppStyles {
     fontWeight: FontWeight.bold,
     fontFamily: "Manrope",
     color: AppColors.primaryTeal,
+    height: 1.2,
   );
 
   static TextStyle font15IndigoAccentSemiBold = TextStyle(
@@ -38,6 +42,7 @@ class AppStyles {
     fontWeight: FontWeight.w600,
     fontFamily: "Manrope",
     color: AppColors.primaryTeal,
+    height: 1.2,
   );
 
   // ── Ice / Light ─────────────────────────────────────────────────────────────
@@ -46,6 +51,7 @@ class AppStyles {
     fontWeight: FontWeight.bold,
     fontFamily: "Manrope",
     color: AppColors.iceBlue,
+    height: 1.2,
   );
 
   static TextStyle font28BoldIceBlue = TextStyle(
@@ -53,6 +59,7 @@ class AppStyles {
     fontWeight: FontWeight.bold,
     fontFamily: "Manrope",
     color: AppColors.iceBlue,
+    height: 1.2,
   );
 
   static TextStyle font22BoldIceBlue = TextStyle(
@@ -60,6 +67,7 @@ class AppStyles {
     fontWeight: FontWeight.bold,
     fontFamily: "Manrope",
     color: AppColors.iceBlue,
+    height: 1.2,
   );
 
   static TextStyle font17BoldIceBlue = TextStyle(
@@ -67,6 +75,7 @@ class AppStyles {
     fontWeight: FontWeight.bold,
     fontFamily: "Manrope",
     color: AppColors.iceBlue,
+    height: 1.2,
   );
 
   // ── White variants ───────────────────────────────────────────────────────────
@@ -75,6 +84,7 @@ class AppStyles {
     fontWeight: FontWeight.w800,
     fontFamily: "Manrope",
     color: AppColors.white,
+    height: 1.2,
   );
 
   static TextStyle font20BoldWhite = TextStyle(
@@ -82,6 +92,7 @@ class AppStyles {
     fontWeight: FontWeight.bold,
     fontFamily: "Manrope",
     color: AppColors.white,
+    height: 1.2,
   );
 
   static TextStyle font18WhiteBold = TextStyle(
@@ -89,6 +100,7 @@ class AppStyles {
     fontWeight: FontWeight.bold,
     fontFamily: "Manrope",
     color: AppColors.white,
+    height: 1.2,
   );
 
   static TextStyle font17WhiteBold = TextStyle(
@@ -96,6 +108,7 @@ class AppStyles {
     fontWeight: FontWeight.bold,
     fontFamily: "Manrope",
     color: AppColors.white,
+    height: 1.2,
   );
 
   static TextStyle font16WhiteSemiBold = TextStyle(
@@ -103,6 +116,7 @@ class AppStyles {
     fontWeight: FontWeight.w600,
     fontFamily: "Manrope",
     color: AppColors.white,
+    height: 1.25,
   );
 
   static TextStyle font18WhiteMedium = TextStyle(
@@ -110,6 +124,7 @@ class AppStyles {
     fontWeight: FontWeight.w500,
     fontFamily: "Manrope",
     color: AppColors.white,
+    height: 1.25,
   );
 
   static TextStyle font14WhiteSemiBold = TextStyle(
@@ -117,18 +132,21 @@ class AppStyles {
     fontWeight: FontWeight.w600,
     fontFamily: "Manrope",
     color: AppColors.white,
+    height: 1.25,
   );
 
   static TextStyle font14White70 = TextStyle(
     fontSize: 14.sp,
     fontFamily: "Manrope",
-    color: AppColors.white.withValues(alpha: 0.7),
+    color: AppColors.white.withValues(alpha: 0.75),
+    height: 1.3,
   );
 
   static TextStyle font12White38 = TextStyle(
     fontSize: 12.sp,
     fontFamily: "Manrope",
-    color: AppColors.white.withValues(alpha: 0.38),
+    color: AppColors.white.withValues(alpha: 0.4),
+    height: 1.3,
   );
 
   // ── Lavender / Gray ──────────────────────────────────────────────────────────
@@ -136,6 +154,7 @@ class AppStyles {
     fontSize: 16.sp,
     fontFamily: "Manrope",
     color: AppColors.lavenderGray,
+    height: 1.3,
   );
 
   static TextStyle font16LavenderGrayBold = TextStyle(
@@ -143,31 +162,36 @@ class AppStyles {
     fontWeight: FontWeight.w600,
     fontFamily: "Manrope",
     color: AppColors.lavenderGray,
+    height: 1.3,
   );
 
   static TextStyle font14LavenderGrayMedium = TextStyle(
     fontSize: 14.sp,
     fontWeight: FontWeight.w500,
     fontFamily: "Manrope",
-    color: AppColors.lavenderGray.withValues(alpha: 0.7),
+    color: AppColors.lavenderGray.withValues(alpha: 0.8),
+    height: 1.3,
   );
 
   static TextStyle font12LavenderGray = TextStyle(
     fontSize: 12.sp,
     fontFamily: "Manrope",
-    color: AppColors.lavenderGray.withValues(alpha: 0.6),
+    color: AppColors.lavenderGray.withValues(alpha: 0.7),
+    height: 1.3,
   );
 
   static TextStyle font12LavenderGrayFaded = TextStyle(
     fontSize: 12.sp,
     fontFamily: "Manrope",
     color: AppColors.lavenderGray.withValues(alpha: 0.5),
+    height: 1.3,
   );
 
   static TextStyle font14Gray = TextStyle(
     fontSize: 14.sp,
     fontFamily: "Manrope",
     color: AppColors.gray,
+    height: 1.3,
   );
 
   static TextStyle font13GrayMedium = TextStyle(
@@ -175,6 +199,7 @@ class AppStyles {
     fontWeight: FontWeight.w500,
     fontFamily: "Manrope",
     color: AppColors.warmGray,
+    height: 1.3,
   );
 
   static TextStyle font11GrayRegular = TextStyle(
@@ -182,13 +207,15 @@ class AppStyles {
     fontWeight: FontWeight.w400,
     fontFamily: "Manrope",
     color: AppColors.warmGray,
+    height: 1.3,
   );
 
   // ── Accent ───────────────────────────────────────────────────────────────────
   static TextStyle font14AccentCyan = TextStyle(
     fontSize: 14.sp,
-    fontWeight: FontWeight.w400,
+    fontWeight: FontWeight.w500,
     fontFamily: "Manrope",
     color: AppColors.cyberCyan,
+    height: 1.3,
   );
 }

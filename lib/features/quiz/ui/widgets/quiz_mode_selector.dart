@@ -107,7 +107,13 @@ class _QuizModeCard extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          Text(title, style: AppStyles.font16WhiteSemiBold),
+                          Expanded(
+                            child: Text(
+                              title,
+                              style: AppStyles.font16WhiteSemiBold,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
                           horizontalSpacing(8),
                           Container(
                             padding: EdgeInsets.symmetric(

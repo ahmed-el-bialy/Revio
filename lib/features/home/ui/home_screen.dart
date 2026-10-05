@@ -1,6 +1,7 @@
 import 'package:code_alpha_flash_card_app/core/helpers/spacing.dart';
 import 'package:code_alpha_flash_card_app/core/theming/app_colors.dart';
 import 'package:code_alpha_flash_card_app/core/theming/app_styles.dart';
+import 'package:code_alpha_flash_card_app/core/widgets/app_background_glow.dart';
 import 'package:code_alpha_flash_card_app/core/widgets/genre_chip_picker.dart';
 import 'package:code_alpha_flash_card_app/features/cards/logic/get_all_cards_cubit.dart';
 import 'package:code_alpha_flash_card_app/features/cards/logic/get_all_cards_state.dart';
@@ -30,9 +31,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.darkBackground,
-      body: SafeArea(
+    return AppBackgroundGlow(
+      variant: GlowVariant.home,
+      child: SafeArea(
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
           slivers: [
@@ -46,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     const HomeHeader(),
                     verticalSpacing(20),
                     const HomeHeroGreeting(),
-                    verticalSpacing(20),
+                    verticalSpacing(22),
                   ],
                 ),
               ),
@@ -71,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               },
             ),
-            sliverVerticalSpacing(24),
+            sliverVerticalSpacing(26),
             SliverToBoxAdapter(
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20.w),
@@ -81,23 +82,35 @@ class _HomeScreenState extends State<HomeScreen> {
                     Text(
                       "Topics & Genres",
                       style: AppStyles.font17BoldIceBlue.copyWith(
-                        fontSize: 17.sp,
-                        letterSpacing: 0.3,
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0.4,
                       ),
                     ),
-                    Text(
-                      "Core & Custom",
-                      style: AppStyles.font12LavenderGray.copyWith(
-                        color: AppColors.primaryTeal,
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w600,
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 10.w, vertical: 4.h),
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryTeal.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(10.r),
+                        border: Border.all(
+                          color: AppColors.primaryTeal.withValues(alpha: 0.3),
+                        ),
+                      ),
+                      child: Text(
+                        "Manage / Add",
+                        style: AppStyles.font12LavenderGray.copyWith(
+                          color: AppColors.primaryTeal,
+                          fontSize: 11.5.sp,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
             ),
-            sliverVerticalSpacing(12),
+            sliverVerticalSpacing(14),
             SliverToBoxAdapter(
               child: BlocBuilder<GetAllCardsCubit, GetAllCardsState>(
                 builder: (context, state) {
@@ -122,15 +135,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
               ),
             ),
-            sliverVerticalSpacing(28),
+            sliverVerticalSpacing(30),
             SliverToBoxAdapter(
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20.w),
                 child: Text(
                   "Quick Actions",
                   style: AppStyles.font17BoldIceBlue.copyWith(
-                    fontSize: 17.sp,
-                    letterSpacing: 0.3,
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0.4,
                   ),
                 ),
               ),
@@ -184,7 +198,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-            sliverVerticalSpacing(30),
+            sliverVerticalSpacing(40),
           ],
         ),
       ),
