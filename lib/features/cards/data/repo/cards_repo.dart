@@ -16,7 +16,10 @@ class CardsRepo {
   }
 
   Future<List<CardModel>> getAllCards() async {
-    return _box.values.toList();
+    final list = _box.values.toList();
+    list.sort((a, b) => (b.createdAt ?? DateTime(2020))
+        .compareTo(a.createdAt ?? DateTime(2020)));
+    return list;
   }
 
   Future<void> updateCard(CardModel card) async {
@@ -46,9 +49,13 @@ class CardsRepo {
 
   List<CardModel> searchCards(String query) {
     final normalizedQuery = query.trim().toLowerCase();
-    if (normalizedQuery.isEmpty) return _box.values.toList();
+    final list = _box.values.toList();
+    list.sort((a, b) => (b.createdAt ?? DateTime(2020))
+        .compareTo(a.createdAt ?? DateTime(2020)));
 
-    return _box.values.where((card) {
+    if (normalizedQuery.isEmpty) return list;
+
+    return list.where((card) {
       return card.front.toLowerCase().contains(normalizedQuery) ||
           card.back.toLowerCase().contains(normalizedQuery) ||
           (card.hint?.toLowerCase().contains(normalizedQuery) ?? false) ||
@@ -57,21 +64,34 @@ class CardsRepo {
   }
 
   List<CardModel> getCardsByCategory(String category) {
-    return _box.values
+    final list = _box.values
         .where((card) => card.category == category)
         .toList();
+    list.sort((a, b) => (b.createdAt ?? DateTime(2020))
+        .compareTo(a.createdAt ?? DateTime(2020)));
+    return list;
   }
 
   List<CardModel> getFavoriteCards() {
-    return _box.values
+    final list = _box.values
         .where((card) => card.isFavorite == true)
         .toList();
+    list.sort((a, b) => (b.createdAt ?? DateTime(2020))
+        .compareTo(a.createdAt ?? DateTime(2020)));
+    return list;
   }
 
   Stream<List<CardModel>> watchCards() async* {
-    yield _box.values.toList();
+    List<CardModel> getSorted() {
+      final list = _box.values.toList();
+      list.sort((a, b) => (b.createdAt ?? DateTime(2020))
+          .compareTo(a.createdAt ?? DateTime(2020)));
+      return list;
+    }
+
+    yield getSorted();
     await for (final _ in _box.watch()) {
-      yield _box.values.toList();
+      yield getSorted();
     }
   }
 }

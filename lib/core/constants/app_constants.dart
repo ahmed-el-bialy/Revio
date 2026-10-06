@@ -9,7 +9,12 @@ class AppConstants {
 
   static const String quizResultsScreen = "/QuizResults";
 
+  static const String manageTopicsScreen = "/ManageTopics";
+
+  static const String defaultTopic = 'No Topic';
+
   static const List<String> categories = [
+    'No Topic',
     'General',
     'Science',
     'Math',

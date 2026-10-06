@@ -3,6 +3,7 @@ import 'package:code_alpha_flash_card_app/features/add_new_card/ui/add_new_card_
 import 'package:code_alpha_flash_card_app/features/cards/data/repo/cards_repo.dart';
 import 'package:code_alpha_flash_card_app/features/home/ui/home_screen.dart';
 import 'package:code_alpha_flash_card_app/features/quiz/ui/quiz_screen.dart';
+import 'package:code_alpha_flash_card_app/features/topics/ui/manage_topics_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -50,6 +51,9 @@ class AppRouter {
       case AppConstants.quizResultsScreen:
         final args = setting.arguments as QuizResultsArguments;
         return _fadeRoute(QuizResultsScreen(args: args));
+
+      case AppConstants.manageTopicsScreen:
+        return _fadeRoute(const ManageTopicsScreen());
 
       default:
         return _fadeRoute(const HomeScreen());

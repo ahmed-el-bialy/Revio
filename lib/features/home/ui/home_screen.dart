@@ -1,3 +1,4 @@
+import 'package:code_alpha_flash_card_app/core/helpers/category_manager.dart';
 import 'package:code_alpha_flash_card_app/core/helpers/spacing.dart';
 import 'package:code_alpha_flash_card_app/core/theming/app_colors.dart';
 import 'package:code_alpha_flash_card_app/core/theming/app_styles.dart';
@@ -60,10 +61,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 final favCount = cards
                     .where((c) => c.isFavorite == true)
                     .length;
-                final categoriesCount = cards
-                    .map((c) => c.category ?? 'General')
-                    .toSet()
-                    .length;
+                
+                // Total topics count from CategoryManager (core + custom) regardless of card assignment
+                final activeCore = CategoryManager.getActiveCoreCategories();
+                final custom = CategoryManager.getCustomCategories();
+                final categoriesCount = activeCore.length + custom.length;
 
                 return CardsNumberContainer(
                   totalCards: cards.length,
@@ -87,22 +89,40 @@ class _HomeScreenState extends State<HomeScreen> {
                         letterSpacing: 0.4,
                       ),
                     ),
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 10.w, vertical: 4.h),
-                      decoration: BoxDecoration(
-                        color: AppColors.primaryTeal.withValues(alpha: 0.12),
-                        borderRadius: BorderRadius.circular(10.r),
-                        border: Border.all(
-                          color: AppColors.primaryTeal.withValues(alpha: 0.3),
+                    GestureDetector(
+                      onTap: () async {
+                        await context.pushNamed(
+                            AppConstants.manageTopicsScreen, null);
+                        setState(() {});
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 12.w, vertical: 6.h),
+                        decoration: BoxDecoration(
+                          color: AppColors.primaryTeal.withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(12.r),
+                          border: Border.all(
+                            color: AppColors.primaryTeal.withValues(alpha: 0.3),
+                          ),
                         ),
-                      ),
-                      child: Text(
-                        "Manage / Add",
-                        style: AppStyles.font12LavenderGray.copyWith(
-                          color: AppColors.primaryTeal,
-                          fontSize: 11.5.sp,
-                          fontWeight: FontWeight.w700,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              CupertinoIcons.gear_alt_fill,
+                              color: AppColors.primaryTeal,
+                              size: 13.sp,
+                            ),
+                            horizontalSpacing(5),
+                            Text(
+                              "Manage",
+                              style: AppStyles.font12LavenderGray.copyWith(
+                                color: AppColors.primaryTeal,
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -110,7 +130,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-            sliverVerticalSpacing(14),
+            sliverVerticalSpacing(12),
             SliverToBoxAdapter(
               child: BlocBuilder<GetAllCardsCubit, GetAllCardsState>(
                 builder: (context, state) {

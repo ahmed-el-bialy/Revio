@@ -1,4 +1,5 @@
 import 'package:code_alpha_flash_card_app/core/helpers/snackbar_helper.dart';
+import 'package:code_alpha_flash_card_app/core/helpers/spacing.dart';
 import 'package:code_alpha_flash_card_app/core/theming/app_colors.dart';
 import 'package:code_alpha_flash_card_app/core/theming/app_styles.dart';
 import 'package:code_alpha_flash_card_app/core/widgets/app_background_glow.dart';
@@ -7,6 +8,7 @@ import 'package:code_alpha_flash_card_app/features/cards/logic/get_all_cards_cub
 import 'package:code_alpha_flash_card_app/features/cards/logic/get_all_cards_state.dart';
 import 'package:code_alpha_flash_card_app/features/cards/ui/widgets/flash_card.dart';
 import 'package:code_alpha_flash_card_app/core/widgets/genre_chip_picker.dart';
+import 'package:code_alpha_flash_card_app/features/review/ui/widgets/add_card_modal_bottom_sheet.dart';
 import 'package:code_alpha_flash_card_app/features/review/ui/widgets/card_search_bar.dart';
 import 'package:code_alpha_flash_card_app/features/review/ui/widgets/library_empty_state.dart';
 import 'package:flutter/cupertino.dart';
@@ -59,8 +61,12 @@ class _ReviewCardsScreenState extends State<ReviewCardsScreen> {
                   .contains(_searchController.text.trim().toLowerCase()) ??
               false);
 
-      final matchesCategory =
-          _selectedCategory == 'All' || card.category == _selectedCategory;
+      final matchesCategory = _selectedCategory == 'All' ||
+          card.category == _selectedCategory ||
+          (_selectedCategory == 'No Topic' &&
+              (card.category == null ||
+                  card.category!.isEmpty ||
+                  card.category == 'No Topic'));
 
       final matchesFavorites = !_onlyFavorites || (card.isFavorite ?? false);
 
@@ -84,6 +90,31 @@ class _ReviewCardsScreenState extends State<ReviewCardsScreen> {
           ),
           centerTitle: true,
           iconTheme: const IconThemeData(color: AppColors.indigoAccent),
+          actions: [
+            IconButton(
+              icon: Icon(
+                CupertinoIcons.add_circled_solid,
+                color: AppColors.primaryTeal,
+                size: 24.sp,
+              ),
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  backgroundColor: AppColors.darkBackground,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(28.r),
+                    ),
+                  ),
+                  builder: (_) => AddCardModalBottomSheet(
+                    initialCategory: _selectedCategory,
+                  ),
+                );
+              },
+            ),
+            horizontalSpacing(8),
+          ],
         ),
         body: SafeArea(
           child: MultiBlocListener(
@@ -138,7 +169,7 @@ class _ReviewCardsScreenState extends State<ReviewCardsScreen> {
                         selectedCategory: _selectedCategory,
                         includeAllOption: true,
                         customCategories: state.cards
-                            .map((c) => c.category ?? 'General')
+                            .map((c) => c.category ?? 'No Topic')
                             .where((cat) => cat != 'All')
                             .toSet()
                             .toList(),

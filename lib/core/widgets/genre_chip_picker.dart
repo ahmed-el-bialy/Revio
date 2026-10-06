@@ -59,166 +59,13 @@ class _GenreChipPickerState extends State<GenreChipPicker> {
     _categoriesList = set.toList();
   }
 
-  void _showManageTopicsDialog() {
-    showDialog(
-      context: context,
-      builder: (ctx) => StatefulBuilder(
-        builder: (context, setDialogState) {
-          final activeCore = CategoryManager.getActiveCoreCategories();
-          final custom = CategoryManager.getCustomCategories();
-          final allCurrent = [...activeCore, ...custom];
-
-          return AlertDialog(
-            backgroundColor: AppColors.surfaceDark,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(24.r),
-              side: BorderSide(
-                color: AppColors.primaryTeal.withValues(alpha: 0.35),
-                width: 1.5,
-              ),
-            ),
-            title: Row(
-              children: [
-                Container(
-                  padding: EdgeInsets.all(8.w),
-                  decoration: BoxDecoration(
-                    color: AppColors.primaryTeal.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(10.r),
-                  ),
-                  child: Icon(CupertinoIcons.tag_fill,
-                      color: AppColors.primaryTeal, size: 18.sp),
-                ),
-                horizontalSpacing(10),
-                Text(
-                  "Manage Topics",
-                  style: AppStyles.font18BoldIndigoAccent.copyWith(
-                    fontSize: 18.sp,
-                    color: AppColors.white,
-                  ),
-                ),
-              ],
-            ),
-            content: SizedBox(
-              width: 300.w,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Add new topics or delete existing ones below.",
-                    style: AppStyles.font14White70.copyWith(fontSize: 13.sp),
-                  ),
-                  verticalSpacing(14),
-                  SizedBox(
-                    height: 200.h,
-                    child: ListView.separated(
-                      physics: const BouncingScrollPhysics(),
-                      itemCount: allCurrent.length,
-                      separatorBuilder: (context, index) => verticalSpacing(8),
-                      itemBuilder: (context, index) {
-                        final cat = allCurrent[index];
-                        return Container(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 12.w, vertical: 8.h),
-                          decoration: BoxDecoration(
-                            color: AppColors.cardSurface,
-                            borderRadius: BorderRadius.circular(12.r),
-                            border: Border.all(
-                              color: AppColors.white.withValues(alpha: 0.08),
-                            ),
-                          ),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 8.w,
-                                height: 8.h,
-                                decoration: BoxDecoration(
-                                  color: AppColors.categoryColors[cat] ??
-                                      AppColors.primaryTeal,
-                                  shape: BoxShape.circle,
-                                ),
-                              ),
-                              horizontalSpacing(10),
-                              Expanded(
-                                child: Text(
-                                  cat,
-                                  style: AppStyles.font16WhiteSemiBold.copyWith(
-                                    fontSize: 14.sp,
-                                  ),
-                                ),
-                              ),
-                              IconButton(
-                                constraints: const BoxConstraints(),
-                                padding: EdgeInsets.all(4.w),
-                                icon: Icon(
-                                  CupertinoIcons.trash,
-                                  color: AppColors.errorRed.withValues(alpha: 0.8),
-                                  size: 16.sp,
-                                ),
-                                onPressed: () async {
-                                  await CategoryManager.deleteCategory(cat);
-                                  if (!context.mounted) return;
-                                  setDialogState(() {});
-                                  setState(() {
-                                    _categoriesList.remove(cat);
-                                  });
-                                  if (widget.selectedCategory == cat) {
-                                    widget.onCategorySelected('All');
-                                  }
-                                  SnackBarHelper.showInfo(
-                                      context, "Deleted topic '$cat'");
-                                },
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(ctx),
-                child: Text("Done", style: AppStyles.font14Gray),
-              ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primaryTeal,
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.r),
-                  ),
-                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
-                ),
-                onPressed: () {
-                  Navigator.pop(ctx);
-                  _showAddCustomCategoryDialog();
-                },
-                child: Text(
-                  "+ Add New",
-                  style: AppStyles.font16WhiteSemiBold.copyWith(
-                    color: AppColors.darkBackground,
-                    fontSize: 13.5.sp,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-              ),
-            ],
-          );
-        },
-      ),
-    );
-  }
-
   void _showAddCustomCategoryDialog() {
     final textController = TextEditingController();
     String? errorMessage;
 
     showDialog(
       context: context,
-      builder: (ctx) => StatefulBuilder(
+      builder: (dialogContext) => StatefulBuilder(
         builder: (context, setDialogState) {
           return AlertDialog(
             backgroundColor: AppColors.surfaceDark,
@@ -255,7 +102,7 @@ class _GenreChipPickerState extends State<GenreChipPicker> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Create a specific topic for your flashcards (e.g., Physics, Medicine, Coding).",
+                  "Create a new topic category for your flashcards.",
                   style: AppStyles.font14White70.copyWith(fontSize: 13.sp),
                 ),
                 verticalSpacing(16),
@@ -291,7 +138,7 @@ class _GenreChipPickerState extends State<GenreChipPicker> {
             ),
             actions: [
               TextButton(
-                onPressed: () => Navigator.pop(ctx),
+                onPressed: () => Navigator.of(dialogContext).pop(),
                 child: Text("Cancel", style: AppStyles.font14Gray),
               ),
               ElevatedButton(
@@ -313,22 +160,20 @@ class _GenreChipPickerState extends State<GenreChipPicker> {
 
                   await CategoryManager.addCustomCategory(newCat);
 
-                  if (!ctx.mounted) return;
+                  if (!dialogContext.mounted) return;
+                  Navigator.of(dialogContext).pop();
 
+                  if (!mounted) return;
                   setState(() {
-                    if (!_categoriesList.contains(newCat)) {
-                      _categoriesList.add(newCat);
-                    }
+                    _initCategories();
                   });
 
-                  // Automatically select the newly added category and close dialog
-                  widget.onCategorySelected(newCat);
-                  Navigator.pop(ctx);
+                  // Do NOT auto-select the newly added topic. User will select it when desired.
                   SnackBarHelper.showSuccess(
-                      ctx, "Added & selected topic '$newCat'");
+                      context, "Added topic '$newCat'");
                 },
                 child: Text(
-                  "Add & Select",
+                  "Add",
                   style: AppStyles.font16WhiteSemiBold.copyWith(
                     color: AppColors.darkBackground,
                     fontSize: 14.sp,
@@ -352,39 +197,39 @@ class _GenreChipPickerState extends State<GenreChipPicker> {
     return Directionality(
       textDirection: TextDirection.ltr,
       child: SizedBox(
-        height: 44.h,
+        height: 38.h,
         child: ListView.separated(
           scrollDirection: Axis.horizontal,
           physics: const BouncingScrollPhysics(),
           itemCount: displayCategories.length + 1,
-          separatorBuilder: (context, index) => horizontalSpacing(8),
+          separatorBuilder: (context, _) => horizontalSpacing(6),
           itemBuilder: (context, index) {
             if (index == displayCategories.length) {
               return GestureDetector(
-                onTap: _showManageTopicsDialog,
+                onTap: _showAddCustomCategoryDialog,
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
-                  padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
+                  padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                   decoration: BoxDecoration(
-                    color: AppColors.primaryTeal.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(16.r),
+                    color: AppColors.primaryTeal.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(14.r),
                     border: Border.all(
-                      color: AppColors.primaryTeal.withValues(alpha: 0.5),
-                      width: 1.2,
+                      color: AppColors.primaryTeal.withValues(alpha: 0.4),
+                      width: 1.0,
                     ),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(CupertinoIcons.gear_alt_fill,
-                          color: AppColors.primaryTeal, size: 14.sp),
-                      horizontalSpacing(6),
+                      Icon(CupertinoIcons.add,
+                          color: AppColors.primaryTeal, size: 13.sp),
+                      horizontalSpacing(4),
                       Text(
-                        "Manage / Add",
+                        "Add",
                         style: AppStyles.font13GrayMedium.copyWith(
                           color: AppColors.primaryTeal,
-                          fontWeight: FontWeight.w800,
-                          fontSize: 13.sp,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 12.sp,
                         ),
                       ),
                     ],
@@ -403,23 +248,23 @@ class _GenreChipPickerState extends State<GenreChipPicker> {
               onTap: () => widget.onCategorySelected(cat),
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 220),
-                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                 decoration: BoxDecoration(
                   color: isSelected
-                      ? catColor.withValues(alpha: 0.32)
-                      : catColor.withValues(alpha: 0.10),
-                  borderRadius: BorderRadius.circular(16.r),
+                      ? catColor.withValues(alpha: 0.28)
+                      : catColor.withValues(alpha: 0.08),
+                  borderRadius: BorderRadius.circular(14.r),
                   border: Border.all(
                     color: isSelected
                         ? catColor
-                        : catColor.withValues(alpha: 0.28),
-                    width: isSelected ? 1.6 : 1.0,
+                        : catColor.withValues(alpha: 0.22),
+                    width: isSelected ? 1.5 : 1.0,
                   ),
                   boxShadow: isSelected
                       ? [
                           BoxShadow(
-                            color: catColor.withValues(alpha: 0.3),
-                            blurRadius: 10,
+                            color: catColor.withValues(alpha: 0.25),
+                            blurRadius: 8,
                             offset: const Offset(0, 3),
                           ),
                         ]
@@ -429,21 +274,21 @@ class _GenreChipPickerState extends State<GenreChipPicker> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
-                      width: 8.w,
-                      height: 8.h,
+                      width: 6.w,
+                      height: 6.h,
                       decoration: BoxDecoration(
                         color: catColor,
                         shape: BoxShape.circle,
                       ),
                     ),
-                    horizontalSpacing(8),
+                    horizontalSpacing(6),
                     Text(
                       cat,
                       style: AppStyles.font13GrayMedium.copyWith(
                         color: isSelected ? AppColors.white : catColor,
                         fontWeight:
                             isSelected ? FontWeight.w800 : FontWeight.w600,
-                        fontSize: 13.sp,
+                        fontSize: 12.sp,
                       ),
                     ),
                   ],

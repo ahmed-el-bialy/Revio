@@ -1,9 +1,9 @@
 import 'package:code_alpha_flash_card_app/core/constants/app_constants.dart';
+import 'package:code_alpha_flash_card_app/core/widgets/genre_chip_picker.dart';
+import 'package:code_alpha_flash_card_app/features/cards/data/models/card_model.dart';
 import 'package:code_alpha_flash_card_app/core/theming/app_colors.dart';
 import 'package:code_alpha_flash_card_app/core/theming/app_styles.dart';
-import 'package:code_alpha_flash_card_app/core/widgets/genre_chip_picker.dart';
 import 'package:code_alpha_flash_card_app/features/add_new_card/ui/widgets/app_text_form.dart';
-import 'package:code_alpha_flash_card_app/features/cards/data/models/card_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -39,7 +39,7 @@ class _EditCardBottomSheetState extends State<EditCardBottomSheet> {
     _questionController = TextEditingController(text: widget.cardModel.front);
     _hintController = TextEditingController(text: widget.cardModel.hint ?? '');
     _answerController = TextEditingController(text: widget.cardModel.back);
-    _selectedCategory = widget.cardModel.category ?? AppConstants.categories.first;
+    _selectedCategory = widget.cardModel.category ?? AppConstants.defaultTopic;
   }
 
   @override
@@ -70,10 +70,7 @@ class _EditCardBottomSheetState extends State<EditCardBottomSheet> {
         ],
       ),
       padding: EdgeInsets.only(
-        bottom: MediaQuery
-            .of(context)
-            .viewInsets
-            .bottom + 24.h,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 24.h,
         left: 20.w,
         right: 20.w,
         top: 12.h,
@@ -111,8 +108,7 @@ class _EditCardBottomSheetState extends State<EditCardBottomSheet> {
                             borderRadius: BorderRadius.circular(12.r),
                             boxShadow: [
                               BoxShadow(
-                                color: AppColors.primaryTeal.withValues(
-                                    alpha: 0.3),
+                                color: AppColors.primaryTeal.withValues(alpha: 0.3),
                                 blurRadius: 8,
                                 offset: const Offset(0, 2),
                               ),
@@ -181,9 +177,7 @@ class _EditCardBottomSheetState extends State<EditCardBottomSheet> {
                   hint: "Enter the question...",
                   maxLines: 2,
                   validator: (value) {
-                    if (value == null || value
-                        .trim()
-                        .isEmpty) {
+                    if (value == null || value.trim().isEmpty) {
                       return 'Please enter a question';
                     }
                     return null;
@@ -219,9 +213,7 @@ class _EditCardBottomSheetState extends State<EditCardBottomSheet> {
                   hint: "Enter the answer...",
                   maxLines: 3,
                   validator: (value) {
-                    if (value == null || value
-                        .trim()
-                        .isEmpty) {
+                    if (value == null || value.trim().isEmpty) {
                       return 'Please enter an answer';
                     }
                     return null;
@@ -233,13 +225,11 @@ class _EditCardBottomSheetState extends State<EditCardBottomSheet> {
                     if (widget.onDeleteCard != null) ...[
                       IconButton(
                         style: IconButton.styleFrom(
-                          backgroundColor: AppColors.favoriteColor.withValues(
-                              alpha: 0.15),
+                          backgroundColor: AppColors.favoriteColor.withValues(alpha: 0.15),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(14.r),
                             side: BorderSide(
-                              color: AppColors.favoriteColor.withValues(
-                                  alpha: 0.4),
+                              color: AppColors.favoriteColor.withValues(alpha: 0.4),
                               width: 1.2,
                             ),
                           ),
@@ -273,9 +263,7 @@ class _EditCardBottomSheetState extends State<EditCardBottomSheet> {
                               id: widget.cardModel.id,
                               category: _selectedCategory,
                               front: _questionController.text.trim(),
-                              hint: _hintController.text
-                                  .trim()
-                                  .isEmpty
+                              hint: _hintController.text.trim().isEmpty
                                   ? null
                                   : _hintController.text.trim(),
                               back: _answerController.text.trim(),

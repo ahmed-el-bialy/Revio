@@ -1,10 +1,13 @@
 import 'package:hive_ce/hive_ce.dart';
+import '../../features/cards/data/models/card_model.dart';
 
 class CategoryManager {
   static const String _boxName = 'custom_categories_box';
   static const String _deletedCoreBoxName = 'deleted_core_categories_box';
-  
+  static const String _cardsBoxName = 'flash_cards_box';
+
   static const List<String> coreCategories = [
+    'No Topic',
     'General',
     'Science',
     'Math',
@@ -25,6 +28,13 @@ class CategoryManager {
     return null;
   }
 
+  static Box<CardModel>? get _cardsBox {
+    if (Hive.isBoxOpen(_cardsBoxName)) {
+      return Hive.box<CardModel>(_cardsBoxName);
+    }
+    return null;
+  }
+
   /// Get all custom user-added categories saved in Hive
   static List<String> getCustomCategories() {
     final b = _customBox;
@@ -36,13 +46,20 @@ class CategoryManager {
   static List<String> getDeletedCoreCategories() {
     final b = _deletedCoreBox;
     if (b == null) return [];
-    return b.values.toList();
+    // Ensure 'No Topic' can never be deleted
+    final deleted = b.values.toList();
+    deleted.removeWhere((c) => c.toLowerCase() == 'no topic');
+    return deleted;
   }
 
-  /// Get active core categories (excluding deleted ones)
+  /// Get active core categories (excluding deleted ones, but 'No Topic' is never deleted)
   static List<String> getActiveCoreCategories() {
     final deleted = getDeletedCoreCategories();
-    return coreCategories.where((c) => !deleted.contains(c)).toList();
+    final active = coreCategories.where((c) => !deleted.contains(c)).toList();
+    if (!active.any((c) => c.toLowerCase() == 'no topic')) {
+      active.insert(0, 'No Topic');
+    }
+    return active;
   }
 
   /// Save a new custom category if not already existing
@@ -55,7 +72,7 @@ class CategoryManager {
     final deletedKeys = deletedBox.keys.toList();
     for (var key in deletedKeys) {
       final val = deletedBox.get(key);
-      if (val != null && val.toLowerCase() == trimmed.toLowerCase()) {
+      if (val != null && val.toLowerCase() == trimmed.toLowerCase() && val.toLowerCase() != 'no topic') {
         await deletedBox.delete(key);
         return true;
       }
@@ -72,29 +89,98 @@ class CategoryManager {
     return true;
   }
 
-  /// Delete any category (whether core or custom)
-  static Future<void> deleteCategory(String categoryName) async {
+  /// Rename a custom category and update all associated cards ('No Topic' cannot be renamed)
+  static Future<bool> renameCategory(String oldName, String newName) async {
+    final trimmedOld = oldName.trim();
+    if (trimmedOld.toLowerCase() == 'no topic') return false;
+
+    final trimmedNew = newName.trim();
+    if (trimmedNew.isEmpty || trimmedOld.toLowerCase() == trimmedNew.toLowerCase()) {
+      return false;
+    }
+
+    // Check duplicate
+    final allCurrent = [...getActiveCoreCategories(), ...getCustomCategories()];
+    if (allCurrent.any((c) => c.toLowerCase() == trimmedNew.toLowerCase())) {
+      return false;
+    }
+
+    // Update in custom categories box if it's custom
+    final b = _customBox;
+    if (b != null) {
+      final keys = b.keys.toList();
+      for (var key in keys) {
+        final val = b.get(key);
+        if (val != null && val.trim().toLowerCase() == trimmedOld.toLowerCase()) {
+          await b.put(key, trimmedNew);
+        }
+      }
+    }
+
+    // Update cards in cards box
+    final cardsBox = _cardsBox ?? await Hive.openBox<CardModel>(_cardsBoxName);
+    for (var card in cardsBox.values) {
+      if (card.category == trimmedOld) {
+        final updated = CardModel(
+          id: card.id,
+          category: trimmedNew,
+          front: card.front,
+          hint: card.hint,
+          back: card.back,
+          isFavorite: card.isFavorite,
+          difficulty: card.difficulty,
+          createdAt: card.createdAt,
+        );
+        await cardsBox.put(card.id, updated);
+      }
+    }
+
+    return true;
+  }
+
+  /// Delete any category and reassign its cards to 'No Topic' ('No Topic' cannot be deleted)
+  static Future<void> deleteCategoryAndReassignCards(String categoryName) async {
     final trimmed = categoryName.trim();
+    if (trimmed.toLowerCase() == 'no topic') return; // Immutable system default
     
     // Check if core category
     if (coreCategories.any((c) => c.toLowerCase() == trimmed.toLowerCase())) {
       final matchingCore = coreCategories.firstWhere((c) => c.toLowerCase() == trimmed.toLowerCase());
+      if (matchingCore.toLowerCase() == 'no topic') return;
+      
       final deletedBox = _deletedCoreBox ?? await Hive.openBox<String>(_deletedCoreBoxName);
       if (!getDeletedCoreCategories().contains(matchingCore)) {
         await deletedBox.add(matchingCore);
       }
-      return;
+    } else {
+      // Delete from custom categories box
+      final b = _customBox;
+      if (b != null) {
+        final keys = b.keys.toList();
+        for (var key in keys) {
+          final val = b.get(key);
+          if (val != null && val.trim().toLowerCase() == trimmed.toLowerCase()) {
+            await b.delete(key);
+          }
+        }
+      }
     }
 
-    // Otherwise delete from custom categories
-    final b = _customBox;
-    if (b == null) return;
-    
-    final keys = b.keys.toList();
-    for (var key in keys) {
-      final val = b.get(key);
-      if (val != null && val.trim().toLowerCase() == trimmed.toLowerCase()) {
-        await b.delete(key);
+    // Reassign cards to 'No Topic'
+    final cardsBox = _cardsBox ?? await Hive.openBox<CardModel>(_cardsBoxName);
+    for (var card in cardsBox.values) {
+      if (card.category == trimmed) {
+        final updated = CardModel(
+          id: card.id,
+          category: 'No Topic',
+          front: card.front,
+          hint: card.hint,
+          back: card.back,
+          isFavorite: card.isFavorite,
+          difficulty: card.difficulty,
+          createdAt: card.createdAt,
+        );
+        await cardsBox.put(card.id, updated);
       }
     }
   }

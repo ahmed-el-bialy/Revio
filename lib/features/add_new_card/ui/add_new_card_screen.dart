@@ -23,7 +23,7 @@ class _AddCardScreenState extends State<AddCardScreen> {
   final _questionController = TextEditingController();
   final _hintController = TextEditingController();
   final _answerController = TextEditingController();
-  String _selectedCategory = AppConstants.categories.first;
+  String _selectedCategory = AppConstants.defaultTopic;
 
   @override
   void dispose() {
