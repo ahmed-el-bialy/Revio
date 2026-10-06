@@ -20,6 +20,7 @@ Future<void> main() async {
 
   await Hive.openBox<CardModel>('flash_cards_box');
   await Hive.openBox<String>('custom_categories_box');
+  await Hive.openBox<String>('deleted_core_categories_box');
 
   runApp(Revio(appRouter: AppRouter()));
 }

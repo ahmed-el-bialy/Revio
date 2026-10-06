@@ -84,6 +84,7 @@ class QuizCubit extends Cubit<QuizState> {
       );
       emit(nextState);
       await Future.delayed(const Duration(milliseconds: 800));
+      if (state is! QuizInProgress) return; // Guard against race conditions
       _moveToNextOrComplete(nextState);
     } else {
       final nextState = QuizInProgress(
@@ -103,6 +104,7 @@ class QuizCubit extends Cubit<QuizState> {
       );
       emit(nextState);
       await Future.delayed(const Duration(seconds: 2));
+      if (state is! QuizInProgress) return; // Guard against race conditions
       _moveToNextOrComplete(nextState);
     }
   }
@@ -136,6 +138,11 @@ class QuizCubit extends Cubit<QuizState> {
     final shuffled = !currentState.isShuffled;
     final newCards = List<CardModel>.from(currentState.cards);
     if (shuffled) newCards.shuffle();
+
+    _skippedCount = 0;
+    _stopwatch
+      ..reset()
+      ..start();
 
     emit(QuizInProgress(
       cards: newCards,

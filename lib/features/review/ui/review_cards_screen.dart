@@ -6,6 +6,7 @@ import 'package:code_alpha_flash_card_app/core/widgets/app_background_glow.dart'
 import 'package:code_alpha_flash_card_app/features/cards/data/models/card_model.dart';
 import 'package:code_alpha_flash_card_app/features/cards/logic/get_all_cards_cubit.dart';
 import 'package:code_alpha_flash_card_app/features/cards/logic/get_all_cards_state.dart';
+import 'package:code_alpha_flash_card_app/features/cards/ui/widgets/confirm_message.dart';
 import 'package:code_alpha_flash_card_app/features/cards/ui/widgets/flash_card.dart';
 import 'package:code_alpha_flash_card_app/core/widgets/genre_chip_picker.dart';
 import 'package:code_alpha_flash_card_app/features/review/ui/widgets/add_card_modal_bottom_sheet.dart';
@@ -206,10 +207,21 @@ class _ReviewCardsScreenState extends State<ReviewCardsScreen> {
                                 itemCount: filteredCards.length,
                                 itemBuilder: (context, index) {
                                   final cardModel = filteredCards[index];
+                                  final deleteCubit = context.read<DeleteCardCubit>();
 
                                   return Dismissible(
                                     key: Key(cardModel.id),
                                     direction: DismissDirection.endToStart,
+                                    confirmDismiss: (direction) async {
+                                      final confirmed = await showDialog<bool>(
+                                        context: context,
+                                        builder: (ctx) => ConfirmMessage(
+                                          deleteCubit: deleteCubit,
+                                          cardModel: cardModel,
+                                        ),
+                                      );
+                                      return confirmed ?? false;
+                                    },
                                     background: Container(
                                       margin: EdgeInsets.symmetric(
                                           horizontal: 16.w, vertical: 10.h),
@@ -241,9 +253,7 @@ class _ReviewCardsScreenState extends State<ReviewCardsScreen> {
                                       ),
                                     ),
                                     onDismissed: (_) {
-                                      context
-                                          .read<DeleteCardCubit>()
-                                          .emitDeleteCard(cardModel.id);
+                                      // Already deleted inside ConfirmMessage
                                     },
                                     child: Padding(
                                       padding: EdgeInsets.symmetric(

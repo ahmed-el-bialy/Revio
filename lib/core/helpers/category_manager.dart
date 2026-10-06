@@ -46,7 +46,6 @@ class CategoryManager {
   static List<String> getDeletedCoreCategories() {
     final b = _deletedCoreBox;
     if (b == null) return [];
-    // Ensure 'No Topic' can never be deleted
     final deleted = b.values.toList();
     deleted.removeWhere((c) => c.toLowerCase() == 'no topic');
     return deleted;
@@ -89,7 +88,7 @@ class CategoryManager {
     return true;
   }
 
-  /// Rename a custom category and update all associated cards ('No Topic' cannot be renamed)
+  /// Rename a category (whether core or custom) and update all associated cards
   static Future<bool> renameCategory(String oldName, String newName) async {
     final trimmedOld = oldName.trim();
     if (trimmedOld.toLowerCase() == 'no topic') return false;
@@ -105,14 +104,28 @@ class CategoryManager {
       return false;
     }
 
-    // Update in custom categories box if it's custom
-    final b = _customBox;
-    if (b != null) {
-      final keys = b.keys.toList();
-      for (var key in keys) {
-        final val = b.get(key);
-        if (val != null && val.trim().toLowerCase() == trimmedOld.toLowerCase()) {
-          await b.put(key, trimmedNew);
+    // Check if oldName is a core category
+    final isCore = coreCategories.any((c) => c.toLowerCase() == trimmedOld.toLowerCase());
+
+    if (isCore) {
+      // Hide old core category and add newName as custom category
+      final matchingCore = coreCategories.firstWhere((c) => c.toLowerCase() == trimmedOld.toLowerCase());
+      final deletedBox = _deletedCoreBox ?? await Hive.openBox<String>(_deletedCoreBoxName);
+      if (!getDeletedCoreCategories().contains(matchingCore)) {
+        await deletedBox.add(matchingCore);
+      }
+      final customBox = _customBox ?? await Hive.openBox<String>(_boxName);
+      await customBox.add(trimmedNew);
+    } else {
+      // Update in custom categories box if it's custom
+      final b = _customBox;
+      if (b != null) {
+        final keys = b.keys.toList();
+        for (var key in keys) {
+          final val = b.get(key);
+          if (val != null && val.trim().toLowerCase() == trimmedOld.toLowerCase()) {
+            await b.put(key, trimmedNew);
+          }
         }
       }
     }

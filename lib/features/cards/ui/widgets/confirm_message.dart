@@ -50,7 +50,7 @@ class ConfirmMessage extends StatelessWidget {
               children: [
                 Expanded(
                   child: TextButton(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () => Navigator.pop(context, false),
                     style: TextButton.styleFrom(
                       padding: EdgeInsets.symmetric(vertical: 12.h),
                       shape: RoundedRectangleBorder(
@@ -74,7 +74,7 @@ class ConfirmMessage extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: () {
                       deleteCubit.emitDeleteCard(cardModel.id);
-                      Navigator.pop(context);
+                      Navigator.pop(context, true);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.error.withValues(alpha: 0.2),

@@ -156,7 +156,7 @@ class _QuizResultsScreenState extends State<QuizResultsScreen> with SingleTicker
               ),
               verticalSpacing(48),
               ElevatedButton(
-                onPressed: () => Navigator.pop(context, true),
+                onPressed: () => Navigator.pop(context, true), // Play again -> returns true
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.indigoAccent,
                   padding: EdgeInsets.symmetric(vertical: 16.h),
@@ -171,7 +171,7 @@ class _QuizResultsScreenState extends State<QuizResultsScreen> with SingleTicker
               ),
               verticalSpacing(16),
               TextButton(
-                onPressed: () => Navigator.pop(context, false),
+                onPressed: () => Navigator.pop(context, false), // Back to home -> returns false
                 style: TextButton.styleFrom(
                   padding: EdgeInsets.symmetric(vertical: 16.h),
                 ),

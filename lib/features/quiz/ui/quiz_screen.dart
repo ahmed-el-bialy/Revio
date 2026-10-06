@@ -33,6 +33,7 @@ class _QuizScreenState extends State<QuizScreen> {
   final TextEditingController _answerController = TextEditingController();
   final Map<String, GlobalKey<FlipCardState>> _flipKeys = {};
   bool _isHintVisible = false;
+  int? _lastIndex;
 
   @override
   void dispose() {
@@ -66,9 +67,9 @@ class _QuizScreenState extends State<QuizScreen> {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: BlocListener<QuizCubit, QuizState>(
-          listener: (context, state) {
+          listener: (context, state) async {
             if (state is QuizCompleted) {
-              Navigator.pushReplacementNamed(
+              final playAgain = await Navigator.pushNamed(
                 context,
                 AppConstants.quizResultsScreen,
                 arguments: QuizResultsArguments(
@@ -79,6 +80,12 @@ class _QuizScreenState extends State<QuizScreen> {
                   timeTaken: state.timeTaken,
                 ),
               );
+              if (!context.mounted) return;
+              if (playAgain == true) {
+                context.read<QuizCubit>().emitShowModeSelection();
+              } else {
+                Navigator.pop(context);
+              }
             }
           },
           child: BlocBuilder<GetAllCardsCubit, GetAllCardsState>(
@@ -110,6 +117,11 @@ class _QuizScreenState extends State<QuizScreen> {
   }
 
   Widget _buildQuizInProgress(QuizInProgress state) {
+    if (_lastIndex != state.currentIndex) {
+      _lastIndex = state.currentIndex;
+      _isHintVisible = false;
+    }
+
     final currentCard = state.currentCard;
     final isAnswered = state.isCurrentAnswered;
 
@@ -166,6 +178,7 @@ class _QuizScreenState extends State<QuizScreen> {
                       onSkip: () {
                         context.read<QuizCubit>().emitSkipCard();
                         _answerController.clear();
+                        setState(() => _isHintVisible = false);
                       },
                     ),
                   verticalSpacing(10),
