@@ -62,7 +62,7 @@ class CardFormBackScope extends StatelessWidget {
                   child: const Text(
                     "Discard",
                     style: TextStyle(
-                      color: Colors.redAccent,
+                      color: AppColors.errorRed,
                       fontWeight: FontWeight.bold,
                     ),
                   ),

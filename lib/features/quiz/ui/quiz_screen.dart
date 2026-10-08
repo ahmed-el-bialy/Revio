@@ -1,8 +1,8 @@
+import 'package:flip_card/flip_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flip_card/flip_card.dart';
 
 import '../../../core/constants/app_constants.dart';
 import '../../../core/helpers/spacing.dart';
@@ -116,7 +116,7 @@ class _QuizScreenState extends State<QuizScreen> {
           body: BlocListener<QuizCubit, QuizState>(
             listener: (context, state) async {
               if (state is QuizCompleted) {
-                final playAgain = await Navigator.pushNamed(
+                await Navigator.pushNamed(
                   context,
                   AppConstants.quizResultsScreen,
                   arguments: QuizResultsArguments(

@@ -28,7 +28,7 @@ class CardSearchBar extends StatelessWidget {
           Expanded(
             child: TextField(
               controller: searchController,
-              style: const TextStyle(color: Colors.white),
+              style: AppStyles.font14WhiteSemiBold.copyWith(fontWeight: FontWeight.normal),
               onChanged: onChanged,
               decoration: InputDecoration(
                 hintText: "Search cards...",
