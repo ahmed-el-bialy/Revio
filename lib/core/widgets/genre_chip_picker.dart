@@ -158,9 +158,14 @@ class _GenreChipPickerState extends State<GenreChipPicker> {
                     return;
                   }
 
-                  await CategoryManager.addCustomCategory(newCat);
+                  final added = await CategoryManager.addCustomCategory(newCat);
 
                   if (!dialogContext.mounted) return;
+                  if (!added) {
+                    setDialogState(() => errorMessage = "Topic already exists");
+                    return;
+                  }
+
                   Navigator.of(dialogContext).pop();
 
                   if (!mounted) return;
@@ -242,7 +247,7 @@ class _GenreChipPickerState extends State<GenreChipPicker> {
             final isSelected = cat == widget.selectedCategory;
             final catColor = cat == 'All'
                 ? AppColors.primaryTeal
-                : (AppColors.categoryColors[cat] ?? AppColors.skyBlue);
+                : (AppColors.categoryColors[cat] ?? AppColors.primaryTeal);
 
             return GestureDetector(
               onTap: () => widget.onCategorySelected(cat),

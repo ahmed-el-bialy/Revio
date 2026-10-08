@@ -26,7 +26,7 @@ class TypingQuizInput extends StatelessWidget {
       children: [
         TextField(
           controller: controller,
-          enabled: !isAnswered,
+          readOnly: isAnswered,
           style: AppStyles.font16WhiteSemiBold,
           decoration: InputDecoration(
             hintText: isAnswered ? "Answer submitted" : "Type your answer...",

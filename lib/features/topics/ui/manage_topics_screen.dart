@@ -132,8 +132,14 @@ class _ManageTopicsScreenState extends State<ManageTopicsScreen> {
                     return;
                   }
 
-                  await CategoryManager.addCustomCategory(newCat);
+                  final added = await CategoryManager.addCustomCategory(newCat);
                   if (!dialogContext.mounted) return;
+
+                  if (!added) {
+                    setDialogState(() => errorMessage = "Topic already exists");
+                    return;
+                  }
+
                   Navigator.of(dialogContext).pop();
 
                   if (!mounted) return;
@@ -411,13 +417,50 @@ class _ManageTopicsScreenState extends State<ManageTopicsScreen> {
                                           color: AppColors.errorRed,
                                           size: 18.sp),
                                       onPressed: () async {
-                                        await CategoryManager
-                                            .deleteCategoryAndReassignCards(
-                                                topic);
-                                        if (!context.mounted) return;
-                                        _loadTopics();
-                                        SnackBarHelper.showInfo(context,
-                                            "Deleted '$topic' (cards moved to No Topic)");
+                                        final confirm = await showDialog<bool>(
+                                          context: context,
+                                          builder: (ctx) => AlertDialog(
+                                            backgroundColor: AppColors.surfaceDark,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(20.r),
+                                              side: BorderSide(
+                                                color: AppColors.errorRed.withValues(alpha: 0.35),
+                                                width: 1.5,
+                                              ),
+                                            ),
+                                            title: Text(
+                                              "Delete Topic?",
+                                              style: AppStyles.font18BoldIndigoAccent.copyWith(color: AppColors.white),
+                                            ),
+                                            content: Text(
+                                              "All flashcards in '$topic' will be moved to 'No Topic'.",
+                                              style: AppStyles.font14White70,
+                                            ),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () => Navigator.pop(ctx, false),
+                                                child: Text("Cancel", style: AppStyles.font14Gray),
+                                              ),
+                                              ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: AppColors.errorRed,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(10.r),
+                                                  ),
+                                                ),
+                                                onPressed: () => Navigator.pop(ctx, true),
+                                                child: Text("Delete", style: AppStyles.font14WhiteSemiBold),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                        if (confirm == true && context.mounted) {
+                                          await CategoryManager.deleteCategoryAndReassignCards(topic);
+                                          if (!context.mounted) return;
+                                          _loadTopics();
+                                          SnackBarHelper.showInfo(context,
+                                              "Deleted '$topic' (cards moved to No Topic)");
+                                        }
                                       },
                                       constraints: const BoxConstraints(),
                                       padding: EdgeInsets.all(4.w),

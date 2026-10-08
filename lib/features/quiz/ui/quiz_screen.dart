@@ -64,52 +64,100 @@ class _QuizScreenState extends State<QuizScreen> {
   Widget build(BuildContext context) {
     return AppBackgroundGlow(
       variant: GlowVariant.quiz,
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: BlocListener<QuizCubit, QuizState>(
-          listener: (context, state) async {
-            if (state is QuizCompleted) {
-              final playAgain = await Navigator.pushNamed(
-                context,
-                AppConstants.quizResultsScreen,
-                arguments: QuizResultsArguments(
-                  totalCards: state.totalCards,
-                  correctCount: state.correctCount,
-                  wrongCount: state.wrongCount,
-                  skippedCount: state.skippedCount,
-                  timeTaken: state.timeTaken,
+      child: PopScope(
+        canPop: false,
+        onPopInvokedWithResult: (didPop, result) async {
+          if (didPop) return;
+          final quizState = context.read<QuizCubit>().state;
+          if (quizState is QuizInProgress) {
+            final confirm = await showDialog<bool>(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                backgroundColor: AppColors.cardSurface,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.r),
                 ),
-              );
-              if (!context.mounted) return;
-              if (playAgain == true) {
-                context.read<QuizCubit>().emitShowModeSelection();
-              } else {
-                Navigator.pop(context);
-              }
+                title: Text(
+                  "Exit Quiz?",
+                  style: AppStyles.font18BoldIndigoAccent
+                      .copyWith(color: AppColors.white),
+                ),
+                content: Text(
+                  "Your current progress will be lost.",
+                  style: AppStyles.font14White70,
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(ctx, false),
+                    child: Text("Cancel", style: AppStyles.font14Gray),
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.error,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.r),
+                      ),
+                    ),
+                    onPressed: () => Navigator.pop(ctx, true),
+                    child: Text("Exit", style: AppStyles.font14WhiteSemiBold),
+                  ),
+                ],
+              ),
+            );
+            if (confirm == true && context.mounted) {
+              context.read<QuizCubit>().emitShowModeSelection();
             }
-          },
-          child: BlocBuilder<GetAllCardsCubit, GetAllCardsState>(
-            builder: (context, cardsState) {
-              return BlocBuilder<QuizCubit, QuizState>(
-                builder: (context, quizState) {
-                  if (quizState is QuizModeSelection) {
-                    final cards = cardsState is CardsLoadedSuccess
-                        ? cardsState.cards
-                        : <CardModel>[];
-                    return QuizModeSelectionView(
-                      cards: cards,
-                      onSelectMode: (mode) => _startQuiz(mode, cards),
-                    );
-                  }
-
-                  if (quizState is QuizInProgress) {
-                    return _buildQuizInProgress(quizState);
-                  }
-
-                  return const SizedBox.shrink();
-                },
-              );
+          } else {
+            Navigator.pop(context);
+          }
+        },
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          body: BlocListener<QuizCubit, QuizState>(
+            listener: (context, state) async {
+              if (state is QuizCompleted) {
+                final playAgain = await Navigator.pushNamed(
+                  context,
+                  AppConstants.quizResultsScreen,
+                  arguments: QuizResultsArguments(
+                    totalCards: state.totalCards,
+                    correctCount: state.correctCount,
+                    wrongCount: state.wrongCount,
+                    skippedCount: state.skippedCount,
+                    timeTaken: state.timeTaken,
+                  ),
+                );
+                if (!context.mounted) return;
+                if (playAgain == true) {
+                  context.read<QuizCubit>().emitShowModeSelection();
+                } else {
+                  Navigator.pop(context);
+                }
+              }
             },
+            child: BlocBuilder<GetAllCardsCubit, GetAllCardsState>(
+              builder: (context, cardsState) {
+                return BlocBuilder<QuizCubit, QuizState>(
+                  builder: (context, quizState) {
+                    if (quizState is QuizModeSelection) {
+                      final cards = cardsState is CardsLoadedSuccess
+                          ? cardsState.cards
+                          : <CardModel>[];
+                      return QuizModeSelectionView(
+                        cards: cards,
+                        onSelectMode: (mode) => _startQuiz(mode, cards),
+                      );
+                    }
+
+                    if (quizState is QuizInProgress) {
+                      return _buildQuizInProgress(quizState);
+                    }
+
+                    return const SizedBox.shrink();
+                  },
+                );
+              },
+            ),
           ),
         ),
       ),
@@ -225,6 +273,37 @@ class _QuizScreenState extends State<QuizScreen> {
                   style: AppStyles.font14WhiteSemiBold,
                 ),
               ],
+            ),
+          ),
+          horizontalSpacing(8),
+          GestureDetector(
+            onTap: () => context.read<QuizCubit>().emitAdvanceNext(),
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+              decoration: BoxDecoration(
+                color: AppColors.error.withValues(alpha: 0.25),
+                borderRadius: BorderRadius.circular(8.r),
+                border: Border.all(
+                    color: AppColors.error.withValues(alpha: 0.5)),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    "Next",
+                    style: AppStyles.font12White38.copyWith(
+                      color: AppColors.white,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  horizontalSpacing(4),
+                  Icon(
+                    CupertinoIcons.arrow_right,
+                    color: AppColors.white,
+                    size: 12.sp,
+                  ),
+                ],
+              ),
             ),
           ),
         ],

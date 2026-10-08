@@ -63,12 +63,15 @@ class QuizCubit extends Cubit<QuizState> {
     if (currentState.isCurrentAnswered) return;
 
     final currentCard = currentState.currentCard;
-    final answerResult = AnswerMatcher.match(userAnswer, currentCard.back);
+    final isMcq = currentState.quizMode == QuizMode.multipleChoice;
+    final isCorrect = isMcq
+        ? userAnswer.trim().toLowerCase() == currentCard.back.trim().toLowerCase()
+        : AnswerMatcher.match(userAnswer, currentCard.back).isCorrect;
 
     final updatedAnsweredIds = Set<String>.from(currentState.answeredCardIds)
       ..add(currentCard.id);
 
-    if (answerResult.isCorrect) {
+    if (isCorrect) {
       final nextState = QuizInProgress(
         cards: currentState.cards,
         currentIndex: currentState.currentIndex,
@@ -84,7 +87,7 @@ class QuizCubit extends Cubit<QuizState> {
       );
       emit(nextState);
       await Future.delayed(const Duration(milliseconds: 800));
-      if (state is! QuizInProgress) return; // Guard against race conditions
+      if (state != nextState) return; // Guard against race conditions
       _moveToNextOrComplete(nextState);
     } else {
       final nextState = QuizInProgress(
@@ -104,9 +107,16 @@ class QuizCubit extends Cubit<QuizState> {
       );
       emit(nextState);
       await Future.delayed(const Duration(seconds: 2));
-      if (state is! QuizInProgress) return; // Guard against race conditions
+      if (state != nextState) return; // Guard against race conditions
       _moveToNextOrComplete(nextState);
     }
+  }
+
+  void emitAdvanceNext() {
+    final currentState = state;
+    if (currentState is! QuizInProgress) return;
+    if (!currentState.isCurrentAnswered) return;
+    _moveToNextOrComplete(currentState);
   }
 
   void emitSkipCard() {

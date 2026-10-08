@@ -94,14 +94,18 @@ class CategoryManager {
     if (trimmedOld.toLowerCase() == 'no topic') return false;
 
     final trimmedNew = newName.trim();
-    if (trimmedNew.isEmpty || trimmedOld.toLowerCase() == trimmedNew.toLowerCase()) {
+    if (trimmedNew.isEmpty || trimmedOld == trimmedNew) {
       return false;
     }
 
-    // Check duplicate
-    final allCurrent = [...getActiveCoreCategories(), ...getCustomCategories()];
-    if (allCurrent.any((c) => c.toLowerCase() == trimmedNew.toLowerCase())) {
-      return false;
+    final isCaseChangeOnly = trimmedOld.toLowerCase() == trimmedNew.toLowerCase();
+
+    // Check duplicate if not a case-only change
+    if (!isCaseChangeOnly) {
+      final allCurrent = [...getActiveCoreCategories(), ...getCustomCategories()];
+      if (allCurrent.any((c) => c.toLowerCase() == trimmedNew.toLowerCase())) {
+        return false;
+      }
     }
 
     // Check if oldName is a core category

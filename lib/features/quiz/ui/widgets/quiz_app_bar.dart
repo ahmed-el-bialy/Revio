@@ -14,6 +14,56 @@ class QuizAppBar extends StatelessWidget {
 
   const QuizAppBar({super.key, required this.state});
 
+  Future<bool> _confirmAction({
+    required BuildContext context,
+    required String title,
+    required String content,
+    required String actionLabel,
+    required Color actionColor,
+  }) async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppColors.cardSurface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.r),
+        ),
+        title: Text(
+          title,
+          style: AppStyles.font18BoldIndigoAccent.copyWith(color: AppColors.white),
+        ),
+        content: Text(
+          content,
+          style: AppStyles.font14White70,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text("Cancel", style: AppStyles.font14Gray),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: actionColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.r),
+              ),
+            ),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(
+              actionLabel,
+              style: AppStyles.font14WhiteSemiBold.copyWith(
+                color: actionColor == AppColors.primaryTeal
+                    ? AppColors.darkBackground
+                    : AppColors.white,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+    return result ?? false;
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -23,8 +73,18 @@ class QuizAppBar extends StatelessWidget {
         child: Row(
           children: [
             IconButton(
-              onPressed: () =>
-                  context.read<QuizCubit>().emitShowModeSelection(),
+              onPressed: () async {
+                final confirm = await _confirmAction(
+                  context: context,
+                  title: "Exit Quiz?",
+                  content: "Your current progress will be lost.",
+                  actionLabel: "Exit",
+                  actionColor: AppColors.error,
+                );
+                if (confirm && context.mounted) {
+                  context.read<QuizCubit>().emitShowModeSelection();
+                }
+              },
               icon: Icon(
                 CupertinoIcons.back,
                 color: AppColors.lavenderGray,
@@ -130,7 +190,18 @@ class QuizAppBar extends StatelessWidget {
 
   Widget _buildShuffleBadge(BuildContext context, QuizInProgress state) {
     return GestureDetector(
-      onTap: () => context.read<QuizCubit>().emitToggleShuffle(),
+      onTap: () async {
+        final confirm = await _confirmAction(
+          context: context,
+          title: "Shuffle Cards?",
+          content: "Shuffling will reset your score and timer for this session.",
+          actionLabel: "Shuffle",
+          actionColor: AppColors.primaryTeal,
+        );
+        if (confirm && context.mounted) {
+          context.read<QuizCubit>().emitToggleShuffle();
+        }
+      },
       child: Container(
         padding: EdgeInsets.all(8.w),
         decoration: BoxDecoration(

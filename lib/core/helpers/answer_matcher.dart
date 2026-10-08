@@ -17,6 +17,14 @@ class AnswerMatcher {
     final user = _normalize(userAnswer);
     final correct = _normalize(correctAnswer);
 
+    if (user.isEmpty || correct.isEmpty) {
+      return const AnswerResult(
+        isCorrect: false,
+        matchType: MatchType.wrong,
+        similarity: 0.0,
+      );
+    }
+
     if (user == correct) {
       return const AnswerResult(
         isCorrect: true,
@@ -25,8 +33,8 @@ class AnswerMatcher {
       );
     }
 
-    final userNum = _extractNumber(user);
-    final correctNum = _extractNumber(correct);
+    final userNum = _extractPureNumber(user);
+    final correctNum = _extractPureNumber(correct);
     if (userNum != null && correctNum != null && userNum == correctNum) {
       return const AnswerResult(
         isCorrect: true,
@@ -35,8 +43,13 @@ class AnswerMatcher {
       );
     }
 
-    if (user.contains(correct) || correct.contains(user)) {
-      if (user.length > 2 && correct.length > 2) {
+    final shorterLen = user.length < correct.length ? user.length : correct.length;
+    final longerLen = user.length > correct.length ? user.length : correct.length;
+
+    // Check partial containment match (must meet length ratio and not conflict on negation)
+    if ((user.contains(correct) || correct.contains(user)) &&
+        !_hasNegationConflict(user, correct)) {
+      if (shorterLen >= 3 && (shorterLen / longerLen >= 0.45)) {
         return const AnswerResult(
           isCorrect: true,
           matchType: MatchType.partial,
@@ -45,8 +58,13 @@ class AnswerMatcher {
       }
     }
 
-    final similarity = _calculateSimilarity(user, correct);
-    if (similarity >= 0.75) {
+    // Check fuzzy match via Levenshtein distance
+    final distance = _levenshtein(user, correct);
+    final similarity = (longerLen - distance) / longerLen;
+
+    final maxDistanceAllowed = longerLen <= 5 ? 0 : (longerLen <= 10 ? 1 : 2);
+
+    if (distance <= maxDistanceAllowed && similarity >= 0.82) {
       return AnswerResult(
         isCorrect: true,
         matchType: MatchType.fuzzy,
@@ -65,32 +83,27 @@ class AnswerMatcher {
     return str.toLowerCase().trim().replaceAll(RegExp(r'\s+'), ' ');
   }
 
-  static num? _extractNumber(String str) {
-    final match = RegExp(r'\d+').firstMatch(str);
-    if (match != null) {
-      return num.tryParse(match.group(0)!);
-    }
-    
+  static num? _extractPureNumber(String str) {
+    final parsed = num.tryParse(str);
+    if (parsed != null) return parsed;
+
     final words = {
       'zero': 0, 'one': 1, 'two': 2, 'three': 3, 'four': 4,
       'five': 5, 'six': 6, 'seven': 7, 'eight': 8, 'nine': 9, 'ten': 10
     };
-    
-    for (final word in words.keys) {
-      if (str.contains(word)) return words[word];
-    }
-    
-    return null;
+
+    return words[str];
   }
 
-  static double _calculateSimilarity(String s1, String s2) {
-    if (s1.isEmpty || s2.isEmpty) return 0.0;
-    
-    final longer = s1.length > s2.length ? s1 : s2;
-    final shorter = s1.length > s2.length ? s2 : s1;
-    
-    final distance = _levenshtein(longer, shorter);
-    return (longer.length - distance) / longer.length;
+  static bool _hasNegationConflict(String s1, String s2) {
+    final negations = {'not', 'no', 'never', 'non', 'without', "don't", "isnt", "arent", "cannot"};
+    final words1 = s1.split(RegExp(r'\W+')).toSet();
+    final words2 = s2.split(RegExp(r'\W+')).toSet();
+
+    final hasNeg1 = words1.any((w) => negations.contains(w));
+    final hasNeg2 = words2.any((w) => negations.contains(w));
+
+    return hasNeg1 != hasNeg2;
   }
 
   static int _levenshtein(String s1, String s2) {
@@ -121,3 +134,4 @@ class AnswerMatcher {
     return (a < b) ? (a < c ? a : c) : (b < c ? b : c);
   }
 }
+

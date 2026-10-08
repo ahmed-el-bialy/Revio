@@ -147,9 +147,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     selectedCategory: _selectedCategoryFilter,
                     includeAllOption: true,
                     customCategories: customCats,
-                    onCategorySelected: (cat) {
+                    onCategorySelected: (cat) async {
                       setState(() => _selectedCategoryFilter = cat);
-                      context.pushNamed(AppConstants.reviewCardsScreen, cat);
+                      await context.pushNamed(AppConstants.reviewCardsScreen, cat);
+                      if (mounted) {
+                        setState(() => _selectedCategoryFilter = "All");
+                      }
                     },
                   );
                 },

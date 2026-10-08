@@ -71,57 +71,63 @@ class CardFace extends StatelessWidget {
             ],
           ),
           padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 20.h),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (cat != null && cat.isNotEmpty) ...[
-                Container(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),
-                  decoration: BoxDecoration(
-                    color: catColor.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(8.r),
-                    border: Border.all(
-                        color: catColor.withValues(alpha: 0.3)),
-                  ),
-                  child: Text(
-                    cat,
-                    style: AppStyles.font11GrayRegular.copyWith(
-                      color: catColor,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 0.3,
-                    ),
-                  ),
-                ),
-                verticalSpacing(10),
-              ],
-              Text(
-                isFront ? cardModel.front : cardModel.back,
-                style: AppStyles.font18WhiteMedium,
-                textAlign: TextAlign.center,
-              ),
-              if (shouldDisplayHint) ...[
-                verticalSpacing(12),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(CupertinoIcons.lightbulb,
-                        color: AppColors.softAmber, size: 14.sp),
-                    horizontalSpacing(4),
-                    Flexible(
+          child: Center(
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (cat != null && cat.isNotEmpty) ...[
+                    Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),
+                      decoration: BoxDecoration(
+                        color: catColor.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(8.r),
+                        border: Border.all(
+                            color: catColor.withValues(alpha: 0.3)),
+                      ),
                       child: Text(
-                        cardModel.hint!,
-                        style: AppStyles.font14AccentCyan.copyWith(
-                          color: AppColors.softAmber,
-                          fontSize: 13.sp,
+                        cat,
+                        style: AppStyles.font11GrayRegular.copyWith(
+                          color: catColor,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.3,
                         ),
-                        textAlign: TextAlign.center,
                       ),
                     ),
+                    verticalSpacing(10),
                   ],
-                ),
-              ],
-            ],
+                  Text(
+                    isFront ? cardModel.front : cardModel.back,
+                    style: AppStyles.font18WhiteMedium,
+                    textAlign: TextAlign.center,
+                  ),
+                  if (shouldDisplayHint) ...[
+                    verticalSpacing(12),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(CupertinoIcons.lightbulb,
+                            color: AppColors.softAmber, size: 14.sp),
+                        horizontalSpacing(4),
+                        Flexible(
+                          child: Text(
+                            cardModel.hint!,
+                            style: AppStyles.font14AccentCyan.copyWith(
+                              color: AppColors.softAmber,
+                              fontSize: 13.sp,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ],
+              ),
+            ),
           ),
         ),
 
