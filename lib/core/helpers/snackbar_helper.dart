@@ -9,7 +9,8 @@ class SnackBarHelper {
       context,
       message,
       icon: Icons.check_circle_rounded,
-      backgroundColor: AppColors.success,
+      backgroundColor: const Color(0xFF064E3B),
+      accentColor: AppColors.emeraldGold,
     );
   }
 
@@ -18,7 +19,8 @@ class SnackBarHelper {
       context,
       message,
       icon: Icons.error_rounded,
-      backgroundColor: AppColors.error,
+      backgroundColor: const Color(0xFF881337),
+      accentColor: const Color(0xFFFB7185),
     );
   }
 
@@ -27,7 +29,8 @@ class SnackBarHelper {
       context,
       message,
       icon: Icons.info_rounded,
-      backgroundColor: AppColors.indigoAccent,
+      backgroundColor: const Color(0xFF1E293B),
+      accentColor: AppColors.primaryTeal,
     );
   }
 
@@ -36,13 +39,14 @@ class SnackBarHelper {
     String message, {
     required IconData icon,
     required Color backgroundColor,
+    required Color accentColor,
   }) {
     ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(
           children: [
-            Icon(icon, color: Colors.white, size: 20.sp),
+            Icon(icon, color: accentColor, size: 20.sp),
             SizedBox(width: 12.w),
             Expanded(
               child: Text(
@@ -52,11 +56,15 @@ class SnackBarHelper {
             ),
           ],
         ),
-        backgroundColor: backgroundColor.withValues(alpha: 0.9),
+        backgroundColor: backgroundColor,
         behavior: SnackBarBehavior.floating,
         margin: EdgeInsets.all(16.w),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16.r),
+          side: BorderSide(
+            color: accentColor.withValues(alpha: 0.4),
+            width: 1.0,
+          ),
         ),
         duration: const Duration(seconds: 2),
       ),

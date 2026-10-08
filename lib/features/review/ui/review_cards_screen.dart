@@ -199,7 +199,9 @@ class _ReviewCardsScreenState extends State<ReviewCardsScreen> {
                       ),
                       Expanded(
                         child: filteredCards.isEmpty
-                            ? const LibraryEmptyState()
+                            ? LibraryEmptyState(
+                                hasCardsOverall: state.cards.isNotEmpty,
+                              )
                             : ListView.builder(
                                 physics: const BouncingScrollPhysics(),
                                 padding: EdgeInsets.only(
