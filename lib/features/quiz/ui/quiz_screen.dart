@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../core/constants/app_constants.dart';
+import '../../../core/helpers/routing_extension.dart';
 import '../../../core/helpers/spacing.dart';
 import '../../../core/theming/app_colors.dart';
 import '../../../core/theming/app_styles.dart';
@@ -116,10 +117,9 @@ class _QuizScreenState extends State<QuizScreen> {
           body: BlocListener<QuizCubit, QuizState>(
             listener: (context, state) async {
               if (state is QuizCompleted) {
-                await Navigator.pushNamed(
-                  context,
+                await context.pushNamed(
                   AppConstants.quizResultsScreen,
-                  arguments: QuizResultsArguments(
+                  QuizResultsArguments(
                     totalCards: state.totalCards,
                     correctCount: state.correctCount,
                     wrongCount: state.wrongCount,

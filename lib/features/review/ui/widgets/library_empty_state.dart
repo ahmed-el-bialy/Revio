@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../core/helpers/spacing.dart';
+
 import '../../../../core/theming/app_colors.dart';
 import '../../../../core/theming/app_styles.dart';
 
@@ -27,13 +29,13 @@ class LibraryEmptyState extends StatelessWidget {
               size: 52.sp,
               color: AppColors.primaryTeal.withValues(alpha: 0.8),
             ),
-            SizedBox(height: 16.h),
+            verticalSpacing(16),
             Text(
               hasCardsOverall ? "No cards match your filters" : "No cards yet",
               style: AppStyles.font18WhiteBold,
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 8.h),
+            verticalSpacing(8),
             Text(
               hasCardsOverall
                   ? "Try searching for a different keyword or clear your active filters."

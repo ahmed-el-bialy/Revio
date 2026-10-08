@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../core/helpers/spacing.dart';
 import '../../../../core/theming/app_colors.dart';
 import '../../../../core/theming/app_styles.dart';
 
@@ -64,7 +65,7 @@ class CardSearchBar extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(width: 8.w),
+          horizontalSpacing(8),
           IconButton(
             icon: Icon(
               onlyFavorites

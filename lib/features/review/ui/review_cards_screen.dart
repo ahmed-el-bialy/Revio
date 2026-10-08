@@ -252,7 +252,7 @@ class _ReviewCardsScreenState extends State<ReviewCardsScreen> {
                                                 .copyWith(
                                                     color: AppColors.errorRed),
                                           ),
-                                          SizedBox(width: 8.w),
+                                          horizontalSpacing(8),
                                           Icon(CupertinoIcons.trash,
                                               color: AppColors.errorRed,
                                               size: 22.sp),

@@ -1,3 +1,4 @@
+import 'package:code_alpha_flash_card_app/core/helpers/spacing.dart';
 import 'package:code_alpha_flash_card_app/core/theming/app_colors.dart';
 import 'package:code_alpha_flash_card_app/core/theming/app_styles.dart';
 import 'package:code_alpha_flash_card_app/features/cards/data/models/card_model.dart';
@@ -34,18 +35,18 @@ class ConfirmMessage extends StatelessWidget {
               color: AppColors.error,
               size: 40.sp,
             ),
-            SizedBox(height: 16.h),
+            verticalSpacing(16),
             Text(
               "Delete Card",
               style: AppStyles.font17WhiteBold.copyWith(fontSize: 18.sp),
             ),
-            SizedBox(height: 12.h),
+            verticalSpacing(12),
             Text(
               "Are you sure you want to delete this card? This action cannot be undone.",
               style: AppStyles.font14White70,
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 24.h),
+            verticalSpacing(24),
             Row(
               children: [
                 Expanded(
@@ -69,7 +70,7 @@ class ConfirmMessage extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(width: 12.w),
+                horizontalSpacing(12),
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {

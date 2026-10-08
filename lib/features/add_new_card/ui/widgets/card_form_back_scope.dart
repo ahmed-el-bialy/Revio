@@ -59,9 +59,9 @@ class CardFormBackScope extends StatelessWidget {
                     context.pop();
                     context.pop();
                   },
-                  child: const Text(
+                  child: Text(
                     "Discard",
-                    style: TextStyle(
+                    style: AppStyles.font14WhiteSemiBold.copyWith(
                       color: AppColors.errorRed,
                       fontWeight: FontWeight.bold,
                     ),
