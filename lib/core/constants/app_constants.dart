@@ -11,6 +11,8 @@ class AppConstants {
 
   static const String manageTopicsScreen = "/ManageTopics";
 
+  static const String genresScreen = "/Genres";
+
   static const String defaultTopic = 'No Topic';
 
   static const List<String> categories = [

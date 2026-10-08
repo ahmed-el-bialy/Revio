@@ -1,3 +1,4 @@
+import 'package:code_alpha_flash_card_app/features/genres/ui/genres_screen.dart';
 import 'package:code_alpha_flash_card_app/features/add_new_card/logic/add_card_cubit.dart';
 import 'package:code_alpha_flash_card_app/features/add_new_card/ui/add_new_card_screen.dart';
 import 'package:code_alpha_flash_card_app/features/cards/data/repo/cards_repo.dart';
@@ -54,6 +55,9 @@ class AppRouter {
 
       case AppConstants.manageTopicsScreen:
         return _fadeRoute(const ManageTopicsScreen());
+
+      case AppConstants.genresScreen:
+        return _fadeRoute(const GenresScreen());
 
       default:
         return _fadeRoute(const HomeScreen());
