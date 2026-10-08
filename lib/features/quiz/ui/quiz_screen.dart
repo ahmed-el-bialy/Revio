@@ -128,11 +128,8 @@ class _QuizScreenState extends State<QuizScreen> {
                   ),
                 );
                 if (!context.mounted) return;
-                if (playAgain == true) {
-                  context.read<QuizCubit>().emitShowModeSelection();
-                } else {
-                  Navigator.pop(context);
-                }
+                // Always return to mode selection after completing the quiz.
+                context.read<QuizCubit>().emitShowModeSelection();
               }
             },
             child: BlocBuilder<GetAllCardsCubit, GetAllCardsState>(

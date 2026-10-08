@@ -171,12 +171,12 @@ class _QuizResultsScreenState extends State<QuizResultsScreen> with SingleTicker
               ),
               verticalSpacing(16),
               TextButton(
-                onPressed: () => Navigator.pop(context, false), // Back to home -> returns false
+                onPressed: () => Navigator.pop(context, false), // Back to modes -> returns false
                 style: TextButton.styleFrom(
                   padding: EdgeInsets.symmetric(vertical: 16.h),
                 ),
                 child: Text(
-                  "Back to Home",
+                  "Back to Modes",
                   style: AppStyles.font15IndigoAccentSemiBold,
                 ),
               ),
