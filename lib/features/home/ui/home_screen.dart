@@ -12,7 +12,6 @@ import 'package:code_alpha_flash_card_app/features/home/ui/widgets/home_header.d
 import 'package:code_alpha_flash_card_app/features/home/ui/widgets/home_hero_greeting.dart';
 import 'package:code_alpha_flash_card_app/features/home/ui/widgets/quick_action_card.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -143,17 +142,45 @@ class _HomeScreenState extends State<HomeScreen> {
                       .toSet()
                       .toList();
 
-                  return GenreChipPicker(
-                    selectedCategory: _selectedCategoryFilter,
-                    includeAllOption: true,
-                    customCategories: customCats,
-                    onCategorySelected: (cat) async {
-                      setState(() => _selectedCategoryFilter = cat);
-                      await context.pushNamed(AppConstants.reviewCardsScreen, cat);
-                      if (mounted) {
-                        setState(() => _selectedCategoryFilter = "All");
-                      }
-                    },
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      GenreChipPicker(
+                        selectedCategory: _selectedCategoryFilter,
+                        includeAllOption: true,
+                        customCategories: customCats,
+                        onCategorySelected: (cat) async {
+                          setState(() => _selectedCategoryFilter = cat);
+                          await context.pushNamed(AppConstants.reviewCardsScreen, cat);
+                          if (mounted) {
+                            setState(() => _selectedCategoryFilter = "All");
+                          }
+                        },
+                      ),
+                      if (customCats.isEmpty)
+                        Padding(
+                          padding: EdgeInsets.only(left: 20.w, right: 20.w, top: 12.h),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Icon(
+                                CupertinoIcons.info_circle_fill,
+                                color: AppColors.softAmber,
+                                size: 16.sp,
+                              ),
+                              horizontalSpacing(8),
+                              Expanded(
+                                child: Text(
+                                  "You don't have any topics yet! Tap 'Manage' to add some or create a new card.",
+                                  style: AppStyles.font12LavenderGray.copyWith(
+                                    color: AppColors.softAmber,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                    ],
                   );
                 },
               ),
@@ -189,14 +216,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                   final cards = state is CardsLoadedSuccess
                                       ? state.cards
                                       : <CardModel>[];
+                                  final favCount = cards
+                                      .where((c) => c.isFavorite == true)
+                                      .length;
                                   return QuickActionCard(
-                                    icon: CupertinoIcons.book_fill,
-                                    title: "My Library",
-                                    subtitle: "${cards.length} Flashcards",
-                                    accentColor: AppColors.primaryTeal,
+                                    icon: CupertinoIcons.star_fill,
+                                    title: "Favorites",
+                                    subtitle: "$favCount Cards",
+                                    accentColor: AppColors.softAmber,
                                     onTap: () => context.pushNamed(
                                       AppConstants.reviewCardsScreen,
-                                      null,
+                                      '__FAVORITES__',
                                     ),
                                   );
                                 },

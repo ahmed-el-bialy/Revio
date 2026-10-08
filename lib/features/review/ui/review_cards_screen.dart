@@ -39,7 +39,12 @@ class _ReviewCardsScreenState extends State<ReviewCardsScreen> {
   @override
   void initState() {
     super.initState();
-    _selectedCategory = widget.initialCategory ?? 'All';
+    if (widget.initialCategory == '__FAVORITES__') {
+      _selectedCategory = 'All';
+      _onlyFavorites = true;
+    } else {
+      _selectedCategory = widget.initialCategory ?? 'All';
+    }
   }
 
   @override
