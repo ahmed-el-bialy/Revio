@@ -1,6 +1,6 @@
 <div align="center">
 
-<h1>&#127183; Revio</h1>
+<h1>🃏 Revio</h1>
 
 <p>
   <a href="https://flutter.dev">
@@ -20,22 +20,41 @@
   </a>
 </p>
 
-<p><strong>A sleek, dark-themed flashcard app built with Flutter, featuring flip card animations, quiz mode with hints, offline storage, and Clean Architecture.</strong></p>
+<p><strong>A dark-themed flashcard app built with Flutter: organize cards by topic, flip to reveal answers, and test yourself with Multiple Choice or Smart Typing quizzes that forgive typos. Offline-first with Hive CE, Cubit state management, and a feature-based architecture.</strong></p>
 
 <p>
-  <a href="https://play.google.com/store/apps/details?id=com.ahmed.revio&hl=en_US"><strong>&#128241; Get it on Google Play</strong></a>
+  <a href="https://play.google.com/store/apps/details?id=com.ahmed.revio&hl=en_US"><strong>📱 Get it on Google Play</strong></a>
 </p>
 
 <p>
-  <a href="#-features">&#10024; Features</a> &#8226; 
-  <a href="#-screenshots">&#128247; Screenshots</a> &#8226; 
-  <a href="#-architecture">&#127959; Architecture</a> &#8226; 
-  <a href="#-getting-started">&#128640; Getting Started</a> &#8226; 
-  <a href="#-author">&#128100; Author</a>
+  <a href="#-features">✨ Features</a> •
+  <a href="#-screenshots">📷 Screenshots</a> •
+  <a href="#-technical-stack">🔧 Stack</a> •
+  <a href="#-architecture">🏗 Architecture</a> •
+  <a href="#-getting-started">🚀 Getting Started</a> •
+  <a href="#-author">👤 Author</a>
 </p>
 
 </div>
 
+---
+
+## 📖 Table of Contents
+
+- [Demo Video](#-demo-video)
+- [Overview](#-overview)
+- [Features](#-features)
+- [Screenshots](#-screenshots)
+- [Technical Stack](#-technical-stack)
+- [Architecture](#-architecture)
+- [Smart Answer Matching](#-smart-answer-matching)
+- [Dependencies](#-dependencies)
+- [Getting Started](#-getting-started)
+- [Known Limitations](#-known-limitations)
+- [Roadmap](#-roadmap)
+- [Contributing](#-contributing)
+- [License](#-license)
+- [Author](#-author)
 
 ---
 
@@ -43,95 +62,103 @@
 
 ## 🎬 Demo Video
 
-### 📱 Watch Revio in Action
-
-**[▶️ Watch on YouTube Shorts](https://youtube.com/shorts/-9VfbxIcZkU?si=Tcpe0iwRztryd7w4)**
+**[▶️ Watch Revio in Action on YouTube Shorts](https://youtube.com/shorts/FsG1XUAbmDY?si=lvngji7Uz-EKRROJ)**
 
 </div>
 
 ---
 
+## 📖 Overview
 
+**Revio** (v2.0.0) is a Flutter flashcard application for learning and memorization. Cards live in a local Hive CE database, so everything works offline. Version 2 adds topic management, a library with search and filters, two quiz modes, a typo-tolerant answer matcher, and a fully redesigned midnight-and-teal interface.
 
-<div align="center">
+It is a personal portfolio project built to practice Clean Architecture, Cubit/BLoC state management, and local persistence in a real, shippable app.
 
-## &#128214; Overview
+---
 
-</div>
+## ✨ Features
 
-**Revio** is a modern Flutter flashcard application designed for efficient learning and memorization. Built with Clean Architecture and offline-first storage via Hive, it delivers a seamless, beautiful dark-themed user experience with animated flip cards, intelligent quiz mode with hints, and full CRUD operations. Designed as a portfolio project demonstrating best practices in mobile development.
+### 🏠 Home Dashboard
+- Live stats: **Total Cards**, **Favorites**, and **Topics**
+- Topic chips that jump straight into the library filtered by that topic
+- Quick actions: **Start Quiz Challenge**, **My Library**, **New Card**
+
+### 🃏 Flashcards
+- Flip-card animation to reveal the answer (tap to flip in the library)
+- Category badge on every card, with a color per topic
+- Optional hint on the front of the card
+- Mark cards as **favorites**, **edit** them from a bottom sheet, or **delete** them with a confirmation dialog
+
+### 🗂 Library
+- Search across question, answer, and hint
+- Filter by topic and by favorites only
+- Live "Showing X / Y cards" counter
+- Add cards from a bottom sheet without leaving the library
+- Swipe a card to delete, with a confirmation step
+
+### 🏷 Topics
+- Built-in topics: **No Topic**, **General**, **Science**, **Math**, **Language**
+- Create custom topics, rename topics (cards update automatically), and delete topics (their cards move to **No Topic**)
+- **No Topic** is the protected default and can't be renamed or deleted
+
+### 🎯 Quiz
+- **Multiple Choice**: pick the right answer from up to 4 options (needs at least 2 cards)
+- **Smart Typing**: type your answer; typos and short forms are accepted
+- Live correct / wrong counters and a progress bar
+- Show or hide the card's hint during a question
+- Skip a card in typing mode
+- Shuffle toggle (restarts the quiz)
+- Instant feedback, including the correct answer when you miss
+- Results screen with an animated score ring, correct / wrong / skipped counts, time taken, and **Play Again**
+
+### ✍️ Adding Cards
+- Question, optional hint, answer, and topic picker
+- Form validation with clear messages
+- Discard protection when leaving with unsaved text
+- Cards accept Arabic content as well as English (see the quiz screenshots)
+
+### 🔧 Technical Highlights
+- **Feature-based Clean Architecture** with Cubit per feature
+- **Offline-first** persistence with Hive CE, with a stream-based cards list that updates the UI automatically
+- **Custom `AnswerMatcher`** with exact, numeric, partial, and Levenshtein fuzzy matching
+- **Custom-painted** score ring (`CustomPainter`) with animated progress
+- **Responsive** layouts via `flutter_screenutil`
+- Fade page transitions and per-route `BlocProvider`s in a central `AppRouter`
+- Reusable helpers: snackbars, spacing, navigation extension, background glow variants per screen
+- Native splash screen and launcher icons (configured for Android and iOS)
 
 ---
 
 <div align="center">
 
-## &#10024; Features
-
-</div>
-
-### &#127919; Core Features
-- **Flashcard Library** &#128218; Create, read, update, and delete flashcards with ease
-- **Flip Card Animation** &#128260; Smooth 3D flip animation to reveal answers (powered by flip_card)
-- **Quiz Mode** &#127919; Test your knowledge with swipeable cards, Previous/Next navigation, and progress tracking
-- **Smart Hints** &#128161; Optional hints for each card -- reveal when stuck, with graceful handling when no hint exists
-- **Add New Cards** &#10133; Intuitive form with Question (Front), optional Hint, and Answer (Back) fields
-- **Review & Manage** &#128221; Browse all cards in a scrollable list with inline Edit and Delete actions
-- **Card Counter** &#128290; Real-time total cards display on the home dashboard
-- **Discard Protection** &#128737; Prevents accidental data loss when exiting the add card form with unsaved changes
-- **Snackbar Feedback** &#9989; Visual confirmation for all CRUD operations (save, update, delete, refresh)
-- **Dark Theme UI** &#127769; Elegant dark interface with indigo accents for comfortable studying
-
-### &#128295; Technical Highlights
-- **Clean Architecture** &#127959; Feature-based separation with clear layer boundaries
-- **BLoC (Cubit) State Management** &#129504; Predictable, scalable state with 4 states per feature (Initial, Loading, Success, Error)
-- **Hive Local Database** &#128452; Blazing fast, lightweight NoSQL key-value storage for offline persistence
-- **Flip Card Animation** &#127136; 3D card flip using the flip_card package
-- **Responsive Design** &#128208; flutter_screenutil for pixel-perfect layouts across all screen sizes
-- **Custom Typography** &#128395; Manrope font family for modern, readable text
-- **Navigation Extension** &#129517; Clean routing helper for type-safe navigation
-- **Native Splash & Icons** &#128241; Configured launcher icons and splash screen for Android
-- **Form Validation** &#9989; Built-in validation with user-friendly error messages
-- **Confirmation Dialogs** &#9888; Delete confirmation and discard changes dialogs
-
----
-
-<div align="center">
-
-## &#128247; Screenshots
+## 📷 Screenshots
 
 </div>
 
 <div align="center">
 
-### &#128241; App Launch & Home
+### 📱 Launch & Home
 
-| &#127919; App Icon | &#128640; Splash Screen | &#128202; Home Dashboard |
-|:-------------------:|:-------------------------:|:---------------------------:|
-| <img src="screenshots/app_icon.png" width="200"> | <img src="screenshots/splash_screen.png" width="200"> | <img src="screenshots/home_screen.png" width="200"> |
-| Revio on your home screen | Elegant dark splash screen | Card library with total count and navigation |
+| App Icon | Splash Screen | Home Dashboard |
+|:--------:|:-------------:|:--------------:|
+| <img src="screenshots/app_icon.png" width="200"> | <img src="screenshots/splash_screen.png" width="200"> | <img src="screenshots/home.png" width="200"> |
+| Revio on your home screen | Native dark splash | Stats, topics, and quick actions |
 
-### &#10133; Card Creation & Quiz Start
+### 🗂 Library & Cards
 
-| &#128221; Add New Card | &#127919; Quiz -- First Question | &#127136; Quiz -- Mid Session |
-|:-------------------------:|:------------------------------------:|:---------------------------------:|
-| <img src="screenshots/add_new_card_screen.png" width="200"> | <img src="screenshots/first_q_in_quiz_screen.png" width="200"> | <img src="screenshots/quiz_screen.png" width="200"> |
-| Form with Question, Hint, and Answer fields | Start your quiz | Navigate through cards |
+| Manage Library | Create Custom Cards | Organize by Topic |
+|:--------------:|:-------------------:|:-----------------:|
+| <img src="screenshots/manage_library.png" width="200"> | <img src="screenshots/add_card.png" width="200"> | <img src="screenshots/manage_topics.png" width="200"> |
+| Search, filter, flip, edit, delete | Topic, hint, and answer fields | Add, rename, and delete topics |
 
-### &#127136; Quiz Flow & Hints
+### 🎯 Quiz Experience
 
-| &#127136; Quiz -- Last Question | &#128161; Hint Revealed | &#9888; No Hint Available |
-|:------------------------------------:|:--------------------------:|:-----------------------------:|
-| <img src="screenshots/last_q_in_quiz_screen.png" width="200"> | <img src="screenshots/quiz_screen_when_user_use_hint.png" width="200"> | <img src="screenshots/quiz_screen_when_no_hint_exist.png" width="200"> |
-| Finish your session | Helpful hint displayed | Graceful fallback message |
+| Quiz Mode | Multiple Choice | Smart Typing | Results |
+|:---------:|:---------------:|:------------:|:-------:|
+| <img src="screenshots/quiz_mode.png" width="170"> | <img src="screenshots/quiz_mcq.png" width="170"> | <img src="screenshots/quiz_typing.png" width="170"> | <img src="screenshots/quiz_results.png" width="170"> |
+| Choose how to be tested | Real-time feedback | Fuzzy answer matching | Score ring and stats |
 
-### &#128203; Review & Answer Feedback
-
-| &#128221; Review Cards | &#9989; Correct Answer | &#10060; Incorrect Answer |
-|:-------------------------:|:--------------------------:|:------------------------------:|
-| <img src="screenshots/review_cards_screen.png" width="200"> | <img src="screenshots/submit_right_answer.png" width="200"> | <img src="screenshots/submit_wrong_answer.png" width="200"> |
-| Browse, edit, and delete your flashcards | Instant success feedback | Instant error feedback with retry encouragement |
-
-> **Note:** Some screenshots use demo data to showcase specific app features and may not reflect your personal card collection.
+> **Note:** Some screenshots use demo data to showcase specific features.
 
 </div>
 
@@ -139,7 +166,7 @@
 
 <div align="center">
 
-## &#128295; Technical Stack
+## 🔧 Technical Stack
 
 </div>
 
@@ -147,21 +174,20 @@
 
 | Component | Technology | Purpose |
 |:---------:|:----------:|:-------:|
-| **Framework** | Flutter 3.x | Cross-platform UI |
-| **Language** | Dart 3.x | Core development |
-| **State Management** | flutter_bloc ^9.x | BLoC/Cubit pattern |
-| **Local Database** | hive_ce ^2.x | Offline card storage |
-| **Database Flutter** | hive_ce_flutter ^2.x | Hive Flutter integration |
-| **Screen Adaptation** | flutter_screenutil ^5.x | Responsive design |
-| **Card Animation** | flip_card ^0.7.x | 3D flip card effect |
-| **Icons** | cupertino_icons ^1.x | iOS-style icons |
-| **Code Generation** | hive_ce_generator ^1.x | TypeAdapter generation |
-| **Build Runner** | build_runner ^2.x | Code generation tool |
-| **Splash Screen** | flutter_native_splash ^2.x | Native launch screen |
-| **Launcher Icons** | flutter_launcher_icons ^0.14.x | App icon generation |
-| **Project Rename** | rename ^3.x | Bundle ID and app name |
-| **Design** | Material 3 | Latest UI patterns |
-| **Font** | Manrope | Custom typography |
+| **Framework** | Flutter | Cross-platform UI |
+| **Language** | Dart (SDK ^3.12.1) | Core development |
+| **State Management** | flutter_bloc ^9.1.1 | Cubit pattern |
+| **Local Database** | hive_ce ^2.19.3 | Offline card and topic storage |
+| **Hive Flutter** | hive_ce_flutter ^2.3.4 | Hive initialization for Flutter |
+| **Responsive UI** | flutter_screenutil ^5.9.3 | Screen-adaptive sizing |
+| **Card Animation** | flip_card ^0.7.0 | Flip effect |
+| **Icons** | cupertino_icons ^2.0.0 | iOS-style icons |
+| **Code Generation** | hive_ce_generator ^1.11.2, build_runner ^2.15.1 | TypeAdapter and registrar generation |
+| **Splash Screen** | flutter_native_splash ^2.4.8 | Native launch screen |
+| **Launcher Icons** | flutter_launcher_icons ^0.14.4 | App icon generation |
+| **Project Rename** | rename ^3.1.0 | Bundle ID and app name |
+| **Design** | Material 3 | UI foundation |
+| **Font** | Manrope | Typography |
 
 </div>
 
@@ -169,264 +195,166 @@
 
 <div align="center">
 
-## &#127959; Architecture
+## 🏗 Architecture
 
 </div>
 
-### &#128193; Project Structure
+### 📁 Project Structure
 
 ```
 lib/
-|-- main.dart                          # App entry point & Hive initialization
-|-- hive_registrar.g.dart              # Generated Hive adapter registry
-|
-|-- core/                              # Shared core layer (app-wide only)
-|   |-- constants/
-|   |   |-- app_constants.dart         # Route name constants
-|   |-- helpers/
-|   |   |-- routing_extension.dart     # Navigation helper extension
-|   |   |-- snackbar_helper.dart       # Success/Error/Info snackbar helper
-|   |   |-- spacing.dart               # Responsive spacing widgets
-|   |-- routing/
-|   |   |-- app_router.dart            # Route generation with BLoC providers
-|   |-- theming/
-|   |   |-- app_colors.dart            # Dark theme color palette
-|   |   |-- app_styles.dart            # Typography styles
-|
-|-- features/                          # Feature modules
-|   |-- add_new_card/
-|   |   |-- logic/
-|   |   |   |-- add_card_cubit.dart
-|   |   |   |-- add_card_state.dart
-|   |   |-- ui/
-|   |   |   |-- add_new_card_screen.dart
-|   |   |   |-- widgets/
-|   |   |   |   |-- app_text_form.dart
-|   |   |   |   |-- appbar_body.dart
-|   |   |   |   |-- card_form_back_scope.dart
-|   |-- cards/                         # Shared card data + widgets (used by home/quiz/review)
-|   |   |-- data/
-|   |   |   |-- models/
-|   |   |   |   |-- card_model.dart        # Hive card model
-|   |   |   |   |-- card_model.g.dart      # Generated TypeAdapter
-|   |   |   |-- repo/
-|   |   |   |   |-- cards_repo.dart        # CRUD operations via Hive
-|   |   |-- logic/
-|   |   |   |-- get_all_cards_cubit.dart   # Fetch all cards logic (stream-based)
-|   |   |   |-- get_all_cards_state.dart   # State classes
-|   |   |-- ui/
-|   |   |   |-- widgets/
-|   |   |   |   |-- card_face.dart         # Card face with hint & actions
-|   |   |   |   |-- confirm_message.dart   # Delete confirmation dialog
-|   |   |   |   |-- flash_card.dart        # FlipCard wrapper widget
-|   |-- home/
-|   |   |-- models/
-|   |   |   |-- navigation_model.dart
-|   |   |-- ui/
-|   |   |   |-- home_screen.dart
-|   |   |   |-- widgets/
-|   |   |   |   |-- cards_number_container.dart
-|   |   |   |   |-- home_option_tile.dart
-|   |-- quiz/
-|   |   |-- ui/
-|   |   |   |-- quiz_screen.dart
-|   |   |   |-- widgets/
-|   |   |   |   |-- buttons_row.dart
-|   |-- review/
-|   |   |-- logic/
-|   |   |   |-- delete_card/
-|   |   |   |   |-- delete_card_cubit.dart
-|   |   |   |   |-- delete_card_state.dart
-|   |   |   |-- edit_card/
-|   |   |   |   |-- edit_card_cubit.dart
-|   |   |   |   |-- edit_card_state.dart
-|   |   |-- ui/
-|   |   |   |-- review_cards_screen.dart
-|   |   |   |-- widgets/
-|   |   |   |   |-- edit_card_bottom_sheet.dart
+├── main.dart                             # Entry point, Hive init, root providers
+├── hive_registrar.g.dart                 # Generated adapter registry
+│
+├── core/                                 # App-wide shared layer
+│   ├── constants/
+│   │   └── app_constants.dart            # Route names, default topic
+│   ├── helpers/
+│   │   ├── answer_matcher.dart           # Exact / numeric / partial / fuzzy matching
+│   │   ├── category_manager.dart         # Topic CRUD over Hive
+│   │   ├── routing_extension.dart        # Navigation helpers on BuildContext
+│   │   ├── snackbar_helper.dart          # Success / error / info snackbars
+│   │   └── spacing.dart                  # Responsive spacing widgets
+│   ├── routing/
+│   │   └── app_router.dart               # Route generation, fade transitions, BlocProviders
+│   ├── theming/
+│   │   ├── app_colors.dart               # Midnight obsidian & teal palette
+│   │   └── app_styles.dart               # Manrope text styles
+│   └── widgets/
+│       ├── app_background_glow.dart      # Glow backgrounds per screen variant
+│       └── genre_chip_picker.dart        # Topic chips with "Add topic" dialog
+│
+└── features/
+    ├── add_new_card/
+    │   ├── logic/                        # add_card_cubit.dart, add_card_state.dart
+    │   └── ui/
+    │       ├── add_new_card_screen.dart
+    │       └── widgets/                  # app_text_form, appbar_body, card_form_back_scope
+    ├── cards/                            # Shared card data + widgets
+    │   ├── data/
+    │   │   ├── models/                   # card_model.dart, card_model.g.dart
+    │   │   └── repo/                     # cards_repo.dart (Hive CRUD + watch stream)
+    │   ├── logic/                        # get_all_cards_cubit.dart, get_all_cards_state.dart
+    │   └── ui/widgets/                   # card_face, flash_card, confirm_message
+    ├── home/
+    │   └── ui/
+    │       ├── home_screen.dart
+    │       └── widgets/                  # cards_number_container, hero_quiz_card,
+    │                                     # home_header, home_hero_greeting, quick_action_card
+    ├── quiz/
+    │   ├── logic/                        # quiz_cubit.dart, quiz_state.dart
+    │   └── ui/
+    │       ├── quiz_screen.dart
+    │       ├── quiz_results_screen.dart
+    │       └── widgets/                  # quiz_app_bar, quiz_mode_selection_view,
+    │                                     # quiz_mode_selector, quiz_options_view,
+    │                                     # quiz_progress_bar, typing_quiz_input
+    ├── review/
+    │   ├── logic/
+    │   │   ├── delete_card/              # delete_card_cubit.dart, delete_card_state.dart
+    │   │   └── edit_card/                # edit_card_cubit.dart, edit_card_state.dart
+    │   └── ui/
+    │       ├── review_cards_screen.dart
+    │       └── widgets/                  # add_card_modal_bottom_sheet, card_search_bar,
+    │                                     # edit_card_bottom_sheet, library_empty_state
+    └── topics/
+        └── ui/
+            └── manage_topics_screen.dart
 ```
 
-### &#128260; Data Flow
+### 🔄 Data Flow
 
 ```
-    Views          Cubit           Repo           Hive
-  (Widgets)  <---  (State)   <---  (CRUD)   <---  (Local)
-     |
-     v
-   Models
- (HiveObject)
+   UI (Screens/Widgets)  ──▶  Cubit (State)  ──▶  CardsRepo  ──▶  Hive CE (local)
+            ▲                                          │
+            └──────────── watchCards() stream ◀────────┘
 ```
 
-### &#129504; State Management
+`GetAllCardsCubit` is provided at the app root and subscribes to `CardsRepo.watchCards()`, so any add, edit, delete, or favorite change refreshes the home dashboard, library, and quiz automatically. Feature cubits (add, edit, delete, quiz) are provided per route in `AppRouter`.
 
-**BLoC (Cubit) pattern with 4 states per feature:**
+### 🧠 State Management
 
-```dart
-// States (used across all features)
-class InitialState extends FeatureState {}           // Feature idle
-class LoadingState extends FeatureState {}           // Operation in progress
-class SuccessState extends FeatureState {}           // Operation succeeded
-class ErrorState extends FeatureState {               // Operation failed
-  final String error;
-  ErrorState({required this.error});
-}
-```
+Cubit-based, with explicit state classes per feature:
 
-### CardModel
+| Cubit | States |
+|:------|:-------|
+| `AddCardCubit` | Initial → Loading → Success / Error |
+| `EditCardCubit` | Initial → Loading → Success / Error |
+| `DeleteCardCubit` | Initial → Loading → Success / Error |
+| `GetAllCardsCubit` | Initial → Loading → LoadedSuccess / Error (stream-based) |
+| `QuizCubit` | ModeSelection → InProgress → Completed |
+
+### 💾 Data Model
+
 ```dart
 @HiveType(typeId: 0)
 class CardModel extends HiveObject {
-  @HiveField(0)
-  final String id;
-
-  @HiveField(1)
-  final String? category;
-
-  @HiveField(2)
-  final String front;                 // Question (Front side)
-
-  @HiveField(3)
-  final String? hint;                 // Optional hint
-
-  @HiveField(4)
-  final String back;                  // Answer (Back side)
+  @HiveField(0) final String id;
+  @HiveField(1) final String? category;
+  @HiveField(2) final String front;      // Question
+  @HiveField(3) final String? hint;      // Optional hint
+  @HiveField(4) final String back;       // Answer
+  @HiveField(5) final bool? isFavorite;
+  @HiveField(6) final int? difficulty;
+  @HiveField(7) final DateTime? createdAt;
 }
 ```
 
-### NavigationModel
-```dart
-class NavigationModel {
-  final String imagePath;             // Tile icon asset
-  final String title;                 // Tile title
-  final String subtitle;              // Tile description
-  final VoidCallback onTap;           // Navigation action
-}
-```
+Hive boxes opened at startup: `flash_cards_box` (cards), `custom_categories_box` (user topics), and `deleted_core_categories_box` (built-in topics the user removed).
 
 ---
 
-<div align="center">
+## 🧪 Smart Answer Matching
 
-## &#127912; Dark Theme System
+`AnswerMatcher` normalizes both answers (lowercase, trim, collapse whitespace), then checks in order:
 
-</div>
+| Order | Match type | Rule |
+|:-----:|:-----------|:-----|
+| 1 | **Exact** | Normalized strings are equal |
+| 2 | **Numeric** | First number in each answer is the same (digits, or the words zero to ten) |
+| 3 | **Partial** | One answer contains the other (both longer than 2 characters) |
+| 4 | **Fuzzy** | Levenshtein similarity of at least 0.75 |
 
-### Color Palette
-```dart
-class AppColors {
-  static const Color darkBackground = Color(0xFF0B1326);  // Main background
-  static const Color indigoAccent = Color(0xFF818CF8);    // Primary accent
-  static const Color iceBlue = Color(0xFFDAE2FD);         // Headlines
-  static const Color lavenderGray = Color(0xFFC6C5D5);    // Subtitles
-  static const Color gray = Color(0xFF9CA3AF);            // Secondary text
-  static const Color oceanBlue = Color(0xFF1E293B);       // Card surfaces
-  static const Color accentCyan = Color(0xFF00D1FF);      // Hints & borders
-}
-```
-
-### Typography
-```dart
-class AppStyles {
-  static TextStyle font24BoldIndigoAccentManrope = TextStyle(
-    fontSize: 24.sp,
-    fontWeight: FontWeight.bold,
-    fontFamily: "Manrope",
-    color: AppColors.indigoAccent,
-  );
-  static TextStyle font24BoldIceBlueManrope = TextStyle(
-    fontSize: 32.sp,
-    fontWeight: FontWeight.bold,
-    fontFamily: "Manrope",
-    color: AppColors.iceBlue,
-  );
-// ... additional styles
-}
-```
-
-**Applied dynamically to:** AppBar, card backgrounds, text, icons, input borders, buttons, and snackbars.
+Anything else is marked wrong. Multiple Choice mode submits the chosen option through the same matcher.
 
 ---
 
-<div align="center">
-
-## &#128241; Native Configuration
-
-</div>
-
-### Launcher Icons (flutter_launcher_icons.yaml)
-```yaml
-flutter_launcher_icons:
-  image_path: "assets/images/app_icon.png"
-  android: "launcher_icon"
-  min_sdk_android: 21
-  adaptive_icon_background: "#030114"
-  adaptive_icon_foreground: "assets/images/app_icon.png"
-```
-
-### Splash Screen (flutter_native_splash.yaml)
-```yaml
-flutter_native_splash:
-  color: "#030114"
-  image: assets/images/app_icon.png
-  android_12:
-    color: "#030114"
-    image: assets/images/app_icon.png
-```
-
----
-
-<div align="center">
-
-## &#128230; Dependencies
-
-</div>
+## 📦 Dependencies
 
 ```yaml
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.9
-  # State Management
-  flutter_bloc: ^9.1.1
-  # Local Database
-  hive_ce: ^2.19.3
-  hive_ce_flutter: ^2.3.4
-  # UI & Screen
-  flutter_screenutil: ^5.9.3
-  flip_card: ^0.7.0
-  # Native Config
+  cupertino_icons: ^2.0.0
   flutter_native_splash: ^2.4.8
   flutter_launcher_icons: ^0.14.4
   rename: ^3.1.0
+  flutter_screenutil: ^5.9.3
+  flip_card: ^0.7.0
+  hive_ce: ^2.19.3
+  hive_ce_flutter: ^2.3.4
+  flutter_bloc: ^9.1.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
-  build_runner: ^2.15.0
+  build_runner: ^2.15.1
   hive_ce_generator: ^1.11.2
-```
-
-```bash
-flutter pub get
 ```
 
 ---
 
-<div align="center">
+## 🚀 Getting Started
 
-## &#128640; Getting Started
+### 📋 Prerequisites
 
-</div>
+| Requirement | Version |
+|:-----------:|:-------:|
+| Flutter SDK | A release that ships Dart ^3.12.1 |
+| Dart SDK | ^3.12.1 |
 
-### &#128203; Prerequisites
-
-| Requirement | Version | Purpose |
-|:-----------:|:-------:|:-------:|
-| Flutter SDK | >=3.12.1 | Framework |
-| Dart SDK | >=3.12.1 | Language |
-
-### &#9881; Installation
+### ⚙️ Installation
 
 ```bash
 # 1. Clone the repository
@@ -436,8 +364,8 @@ cd Revio
 # 2. Install dependencies
 flutter pub get
 
-# 3. Generate Hive TypeAdapters
-flutter pub run build_runner build
+# 3. (Optional) Regenerate Hive adapters. Generated files are already committed.
+dart run build_runner build --delete-conflicting-outputs
 
 # 4. Run the app
 flutter run
@@ -447,50 +375,46 @@ flutter build apk --release      # Android
 flutter build ios --release      # iOS
 ```
 
----
+### 🎨 Regenerate Icons and Splash
 
-<div align="center">
-
-## &#9888; Known Limitations
-
-</div>
-
-| Issue | Details | Status |
-|:------|:--------|:------:|
-| No categories/tags | Cards are not organized by category | &#128295; Planned |
-| No search/filter | Cannot search within card library | &#128295; Planned |
-| No import/export | Cards cannot be backed up or shared | &#128295; Planned |
-| No spaced repetition | No SRS algorithm for optimal review timing | &#128295; Planned |
-| No statistics | No progress tracking or performance metrics | &#128295; Planned |
-| Single device only | No cloud sync across devices | &#128295; Planned |
+```bash
+dart run flutter_launcher_icons
+dart run flutter_native_splash:create
+```
 
 ---
 
-<div align="center">
+## ⚠️ Known Limitations
 
-## &#128506; Roadmap
+| Issue | Details |
+|:------|:--------|
+| Quiz covers the whole library | Quizzes always use every card; there is no per-topic quiz yet |
+| Numeric matching is shallow | Only the first number is compared and number words stop at ten, so "3 apples" and "3 oranges" both match |
+| Partial matching is lenient | An answer that contains, or is contained in, the correct one is accepted |
+| Skip is typing-only | Multiple Choice mode has no skip button |
+| No quiz history | Results are shown once per session and not stored |
+| No spaced repetition | The `difficulty` field exists in the model but is not used yet |
+| No import / export | Cards cannot be backed up or shared |
+| No cloud sync | Data lives on a single device |
+| English-only interface | Card content can be Arabic, but UI text is not localized |
 
-</div>
+---
 
-- [ ] Card categories and tagging system
-- [ ] Search and filter functionality
-- [ ] Import/Export cards (JSON/CSV)
-- [ ] Spaced Repetition System (SRS)
-- [ ] Study statistics and progress tracking
+## 🗺 Roadmap
+
+- [ ] Per-topic and favorites-only quizzes
+- [ ] Persistent quiz history and statistics
+- [ ] Spaced Repetition System (using the `difficulty` field)
+- [ ] Smarter numeric matching
+- [ ] Import / Export cards (JSON / CSV)
 - [ ] Cloud sync (Firebase)
-- [ ] Card sharing between users
-- [ ] Multiple choice quiz mode
-- [ ] Unit & widget tests
+- [ ] Unit and widget tests
 - [ ] Localization (Arabic, English, French)
 - [ ] Improved accessibility (screen reader support)
 
 ---
 
-<div align="center">
-
-## &#129309; Contributing
-
-</div>
+## 🤝 Contributing
 
 Contributions are welcome!
 
@@ -502,26 +426,18 @@ Contributions are welcome!
 
 ---
 
-<div align="center">
+## 📄 License
 
-## &#128196; License
-
-</div>
-
-This project is licensed under the **MIT License** -- see [LICENSE](LICENSE) for details.
+This project is licensed under the **MIT License**. See [LICENSE](LICENSE) for details.
 
 ---
 
 <div align="center">
 
-## &#128100; Author
+## 👤 Author
 
-</div>
-
-**Ahmed El-Bialy**  
-*Flutter Developer | Mobile App Specialist*
-
-<div align="center">
+**Ahmed El-Bialy**
+*Flutter Developer*
 
 <p>
   <a href="https://www.linkedin.com/in/ahmedel-bialy/">
@@ -530,27 +446,24 @@ This project is licensed under the **MIT License** -- see [LICENSE](LICENSE) for
   <a href="mailto:ah.elbialy.dev@gmail.com">
     <img src="https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white" alt="Email">
   </a>
-  <a href="tel:+201022121573">
-    <img src="https://img.shields.io/badge/Phone-%2B201022121573-brightgreen?style=for-the-badge" alt="Phone">
-  </a>
   <a href="https://github.com/ahmed-el-bialy">
     <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub">
+  </a>
+  <a href="https://youtube.com/@ahmedel-bialy">
+    <img src="https://img.shields.io/badge/YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white" alt="YouTube">
   </a>
 </p>
 
 <p>
-  &#128231; <strong>Email:</strong> ah.elbialy.dev@gmail.com<br>
-  &#128241; <strong>Phone:</strong> +20 102 212 1573
+  📧 <strong>Email:</strong> ah.elbialy.dev@gmail.com<br>
+  📱 <strong>WhatsApp:</strong> +20 10 2212 1573<br>
+  🌐 <strong>Portfolio:</strong> <a href="https://ahmedel-bialy.framer.website/">ahmedel-bialy.framer.website</a>
 </p>
-
-</div>
 
 ---
 
-<div align="center">
+### ⭐ Star this repo if you found it helpful!
 
-### &#11088; Star this repo if you found it helpful!
-
-**Built with &#128153; by Ahmed El-Bialy**
+**Built with 💙 by Ahmed El-Bialy**
 
 </div>
