@@ -1,15 +1,14 @@
-import 'package:code_alpha_flash_card_app/features/genres/ui/genres_screen.dart';
-import 'package:code_alpha_flash_card_app/features/add_new_card/logic/add_card_cubit.dart';
-import 'package:code_alpha_flash_card_app/features/add_new_card/ui/add_new_card_screen.dart';
-import 'package:code_alpha_flash_card_app/features/cards/data/repo/cards_repo.dart';
-import 'package:code_alpha_flash_card_app/features/home/ui/home_screen.dart';
-import 'package:code_alpha_flash_card_app/features/quiz/ui/quiz_screen.dart';
-import 'package:code_alpha_flash_card_app/features/topics/ui/manage_topics_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../features/add_new_card/logic/add_card_cubit.dart';
+import '../../features/add_new_card/ui/add_new_card_screen.dart';
+import '../../features/cards/data/repo/cards_repo.dart';
+import '../../features/genres/ui/genres_screen.dart';
+import '../../features/home/ui/home_screen.dart';
 import '../../features/quiz/logic/quiz_cubit.dart';
 import '../../features/quiz/ui/quiz_results_screen.dart';
+import '../../features/quiz/ui/quiz_screen.dart';
 import '../../features/review/logic/delete_card/delete_card_cubit.dart';
 import '../../features/review/logic/edit_card/edit_card_cubit.dart';
 import '../../features/review/ui/review_cards_screen.dart';
@@ -20,7 +19,7 @@ class AppRouter {
     switch (setting.name) {
       case AppConstants.homeScreen:
         return _fadeRoute(const HomeScreen());
-        
+
       case AppConstants.newCardScreen:
         return _fadeRoute(
           BlocProvider(
@@ -52,9 +51,6 @@ class AppRouter {
       case AppConstants.quizResultsScreen:
         final args = setting.arguments as QuizResultsArguments;
         return _fadeRoute(QuizResultsScreen(args: args));
-
-      case AppConstants.manageTopicsScreen:
-        return _fadeRoute(const ManageTopicsScreen());
 
       case AppConstants.genresScreen:
         return _fadeRoute(const GenresScreen());
