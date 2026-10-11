@@ -1,4 +1,5 @@
 import 'package:code_alpha_flash_card_app/core/constants/app_constants.dart';
+import 'package:code_alpha_flash_card_app/core/helpers/routing_extension.dart';
 import 'package:code_alpha_flash_card_app/core/widgets/genre_chip_picker.dart';
 import 'package:code_alpha_flash_card_app/features/cards/data/models/card_model.dart';
 import 'package:code_alpha_flash_card_app/core/theming/app_colors.dart';
@@ -140,7 +141,7 @@ class _EditCardBottomSheetState extends State<EditCardBottomSheet> {
                         color: AppColors.lavenderGray,
                         size: 18.sp,
                       ),
-                      onPressed: () => Navigator.pop(context),
+                      onPressed: () => context.pop(),
                     ),
                   ],
                 ),
@@ -237,7 +238,7 @@ class _EditCardBottomSheetState extends State<EditCardBottomSheet> {
                         ),
                         onPressed: () {
                           widget.onDeleteCard!();
-                          Navigator.pop(context);
+                          context.pop();
                         },
                         icon: Icon(
                           CupertinoIcons.trash,
@@ -273,7 +274,7 @@ class _EditCardBottomSheetState extends State<EditCardBottomSheet> {
                             );
 
                             widget.onCardUpdated(updatedCard);
-                            Navigator.pop(context);
+                            context.pop();
                           }
                         },
                         child: Text(

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/constants/app_constants.dart';
+import '../../../../core/helpers/routing_extension.dart';
 import '../../../../core/helpers/snackbar_helper.dart';
 import '../../../../core/helpers/spacing.dart';
 import '../../../../core/theming/app_colors.dart';
@@ -63,7 +64,7 @@ class _AddCardModalBottomSheetState extends State<AddCardModalBottomSheet> {
       await CardsRepo().saveCard(newCard);
       if (!mounted) return;
 
-      Navigator.of(context).pop();
+      context.pop();
       SnackBarHelper.showSuccess(context, "Flashcard added successfully! 🎉");
     }
   }
@@ -158,7 +159,7 @@ class _AddCardModalBottomSheetState extends State<AddCardModalBottomSheet> {
                         color: AppColors.lavenderGray,
                         size: 18.sp,
                       ),
-                      onPressed: () => Navigator.of(context).pop(),
+                      onPressed: () => context.pop(),
                     ),
                   ],
                 ),
