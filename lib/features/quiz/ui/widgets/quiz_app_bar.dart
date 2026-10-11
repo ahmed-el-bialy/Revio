@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../core/helpers/routing_extension.dart';
 import '../../../../core/helpers/spacing.dart';
 import '../../../../core/theming/app_colors.dart';
 import '../../../../core/theming/app_styles.dart';
@@ -38,7 +39,7 @@ class QuizAppBar extends StatelessWidget {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
+            onPressed: () => ctx.pop(false),
             child: Text("Cancel", style: AppStyles.font14Gray),
           ),
           ElevatedButton(
@@ -48,7 +49,7 @@ class QuizAppBar extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10.r),
               ),
             ),
-            onPressed: () => Navigator.pop(ctx, true),
+            onPressed: () => ctx.pop(true),
             child: Text(
               actionLabel,
               style: AppStyles.font14WhiteSemiBold.copyWith(
@@ -147,7 +148,7 @@ class QuizAppBar extends StatelessWidget {
             ),
             actions: [
               TextButton(
-                onPressed: () => Navigator.pop(ctx),
+                onPressed: () => ctx.pop(),
                 child: Text(
                   "Got it!",
                   style: AppStyles.font15IndigoAccentSemiBold,
