@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../core/helpers/routing_extension.dart';
 import '../../../../core/theming/app_colors.dart';
 import '../../../../core/theming/app_styles.dart';
 import '../../../cards/data/models/card_model.dart';
@@ -37,7 +38,7 @@ class AppbarBody extends StatelessWidget {
           ),
           onPressed: () {
             FocusScope.of(context).unfocus();
-            Navigator.maybePop(context);
+            context.maybePop();
           },
           child: Text("Cancel", style: AppStyles.font16LavenderGrayBold),
         ),
@@ -49,7 +50,7 @@ class AppbarBody extends StatelessWidget {
             if (state is AddCardSuccess) {
               SnackBarHelper.showSuccess(
                   context, 'Card saved successfully! 🎉');
-              Navigator.pop(context);
+              context.pop();
             } else if (state is AddCardError) {
               SnackBarHelper.showError(context, state.error);
             }

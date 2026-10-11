@@ -1,3 +1,4 @@
+import 'package:code_alpha_flash_card_app/core/helpers/routing_extension.dart';
 import 'package:code_alpha_flash_card_app/core/helpers/spacing.dart';
 import 'package:code_alpha_flash_card_app/core/theming/app_colors.dart';
 import 'package:code_alpha_flash_card_app/core/theming/app_styles.dart';
@@ -51,7 +52,7 @@ class ConfirmMessage extends StatelessWidget {
               children: [
                 Expanded(
                   child: TextButton(
-                    onPressed: () => Navigator.pop(context, false),
+                    onPressed: () => context.pop(false),
                     style: TextButton.styleFrom(
                       padding: EdgeInsets.symmetric(vertical: 12.h),
                       shape: RoundedRectangleBorder(
@@ -75,7 +76,7 @@ class ConfirmMessage extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: () {
                       deleteCubit.emitDeleteCard(cardModel.id);
-                      Navigator.pop(context, true);
+                      context.pop(true);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.error.withValues(alpha: 0.2),
