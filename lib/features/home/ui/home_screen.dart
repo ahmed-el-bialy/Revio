@@ -1,24 +1,79 @@
-import 'package:code_alpha_flash_card_app/core/helpers/category_manager.dart';
-import 'package:code_alpha_flash_card_app/core/helpers/spacing.dart';
-import 'package:code_alpha_flash_card_app/core/theming/app_colors.dart';
-import 'package:code_alpha_flash_card_app/core/theming/app_styles.dart';
-import 'package:code_alpha_flash_card_app/core/widgets/app_background_glow.dart';
-import 'package:code_alpha_flash_card_app/features/cards/logic/get_all_cards_cubit.dart';
-import 'package:code_alpha_flash_card_app/features/cards/logic/get_all_cards_state.dart';
-import 'package:code_alpha_flash_card_app/features/home/ui/widgets/cards_number_container.dart';
-import 'package:code_alpha_flash_card_app/features/home/ui/widgets/hero_quiz_card.dart';
-import 'package:code_alpha_flash_card_app/features/home/ui/widgets/home_header.dart';
-import 'package:code_alpha_flash_card_app/features/home/ui/widgets/home_hero_greeting.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../core/constants/app_constants.dart';
+import '../../../core/helpers/category_manager.dart';
 import '../../../core/helpers/routing_extension.dart';
+import '../../../core/helpers/spacing.dart';
+import '../../../core/theming/app_colors.dart';
+import '../../../core/theming/app_styles.dart';
+import '../../../core/widgets/app_background_glow.dart';
 import '../../cards/data/models/card_model.dart';
+import '../../cards/logic/get_all_cards_cubit.dart';
+import '../../cards/logic/get_all_cards_state.dart';
+import 'widgets/action_card.dart';
+import 'widgets/cards_number_container.dart';
+import 'widgets/genres_wide_card.dart';
+import 'widgets/hero_quiz_card.dart';
+import 'widgets/home_header.dart';
+import 'widgets/home_hero_greeting.dart';
+import 'widgets/motivational_banner.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animController;
+
+  @override
+  void initState() {
+    super.initState();
+    _animController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 900),
+    );
+    _animController.forward();
+  }
+
+  @override
+  void dispose() {
+    _animController.dispose();
+    super.dispose();
+  }
+
+  Widget _buildStaggered({
+    required double begin,
+    required double end,
+    required Widget child,
+  }) {
+    final reduceMotion =
+        MediaQuery.maybeOf(context)?.disableAnimations ?? false;
+    if (reduceMotion) return child;
+
+    final animation = CurvedAnimation(
+      parent: _animController,
+      curve: Interval(begin, end, curve: Curves.easeOutCubic),
+    );
+
+    return AnimatedBuilder(
+      animation: animation,
+      builder: (context, _) {
+        return Opacity(
+          opacity: animation.value,
+          child: Transform.translate(
+            offset: Offset(0, 24 * (1.0 - animation.value)),
+            child: child,
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,17 +85,21 @@ class HomeScreen extends StatelessWidget {
           slivers: [
             // ── Header + Greeting ────────────────────────────────────────────
             SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.w),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    verticalSpacing(16),
-                    const HomeHeader(),
-                    verticalSpacing(20),
-                    const HomeHeroGreeting(),
-                    verticalSpacing(22),
-                  ],
+              child: _buildStaggered(
+                begin: 0.0,
+                end: 0.45,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      verticalSpacing(16),
+                      const HomeHeader(),
+                      verticalSpacing(20),
+                      const HomeHeroGreeting(),
+                      verticalSpacing(22),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -56,26 +115,57 @@ class HomeScreen extends StatelessWidget {
                 final custom = CategoryManager.getCustomCategories();
                 final categoriesCount = activeCore.length + custom.length;
 
-                return CardsNumberContainer(
-                  totalCards: cards.length,
-                  favoriteCards: favCount,
-                  categoriesCount: categoriesCount,
+                return _buildStaggered(
+                  begin: 0.15,
+                  end: 0.60,
+                  child: CardsNumberContainer(
+                    totalCards: cards.length,
+                    favoriteCards: favCount,
+                    categoriesCount: categoriesCount,
+                  ),
                 );
               },
             ),
 
-            sliverVerticalSpacing(28),
+            sliverVerticalSpacing(24),
 
             // ── Section label: Quick Actions ─────────────────────────────────
             SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.w),
-                child: Text(
-                  "Quick Actions",
-                  style: AppStyles.font17BoldIceBlue.copyWith(
-                    fontSize: 17.sp,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 0.3,
+              child: _buildStaggered(
+                begin: 0.30,
+                end: 0.70,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            CupertinoIcons.bolt_fill,
+                            color: AppColors.primaryCyan,
+                            size: 18.sp,
+                          ),
+                          horizontalSpacing(8),
+                          Text(
+                            "Quick Actions",
+                            style: AppStyles.font17BoldIceBlue.copyWith(
+                              fontSize: 17.sp,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 0.3,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Text(
+                        "See all ->",
+                        style: AppStyles.font13GrayMedium.copyWith(
+                          color: AppColors.primaryCyan,
+                          fontSize: 13.sp,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -83,16 +173,44 @@ class HomeScreen extends StatelessWidget {
 
             sliverVerticalSpacing(12),
 
-            // ── Quick Actions ────────────────────────────────────────────────
+            // ── Quick Actions Grid ───────────────────────────────────────────
             SliverPadding(
               padding: EdgeInsets.symmetric(horizontal: 20.w),
               sliver: SliverToBoxAdapter(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // ── Hero: Start Quiz ─────────────────────────────────────
-                    const HeroQuizCard(),
-                    verticalSpacing(12),
+                    // ── Hero: Start Quiz Challenge ───────────────────────────
+                    _buildStaggered(
+                      begin: 0.40,
+                      end: 0.80,
+                      child: const HeroQuizCard(),
+                    ),
+                    verticalSpacing(14),
+
+                    // ── Section label: Your Content ──────────────────────────
+                    _buildStaggered(
+                      begin: 0.48,
+                      end: 0.85,
+                      child: Row(
+                        children: [
+                          Icon(
+                            CupertinoIcons.folder_fill,
+                            color: AppColors.primaryCyan,
+                            size: 17.sp,
+                          ),
+                          horizontalSpacing(8),
+                          Text(
+                            "Your Content",
+                            style: AppStyles.font17BoldIceBlue.copyWith(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    verticalSpacing(10),
 
                     // ── Row: My Library + New Card ───────────────────────────
                     BlocBuilder<GetAllCardsCubit, GetAllCardsState>(
@@ -100,34 +218,36 @@ class HomeScreen extends StatelessWidget {
                         final count = state is CardsLoadedSuccess
                             ? state.cards.length
                             : 0;
-                        return Row(
-                          children: [
-                            Expanded(
-                              child: _ActionCard(
-                                icon: CupertinoIcons.book_fill,
-                                title: "My Library",
-                                subtitle: "$count cards",
-                                accentColor: AppColors.primaryTeal,
-                                onTap: () => context.pushNamed(
-                                  AppConstants.reviewCardsScreen,
-                                  null,
+                        return _buildStaggered(
+                          begin: 0.55,
+                          end: 0.90,
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: ActionCard(
+                                  icon: CupertinoIcons.book_fill,
+                                  title: "My Library",
+                                  subtitle: "$count cards",
+                                  accentColor: AppColors.primaryCyan,
+                                  onTap: () => context.pushNamed(
+                                    AppConstants.reviewCardsScreen,
+                                  ),
                                 ),
                               ),
-                            ),
-                            horizontalSpacing(12),
-                            Expanded(
-                              child: _ActionCard(
-                                icon: CupertinoIcons.add_circled_solid,
-                                title: "New Card",
-                                subtitle: "Add a flashcard",
-                                accentColor: AppColors.emeraldGold,
-                                onTap: () => context.pushNamed(
-                                  AppConstants.newCardScreen,
-                                  null,
+                              horizontalSpacing(12),
+                              Expanded(
+                                child: ActionCard(
+                                  icon: CupertinoIcons.add_circled_solid,
+                                  title: "New Card",
+                                  subtitle: "Add a flashcard",
+                                  accentColor: AppColors.emeraldGold,
+                                  onTap: () => context.pushNamed(
+                                    AppConstants.newCardScreen,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         );
                       },
                     ),
@@ -141,196 +261,33 @@ class HomeScreen extends StatelessWidget {
                             CategoryManager.getActiveCoreCategories();
                         final custom = CategoryManager.getCustomCategories();
                         final count = activeCore.length + custom.length;
-                        return _GenresWideCard(
-                          count: count,
-                          onTap: () => context.pushNamed(
-                            AppConstants.genresScreen,
-                            null,
+                        return _buildStaggered(
+                          begin: 0.62,
+                          end: 0.95,
+                          child: GenresWideCard(
+                            count: count,
+                            onTap: () => context.pushNamed(
+                              AppConstants.genresScreen,
+                            ),
                           ),
                         );
                       },
+                    ),
+
+                    verticalSpacing(14),
+
+                    // ── Motivational Progress Banner ────────────────────────
+                    _buildStaggered(
+                      begin: 0.70,
+                      end: 1.0,
+                      child: const MotivationalBanner(),
                     ),
                   ],
                 ),
               ),
             ),
 
-            sliverVerticalSpacing(40),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Private widget: compact action card (for the 2-column row)
-// ─────────────────────────────────────────────────────────────────────────────
-class _ActionCard extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String subtitle;
-  final Color accentColor;
-  final VoidCallback onTap;
-
-  const _ActionCard({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-    required this.accentColor,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 18.h),
-        decoration: BoxDecoration(
-          color: AppColors.cardSurface,
-          borderRadius: BorderRadius.circular(22.r),
-          border: Border.all(
-            color: accentColor.withValues(alpha: 0.22),
-            width: 1.2,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: accentColor.withValues(alpha: 0.06),
-              blurRadius: 18,
-              offset: const Offset(0, 5),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Icon + arrow
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  padding: EdgeInsets.all(10.w),
-                  decoration: BoxDecoration(
-                    color: accentColor.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(14.r),
-                    border: Border.all(
-                      color: accentColor.withValues(alpha: 0.28),
-                    ),
-                  ),
-                  child: Icon(icon, color: accentColor, size: 22.sp),
-                ),
-                Icon(
-                  CupertinoIcons.chevron_right,
-                  color: accentColor.withValues(alpha: 0.5),
-                  size: 13.sp,
-                ),
-              ],
-            ),
-            verticalSpacing(14),
-            // Title
-            Text(
-              title,
-              style: AppStyles.font16WhiteSemiBold.copyWith(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            verticalSpacing(3),
-            // Subtitle
-            Text(
-              subtitle,
-              style: AppStyles.font12LavenderGrayFaded.copyWith(
-                fontSize: 11.sp,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Private widget: wide Genres card (full width, horizontal layout)
-// ─────────────────────────────────────────────────────────────────────────────
-class _GenresWideCard extends StatelessWidget {
-  final int count;
-  final VoidCallback onTap;
-
-  const _GenresWideCard({required this.count, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    const accentColor = AppColors.softAmber;
-
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 18.h),
-        decoration: BoxDecoration(
-          color: AppColors.cardSurface,
-          borderRadius: BorderRadius.circular(22.r),
-          border: Border.all(
-            color: accentColor.withValues(alpha: 0.25),
-            width: 1.2,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: accentColor.withValues(alpha: 0.07),
-              blurRadius: 18,
-              offset: const Offset(0, 5),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            // Icon container
-            Container(
-              padding: EdgeInsets.all(12.w),
-              decoration: BoxDecoration(
-                color: accentColor.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(16.r),
-                border: Border.all(
-                  color: accentColor.withValues(alpha: 0.28),
-                ),
-              ),
-              child: const Icon(
-                CupertinoIcons.tag_fill,
-                color: accentColor,
-              ),
-            ),
-            horizontalSpacing(16),
-
-            // Text block
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Genres",
-                    style: AppStyles.font16WhiteSemiBold.copyWith(
-                      fontSize: 15.sp,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  verticalSpacing(3),
-                  Text(
-                    "$count categories · Manage & organise",
-                    style: AppStyles.font12LavenderGrayFaded.copyWith(
-                      fontSize: 11.sp,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // Arrow
-            Icon(
-              CupertinoIcons.chevron_right,
-              color: accentColor.withValues(alpha: 0.55),
-              size: 15.sp,
-            ),
+            sliverVerticalSpacing(24),
           ],
         ),
       ),
