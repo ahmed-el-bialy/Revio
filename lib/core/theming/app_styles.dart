@@ -138,15 +138,15 @@ class AppStyles {
   static TextStyle get font14White70 => TextStyle(
         fontSize: 14.sp,
         fontFamily: "Manrope",
-        color: AppColors.white.withValues(alpha: 0.75),
-        height: 1.3,
+        color: AppColors.white.withValues(alpha: 0.85),
+        height: 1.4,
       );
 
   static TextStyle get font12White38 => TextStyle(
         fontSize: 12.sp,
         fontFamily: "Manrope",
-        color: AppColors.white.withValues(alpha: 0.4),
-        height: 1.3,
+        color: AppColors.white.withValues(alpha: 0.6),
+        height: 1.4,
       );
 
   // ── Lavender / Gray ──────────────────────────────────────────────────────────
@@ -154,7 +154,7 @@ class AppStyles {
         fontSize: 16.sp,
         fontFamily: "Manrope",
         color: AppColors.lavenderGray,
-        height: 1.3,
+        height: 1.4,
       );
 
   static TextStyle get font16LavenderGrayBold => TextStyle(
@@ -162,51 +162,51 @@ class AppStyles {
         fontWeight: FontWeight.w600,
         fontFamily: "Manrope",
         color: AppColors.lavenderGray,
-        height: 1.3,
+        height: 1.4,
       );
 
   static TextStyle get font14LavenderGrayMedium => TextStyle(
         fontSize: 14.sp,
         fontWeight: FontWeight.w500,
         fontFamily: "Manrope",
-        color: AppColors.lavenderGray.withValues(alpha: 0.8),
-        height: 1.3,
+        color: AppColors.lavenderGray,
+        height: 1.4,
       );
 
   static TextStyle get font12LavenderGray => TextStyle(
         fontSize: 12.sp,
         fontFamily: "Manrope",
-        color: AppColors.lavenderGray.withValues(alpha: 0.7),
-        height: 1.3,
+        color: AppColors.lavenderGray,
+        height: 1.4,
       );
 
   static TextStyle get font12LavenderGrayFaded => TextStyle(
         fontSize: 12.sp,
         fontFamily: "Manrope",
-        color: AppColors.lavenderGray.withValues(alpha: 0.5),
-        height: 1.3,
+        color: AppColors.lavenderGray.withValues(alpha: 0.65),
+        height: 1.4,
       );
 
   static TextStyle get font14Gray => TextStyle(
         fontSize: 14.sp,
         fontFamily: "Manrope",
-        color: AppColors.gray,
-        height: 1.3,
+        color: AppColors.lavenderGray,
+        height: 1.4,
       );
 
   static TextStyle get font13GrayMedium => TextStyle(
         fontSize: 13.sp,
         fontWeight: FontWeight.w500,
         fontFamily: "Manrope",
-        color: AppColors.warmGray,
-        height: 1.3,
+        color: AppColors.lavenderGray,
+        height: 1.4,
       );
 
   static TextStyle get font11GrayRegular => TextStyle(
-        fontSize: 11.sp,
-        fontWeight: FontWeight.w400,
+        fontSize: 12.sp,
+        fontWeight: FontWeight.w500,
         fontFamily: "Manrope",
-        color: AppColors.warmGray,
+        color: AppColors.lavenderGray,
         height: 1.3,
       );
 

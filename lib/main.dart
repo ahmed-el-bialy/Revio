@@ -1,5 +1,5 @@
 import 'package:code_alpha_flash_card_app/core/constants/app_constants.dart';
-import 'package:code_alpha_flash_card_app/core/theming/app_colors.dart';
+import 'package:code_alpha_flash_card_app/core/theming/app_themes.dart';
 import 'package:code_alpha_flash_card_app/features/cards/data/repo/cards_repo.dart';
 import 'package:code_alpha_flash_card_app/features/cards/logic/get_all_cards_cubit.dart';
 import 'package:flutter/material.dart';
@@ -44,10 +44,7 @@ class Revio extends StatelessWidget {
             initialRoute: AppConstants.homeScreen,
             onGenerateRoute: appRouter.generateRoute,
             debugShowCheckedModeBanner: false,
-            theme: ThemeData(
-              useMaterial3: true,
-              scaffoldBackgroundColor: AppColors.darkBackground,
-            ),
+            theme: AppThemes.darkTheme,
           ),
         );
       },

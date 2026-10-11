@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 
 extension Navigation on BuildContext {
-  Future<dynamic> pushNamed(String routeName, Object? arguments) {
+  Future<dynamic> pushNamed(String routeName, [Object? arguments]) {
     return Navigator.of(this).pushNamed(routeName, arguments: arguments);
   }
 
@@ -15,11 +15,14 @@ extension Navigation on BuildContext {
     ).pushNamedAndRemoveUntil(routeName, predicate, arguments: arguments);
   }
 
-  Future<dynamic> pushReplacementNamed(String routeName, Object? arguments) {
+  Future<dynamic> pushReplacementNamed(String routeName, [Object? arguments]) {
     return Navigator.of(
       this,
     ).pushReplacementNamed(routeName, arguments: arguments);
   }
 
-  void pop() => Navigator.of(this).pop();
+  void pop<T extends Object?>([T? result]) => Navigator.of(this).pop(result);
+
+  Future<bool> maybePop<T extends Object?>([T? result]) =>
+      Navigator.of(this).maybePop(result);
 }
