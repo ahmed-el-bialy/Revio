@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/helpers/spacing.dart';
 import '../../../../core/theming/app_colors.dart';
 import '../../../../core/theming/app_styles.dart';
-import '../../../../core/widgets/app_glass_container.dart';
+import '../../../../core/widgets/app_card.dart';
 
 class GenreCardItem extends StatelessWidget {
   final String genre;
@@ -25,27 +25,26 @@ class GenreCardItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppGlassContainer(
-      accentColor: color,
-      borderRadius: 20,
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+    return AppCard(
+      borderRadius: 18,
+      padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 16.h),
       child: Row(
         children: [
           Container(
-            width: 12.w,
-            height: 12.h,
+            width: 14.w,
+            height: 14.h,
             decoration: BoxDecoration(
               color: color,
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: color.withValues(alpha: 0.6),
-                  blurRadius: 8,
+                  color: color.withValues(alpha: 0.5),
+                  blurRadius: 6,
                 ),
               ],
             ),
           ),
-          horizontalSpacing(12),
+          horizontalSpacing(14),
           Expanded(
             child: Text(
               genre,
@@ -59,14 +58,14 @@ class GenreCardItem extends StatelessWidget {
             IconButton(
               icon: Icon(
                 CupertinoIcons.pencil,
-                color: AppColors.primaryTeal,
+                color: AppColors.primaryCyan,
                 size: 18.sp,
               ),
               onPressed: onEdit,
               constraints: const BoxConstraints(),
-              padding: EdgeInsets.all(4.w),
+              padding: EdgeInsets.all(6.w),
             ),
-            horizontalSpacing(8),
+            horizontalSpacing(6),
             IconButton(
               icon: Icon(
                 CupertinoIcons.trash,
@@ -75,7 +74,7 @@ class GenreCardItem extends StatelessWidget {
               ),
               onPressed: onDelete,
               constraints: const BoxConstraints(),
-              padding: EdgeInsets.all(4.w),
+              padding: EdgeInsets.all(6.w),
             ),
           ] else ...[
             Container(

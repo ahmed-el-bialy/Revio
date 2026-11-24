@@ -1,26 +1,24 @@
-import 'package:code_alpha_flash_card_app/core/helpers/snackbar_helper.dart';
-import 'package:code_alpha_flash_card_app/core/helpers/spacing.dart';
-import 'package:code_alpha_flash_card_app/core/theming/app_colors.dart';
-import 'package:code_alpha_flash_card_app/core/theming/app_styles.dart';
-import 'package:code_alpha_flash_card_app/core/widgets/app_background_glow.dart';
-import 'package:code_alpha_flash_card_app/features/cards/data/models/card_model.dart';
-import 'package:code_alpha_flash_card_app/features/cards/logic/get_all_cards_cubit.dart';
-import 'package:code_alpha_flash_card_app/features/cards/logic/get_all_cards_state.dart';
-import 'package:code_alpha_flash_card_app/features/cards/ui/widgets/confirm_message.dart';
-import 'package:code_alpha_flash_card_app/features/cards/ui/widgets/flash_card.dart';
-import 'package:code_alpha_flash_card_app/core/widgets/genre_chip_picker.dart';
-import 'package:code_alpha_flash_card_app/features/review/ui/widgets/add_card_modal_bottom_sheet.dart';
-import 'package:code_alpha_flash_card_app/features/review/ui/widgets/card_search_bar.dart';
-import 'package:code_alpha_flash_card_app/features/review/ui/widgets/library_empty_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../core/helpers/snackbar_helper.dart';
+import '../../../core/helpers/spacing.dart';
+import '../../../core/theming/app_colors.dart';
+import '../../../core/theming/app_styles.dart';
+import '../../../core/widgets/app_background_glow.dart';
+import '../../../core/widgets/genre_chip_picker.dart';
+import '../../cards/data/models/card_model.dart';
+import '../../cards/logic/get_all_cards_cubit.dart';
+import '../../cards/logic/get_all_cards_state.dart';
 import '../logic/delete_card/delete_card_cubit.dart';
 import '../logic/delete_card/delete_card_state.dart';
 import '../logic/edit_card/edit_card_cubit.dart';
 import '../logic/edit_card/edit_card_state.dart';
+import 'widgets/add_card_modal_bottom_sheet.dart';
+import 'widgets/card_search_bar.dart';
+import 'widgets/library_cards_list.dart';
 
 class ReviewCardsScreen extends StatefulWidget {
   final String? initialCategory;
@@ -129,7 +127,9 @@ class _ReviewCardsScreenState extends State<ReviewCardsScreen> {
                 listener: (context, state) {
                   if (state is DeleteCardSuccess) {
                     SnackBarHelper.showSuccess(
-                        context, "Card deleted successfully");
+                      context,
+                      "Card deleted successfully",
+                    );
                   } else if (state is DeleteCardError) {
                     SnackBarHelper.showError(context, state.error);
                   }
@@ -139,7 +139,9 @@ class _ReviewCardsScreenState extends State<ReviewCardsScreen> {
                 listener: (context, state) {
                   if (state is EditCardSuccess) {
                     SnackBarHelper.showSuccess(
-                        context, "Card updated successfully");
+                      context,
+                      "Card updated successfully",
+                    );
                   } else if (state is EditCardError) {
                     SnackBarHelper.showError(context, state.error);
                   }
@@ -159,124 +161,67 @@ class _ReviewCardsScreenState extends State<ReviewCardsScreen> {
                 if (state is CardsLoadedSuccess) {
                   final filteredCards = _filterCards(state.cards);
 
-                  return Column(
-                    children: [
-                      CardSearchBar(
-                        searchController: _searchController,
-                        onlyFavorites: _onlyFavorites,
-                        onToggleFavorites: () {
-                          setState(() {
-                            _onlyFavorites = !_onlyFavorites;
-                          });
-                        },
-                        onChanged: (_) => setState(() {}),
-                      ),
-                      GenreChipPicker(
-                        selectedCategory: _selectedCategory,
-                        includeAllOption: true,
-                        customCategories: state.cards
-                            .map((c) => c.category ?? 'No Topic')
-                            .where((cat) => cat != 'All')
-                            .toSet()
-                            .toList(),
-                        onCategorySelected: (cat) {
-                          setState(() {
-                            _selectedCategory = cat;
-                          });
-                        },
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 20.w, vertical: 8.h),
-                        child: Row(
-                          children: [
-                            Text(
-                              "Showing: ${filteredCards.length} / ${state.cards.length} cards",
-                              style: AppStyles.font14White70,
-                            ),
-                            const Spacer(),
-                            Text(
-                              "Tap card to flip",
-                              style: AppStyles.font12LavenderGrayFaded,
-                            ),
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        child: filteredCards.isEmpty
-                            ? LibraryEmptyState(
-                                hasCardsOverall: state.cards.isNotEmpty,
-                              )
-                            : ListView.builder(
-                                physics: const BouncingScrollPhysics(),
-                                padding: EdgeInsets.only(
-                                    top: 4.h, bottom: 20.h),
-                                itemCount: filteredCards.length,
-                                itemBuilder: (context, index) {
-                                  final cardModel = filteredCards[index];
-                                  final deleteCubit = context.read<DeleteCardCubit>();
-
-                                  return Dismissible(
-                                    key: Key(cardModel.id),
-                                    direction: DismissDirection.endToStart,
-                                    confirmDismiss: (direction) async {
-                                      final confirmed = await showDialog<bool>(
-                                        context: context,
-                                        builder: (ctx) => ConfirmMessage(
-                                          deleteCubit: deleteCubit,
-                                          cardModel: cardModel,
-                                        ),
-                                      );
-                                      return confirmed ?? false;
-                                    },
-                                    background: Container(
-                                      margin: EdgeInsets.symmetric(
-                                          horizontal: 16.w, vertical: 10.h),
-                                      decoration: BoxDecoration(
-                                        color: AppColors.errorRed
-                                            .withValues(alpha: 0.2),
-                                        borderRadius:
-                                            BorderRadius.circular(24.r),
-                                        border: Border.all(
-                                            color: AppColors.errorRed),
-                                      ),
-                                      alignment: Alignment.centerRight,
-                                      padding: EdgeInsets.only(right: 24.w),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: [
-                                          Text(
-                                            "Delete",
-                                            style: AppStyles.font14WhiteSemiBold
-                                                .copyWith(
-                                                    color: AppColors.errorRed),
-                                          ),
-                                          horizontalSpacing(8),
-                                          Icon(CupertinoIcons.trash,
-                                              color: AppColors.errorRed,
-                                              size: 22.sp),
-                                        ],
-                                      ),
-                                    ),
-                                    onDismissed: (_) {
-                                      // Already deleted inside ConfirmMessage
-                                    },
-                                    child: Padding(
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 16.w,
-                                        vertical: 10.h,
-                                      ),
-                                      child: FlashCard(
-                                        cardModel: cardModel,
-                                        isInQuiz: false,
-                                      ),
-                                    ),
-                                  );
+                  return LayoutBuilder(
+                    builder: (context, constraints) {
+                      return Center(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 850),
+                          child: Column(
+                            children: [
+                              CardSearchBar(
+                                searchController: _searchController,
+                                onlyFavorites: _onlyFavorites,
+                                onToggleFavorites: () {
+                                  setState(() {
+                                    _onlyFavorites = !_onlyFavorites;
+                                  });
+                                },
+                                onChanged: (_) => setState(() {}),
+                              ),
+                              GenreChipPicker(
+                                selectedCategory: _selectedCategory,
+                                includeAllOption: true,
+                                customCategories: state.cards
+                                    .map((c) => c.category ?? 'No Topic')
+                                    .where((cat) => cat != 'All')
+                                    .toSet()
+                                    .toList(),
+                                onCategorySelected: (cat) {
+                                  setState(() {
+                                    _selectedCategory = cat;
+                                  });
                                 },
                               ),
-                      ),
-                    ],
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 20.w,
+                                  vertical: 8.h,
+                                ),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      "Showing: ${filteredCards.length} / ${state.cards.length} cards",
+                                      style: AppStyles.font14White70,
+                                    ),
+                                    const Spacer(),
+                                    Text(
+                                      "Tap card to flip",
+                                      style: AppStyles.font12LavenderGrayFaded,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Expanded(
+                                child: LibraryCardsList(
+                                  filteredCards: filteredCards,
+                                  hasCardsOverall: state.cards.isNotEmpty,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
                   );
                 }
 

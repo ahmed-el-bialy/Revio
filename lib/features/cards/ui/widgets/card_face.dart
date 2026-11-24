@@ -6,7 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/helpers/spacing.dart';
 import '../../../../core/theming/app_colors.dart';
 import '../../../../core/theming/app_styles.dart';
-import '../../../../core/widgets/app_glass_container.dart';
+import '../../../../core/widgets/app_card.dart';
 import '../../../../features/review/logic/delete_card/delete_card_cubit.dart';
 import '../../../../features/review/logic/edit_card/edit_card_cubit.dart';
 import '../../../../features/review/ui/widgets/edit_card_bottom_sheet.dart';
@@ -40,10 +40,7 @@ class CardFace extends StatelessWidget {
 
     final isFav = cardModel.isFavorite ?? false;
     final cat = cardModel.category;
-    final catColor = AppColors.categoryColors[cat] ?? AppColors.primaryTeal;
-    final accentColor = isFront
-        ? (isFav ? AppColors.softAmber : AppColors.primaryTeal)
-        : AppColors.cyberCyan;
+    final catColor = AppColors.categoryColors[cat] ?? AppColors.primaryCyan;
 
     final semanticsLabel = isFront
         ? "Flashcard Front: ${cardModel.front}${cat != null ? ', Category $cat' : ''}"
@@ -54,12 +51,10 @@ class CardFace extends StatelessWidget {
       hint: shouldDisplayHint ? "Hint: ${cardModel.hint}" : null,
       child: Stack(
         children: [
-          AppGlassContainer(
+          AppCard(
             width: double.infinity,
             height: cardHeight,
-            accentColor: accentColor,
-            borderRadius: 24,
-            borderOpacity: isFront ? (isFav ? 0.6 : 0.3) : 0.45,
+            borderRadius: 22,
             padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 20.h),
             child: Center(
               child: SingleChildScrollView(
@@ -75,10 +70,10 @@ class CardFace extends StatelessWidget {
                           vertical: 4.h,
                         ),
                         decoration: BoxDecoration(
-                          color: catColor.withValues(alpha: 0.16),
+                          color: catColor.withValues(alpha: 0.12),
                           borderRadius: BorderRadius.circular(10.r),
                           border: Border.all(
-                            color: catColor.withValues(alpha: 0.4),
+                            color: catColor.withValues(alpha: 0.3),
                             width: 1.0,
                           ),
                         ),
@@ -91,12 +86,6 @@ class CardFace extends StatelessWidget {
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 color: catColor,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: catColor.withValues(alpha: 0.6),
-                                    blurRadius: 4,
-                                  ),
-                                ],
                               ),
                             ),
                             horizontalSpacing(6),
@@ -172,7 +161,7 @@ class CardFace extends StatelessWidget {
                   horizontalSpacing(4),
                   CardActionIcon(
                     icon: CupertinoIcons.pencil,
-                    color: AppColors.primaryTeal,
+                    color: AppColors.primaryCyan,
                     tooltip: "Edit card",
                     onPressed: () {
                       final editCubit = context.read<EditCardCubit>();
