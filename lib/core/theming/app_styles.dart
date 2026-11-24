@@ -12,7 +12,6 @@ class AppStyles {
         height: 1.2,
       );
 
-  // Backward-compat alias
   static TextStyle get font24BoldIndigoAccentManrope => TextStyle(
         fontSize: 24.sp,
         fontWeight: FontWeight.bold,
@@ -45,9 +44,9 @@ class AppStyles {
         height: 1.2,
       );
 
-  // ── Ice / Light ─────────────────────────────────────────────────────────────
+  // ── Ice / Light Text ────────────────────────────────────────────────────────
   static TextStyle get font24BoldIceBlueManrope => TextStyle(
-        fontSize: 32.sp,
+        fontSize: 30.sp,
         fontWeight: FontWeight.bold,
         fontFamily: "Manrope",
         color: AppColors.iceBlue,
@@ -78,7 +77,7 @@ class AppStyles {
         height: 1.2,
       );
 
-  // ── White variants ───────────────────────────────────────────────────────────
+  // ── White Text Variants ──────────────────────────────────────────────────────
   static TextStyle get font40BoldWhite => TextStyle(
         fontSize: 40.sp,
         fontWeight: FontWeight.w800,
@@ -149,7 +148,7 @@ class AppStyles {
         height: 1.4,
       );
 
-  // ── Lavender / Gray ──────────────────────────────────────────────────────────
+  // ── Lavender / Gray Text Variants ──────────────────────────────────────────
   static TextStyle get font16LavenderGray => TextStyle(
         fontSize: 16.sp,
         fontFamily: "Manrope",
@@ -210,7 +209,7 @@ class AppStyles {
         height: 1.3,
       );
 
-  // ── Accent ───────────────────────────────────────────────────────────────────
+  // ── Accent Accent Styles ─────────────────────────────────────────────────
   static TextStyle get font14AccentCyan => TextStyle(
         fontSize: 14.sp,
         fontWeight: FontWeight.w500,

@@ -10,7 +10,7 @@ class AppThemes {
         fontFamily: 'Manrope',
         colorScheme: const ColorScheme.dark(
           primary: AppColors.primaryCyan,
-          secondary: AppColors.neonAqua,
+          secondary: AppColors.indigoAccent,
           surface: AppColors.surfaceDark,
           error: AppColors.errorRed,
           onPrimary: AppColors.darkBackground,
@@ -29,7 +29,7 @@ class AppThemes {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16.r),
             side: BorderSide(
-              color: AppColors.primaryCyan.withValues(alpha: 0.3),
+              color: AppColors.white.withValues(alpha: 0.1),
             ),
           ),
           contentTextStyle: const TextStyle(
@@ -43,8 +43,8 @@ class AppThemes {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(24.r),
             side: BorderSide(
-              color: AppColors.primaryCyan.withValues(alpha: 0.3),
-              width: 1.2,
+              color: AppColors.white.withValues(alpha: 0.1),
+              width: 1.0,
             ),
           ),
         ),
