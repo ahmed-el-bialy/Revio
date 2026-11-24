@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/theming/app_colors.dart';
-import '../../../../core/widgets/app_glass_container.dart';
+import '../../../../core/widgets/app_card.dart';
 import 'home_stat_item.dart';
 
 class CardsNumberContainer extends StatelessWidget {
@@ -19,48 +19,46 @@ class CardsNumberContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20.w),
-        child: AppGlassContainer(
-          borderRadius: 24,
-          padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 18.h),
-          child: Row(
-            children: [
-              Expanded(
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 20.w),
+      child: AppCard(
+        borderRadius: 22,
+        padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 16.h),
+        child: Row(
+          children: [
+            Expanded(
+              child: HomeStatItem(
+                icon: Icons.style_rounded,
+                iconColor: AppColors.primaryCyan,
+                label: "Total Cards",
+                value: "$totalCards",
+              ),
+            ),
+            const _StatDivider(),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.only(left: 10.w),
                 child: HomeStatItem(
-                  icon: Icons.style_rounded,
-                  iconColor: AppColors.primaryTeal,
-                  label: "Total Cards",
-                  value: "$totalCards",
+                  icon: CupertinoIcons.heart_fill,
+                  iconColor: AppColors.favoriteColor,
+                  label: "Favorites",
+                  value: "$favoriteCards",
                 ),
               ),
-              const _StatDivider(),
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.only(left: 12.w),
-                  child: HomeStatItem(
-                    icon: CupertinoIcons.heart_fill,
-                    iconColor: AppColors.favoriteColor,
-                    label: "Favorites",
-                    value: "$favoriteCards",
-                  ),
+            ),
+            const _StatDivider(),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.only(left: 10.w),
+                child: HomeStatItem(
+                  icon: CupertinoIcons.tag_fill,
+                  iconColor: AppColors.softAmber,
+                  label: "Topics",
+                  value: "$categoriesCount",
                 ),
               ),
-              const _StatDivider(),
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.only(left: 12.w),
-                  child: HomeStatItem(
-                    icon: CupertinoIcons.grid,
-                    iconColor: AppColors.softAmber,
-                    label: "Topics",
-                    value: "$categoriesCount",
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -74,8 +72,8 @@ class _StatDivider extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 1,
-      height: 42.h,
-      color: AppColors.white.withValues(alpha: 0.1),
+      height: 38.h,
+      color: AppColors.white.withValues(alpha: 0.08),
     );
   }
 }

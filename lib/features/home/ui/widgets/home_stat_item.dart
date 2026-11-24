@@ -30,7 +30,7 @@ class HomeStatItem extends StatelessWidget {
             Container(
               padding: EdgeInsets.all(5.w),
               decoration: BoxDecoration(
-                color: iconColor.withValues(alpha: 0.15),
+                color: iconColor.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(8.r),
               ),
               child: Icon(icon, color: iconColor, size: 15.sp),
@@ -41,7 +41,7 @@ class HomeStatItem extends StatelessWidget {
                 label,
                 overflow: TextOverflow.ellipsis,
                 style: AppStyles.font12LavenderGray.copyWith(
-                  color: AppColors.white.withValues(alpha: 0.8),
+                  color: AppColors.lavenderGray,
                   fontSize: 11.sp,
                   fontWeight: FontWeight.w600,
                 ),
@@ -53,14 +53,14 @@ class HomeStatItem extends StatelessWidget {
         if (targetNumber != null)
           TweenAnimationBuilder<int>(
             tween: IntTween(begin: 0, end: targetNumber),
-            duration: const Duration(milliseconds: 900),
+            duration: const Duration(milliseconds: 800),
             curve: Curves.easeOutCubic,
             builder: (context, animatedValue, _) {
               return Text(
                 "$animatedValue",
                 style: AppStyles.font28BoldIceBlue.copyWith(
                   color: AppColors.white,
-                  fontSize: 24.sp,
+                  fontSize: 22.sp,
                   fontWeight: FontWeight.w800,
                 ),
               );
@@ -71,7 +71,7 @@ class HomeStatItem extends StatelessWidget {
             value,
             style: AppStyles.font28BoldIceBlue.copyWith(
               color: AppColors.white,
-              fontSize: 24.sp,
+              fontSize: 22.sp,
               fontWeight: FontWeight.w800,
             ),
           ),

@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/helpers/spacing.dart';
 import '../../../../core/theming/app_colors.dart';
 import '../../../../core/theming/app_styles.dart';
-import '../../../../core/widgets/app_glass_container.dart';
+import '../../../../core/widgets/app_card.dart';
 
 class GenresWideCard extends StatelessWidget {
   final int count;
@@ -17,23 +17,19 @@ class GenresWideCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const accentColor = AppColors.softAmber;
+    const accentColor = AppColors.indigoAccent;
 
-    return AppGlassContainer(
+    return AppCard(
       onTap: onTap,
-      accentColor: accentColor,
-      borderRadius: 22,
+      borderRadius: 20,
       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 18.h),
       child: Row(
         children: [
           Container(
             padding: EdgeInsets.all(12.w),
             decoration: BoxDecoration(
-              color: accentColor.withValues(alpha: 0.15),
+              color: accentColor.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(16.r),
-              border: Border.all(
-                color: accentColor.withValues(alpha: 0.35),
-              ),
             ),
             child: const Icon(
               CupertinoIcons.tag_fill,
@@ -46,7 +42,7 @@ class GenresWideCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Genres",
+                  "Genres & Topics",
                   style: AppStyles.font16WhiteSemiBold.copyWith(
                     fontSize: 15.sp,
                     fontWeight: FontWeight.w700,
@@ -64,7 +60,7 @@ class GenresWideCard extends StatelessWidget {
           ),
           Icon(
             CupertinoIcons.chevron_right,
-            color: accentColor.withValues(alpha: 0.6),
+            color: accentColor.withValues(alpha: 0.5),
             size: 15.sp,
           ),
         ],

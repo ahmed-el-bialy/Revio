@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/helpers/spacing.dart';
@@ -15,16 +15,13 @@ class HomeHeader extends StatelessWidget {
         Container(
           padding: EdgeInsets.all(8.w),
           decoration: BoxDecoration(
-            color: AppColors.primaryTeal.withValues(alpha: 0.12),
+            color: AppColors.primaryCyan.withValues(alpha: 0.12),
             shape: BoxShape.circle,
-            border: Border.all(
-              color: AppColors.primaryTeal.withValues(alpha: 0.25),
-            ),
           ),
           child: Icon(
-            CupertinoIcons.sparkles,
-            color: AppColors.primaryTeal,
-            size: 18.sp,
+            Icons.style_rounded,
+            color: AppColors.primaryCyan,
+            size: 19.sp,
           ),
         ),
         horizontalSpacing(10),
@@ -37,6 +34,7 @@ class HomeHeader extends StatelessWidget {
                 fontSize: 20.sp,
                 letterSpacing: 2.5,
                 fontWeight: FontWeight.w900,
+                color: AppColors.white,
               ),
             ),
           ],
@@ -45,16 +43,16 @@ class HomeHeader extends StatelessWidget {
         Container(
           padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
           decoration: BoxDecoration(
-            color: AppColors.primaryTeal.withValues(alpha: 0.12),
+            color: AppColors.surfaceDark,
             borderRadius: BorderRadius.circular(12.r),
             border: Border.all(
-              color: AppColors.primaryTeal.withValues(alpha: 0.3),
+              color: AppColors.white.withValues(alpha: 0.08),
             ),
           ),
           child: Text(
             "v2.0",
             style: AppStyles.font11GrayRegular.copyWith(
-              color: AppColors.primaryTeal,
+              color: AppColors.lavenderGray,
               fontWeight: FontWeight.w700,
               letterSpacing: 0.5,
             ),

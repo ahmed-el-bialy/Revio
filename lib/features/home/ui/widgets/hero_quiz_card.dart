@@ -6,40 +6,31 @@ import '../../../../core/helpers/routing_extension.dart';
 import '../../../../core/helpers/spacing.dart';
 import '../../../../core/theming/app_colors.dart';
 import '../../../../core/theming/app_styles.dart';
-import '../../../../core/widgets/app_glass_container.dart';
+import '../../../../core/widgets/app_card.dart';
 
 class HeroQuizCard extends StatelessWidget {
   const HeroQuizCard({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return AppGlassContainer(
+    const accentColor = AppColors.softAmber;
+
+    return AppCard(
       onTap: () => context.pushNamed(AppConstants.quizScreen, null),
-      accentColor: AppColors.softAmber,
-      borderRadius: 24,
+      borderRadius: 22,
       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
       child: Row(
         children: [
           Container(
             padding: EdgeInsets.all(14.w),
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  AppColors.softAmber.withValues(alpha: 0.3),
-                  AppColors.softAmber.withValues(alpha: 0.1),
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(18.r),
-              border: Border.all(
-                color: AppColors.softAmber.withValues(alpha: 0.5),
-              ),
+              color: accentColor.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(16.r),
             ),
             child: Icon(
               CupertinoIcons.bolt_fill,
-              color: AppColors.softAmber,
-              size: 28.sp,
+              color: accentColor,
+              size: 26.sp,
             ),
           ),
           horizontalSpacing(16),
@@ -66,13 +57,13 @@ class HeroQuizCard extends StatelessWidget {
                         vertical: 2.h,
                       ),
                       decoration: BoxDecoration(
-                        color: AppColors.softAmber.withValues(alpha: 0.25),
+                        color: accentColor.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(6.r),
                       ),
                       child: Text(
                         "SMART",
                         style: AppStyles.font11GrayRegular.copyWith(
-                          color: AppColors.softAmber,
+                          color: accentColor,
                           fontWeight: FontWeight.w800,
                           fontSize: 9.sp,
                         ),
@@ -95,7 +86,7 @@ class HeroQuizCard extends StatelessWidget {
                     Text(
                       "Play Quiz Now",
                       style: AppStyles.font13GrayMedium.copyWith(
-                        color: AppColors.softAmber,
+                        color: accentColor,
                         fontWeight: FontWeight.w700,
                         fontSize: 12.5.sp,
                       ),
@@ -103,7 +94,7 @@ class HeroQuizCard extends StatelessWidget {
                     horizontalSpacing(4),
                     Icon(
                       CupertinoIcons.arrow_right,
-                      color: AppColors.softAmber,
+                      color: accentColor,
                       size: 13.sp,
                     ),
                   ],
