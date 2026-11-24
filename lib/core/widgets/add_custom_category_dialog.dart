@@ -16,15 +16,15 @@ class AddCustomCategoryDialog extends StatefulWidget {
     required this.onCategoryAdded,
   });
 
-  static Future<void> show(
-    BuildContext context, {
+  static Future<void> show(BuildContext context, {
     required VoidCallback onCategoryAdded,
   }) {
     return showDialog(
       context: context,
-      builder: (dialogContext) => AddCustomCategoryDialog(
-        onCategoryAdded: onCategoryAdded,
-      ),
+      builder: (dialogContext) =>
+          AddCustomCategoryDialog(
+            onCategoryAdded: onCategoryAdded,
+          ),
     );
   }
 

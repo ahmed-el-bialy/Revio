@@ -53,7 +53,9 @@ class _PressScaleState extends State<PressScale>
   }
 
   void _onTapDown(TapDownDetails _) {
-    final reducedMotion = MediaQuery.of(context).disableAnimations;
+    final reducedMotion = MediaQuery
+        .of(context)
+        .disableAnimations;
     if (!reducedMotion) {
       _controller.forward();
     }

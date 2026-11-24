@@ -108,141 +108,164 @@ class _GenresScreenState extends State<GenresScreen> {
           ],
         ),
         body: SafeArea(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-                  decoration: BoxDecoration(
-                    color: AppColors.primaryTeal.withValues(alpha: 0.08),
-                    borderRadius: BorderRadius.circular(16.r),
-                    border: Border.all(
-                      color: AppColors.primaryTeal.withValues(alpha: 0.2),
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(
-                        CupertinoIcons.tag_fill,
-                        color: AppColors.primaryTeal,
-                        size: 18.sp,
-                      ),
-                      horizontalSpacing(10),
-                      Expanded(
-                        child: Text(
-                          "${_genres.length} genres available",
-                          style: AppStyles.font14LavenderGrayMedium.copyWith(
-                            color: AppColors.primaryTeal,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 800),
+                  child: Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 16.w, vertical: 12.h),
+                          decoration: BoxDecoration(
+                            color:
+                                AppColors.primaryTeal.withValues(alpha: 0.08),
+                            borderRadius: BorderRadius.circular(16.r),
+                            border: Border.all(
+                              color:
+                                  AppColors.primaryTeal.withValues(alpha: 0.2),
+                            ),
                           ),
-                        ),
-                      ),
-                      Text(
-                        "Swipe to delete",
-                        style: AppStyles.font11GrayRegular.copyWith(
-                          color: AppColors.lavenderGray.withValues(alpha: 0.5),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                verticalSpacing(16),
-                Expanded(
-                  child: _genres.isEmpty
-                      ? Center(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
+                          child: Row(
                             children: [
                               Icon(
-                                CupertinoIcons.tag,
-                                color: AppColors.lavenderGray
-                                    .withValues(alpha: 0.3),
-                                size: 64.sp,
+                                CupertinoIcons.tag_fill,
+                                color: AppColors.primaryTeal,
+                                size: 18.sp,
                               ),
-                              verticalSpacing(16),
+                              horizontalSpacing(10),
+                              Expanded(
+                                child: Text(
+                                  "${_genres.length} genres available",
+                                  style: AppStyles.font14LavenderGrayMedium
+                                      .copyWith(
+                                    color: AppColors.primaryTeal,
+                                  ),
+                                ),
+                              ),
                               Text(
-                                "No genres yet",
-                                style: AppStyles.font18WhiteBold.copyWith(
+                                "Swipe to delete",
+                                style: AppStyles.font11GrayRegular.copyWith(
                                   color: AppColors.lavenderGray
                                       .withValues(alpha: 0.5),
                                 ),
                               ),
-                              verticalSpacing(8),
-                              Text(
-                                "Tap 'Add' to create your first genre",
-                                style: AppStyles.font14White70,
-                              ),
                             ],
                           ),
-                        )
-                      : ListView.separated(
-                          physics: const BouncingScrollPhysics(),
-                          itemCount: _genres.length,
-                          separatorBuilder: (context, _) => verticalSpacing(10),
-                          itemBuilder: (context, index) {
-                            final genre = _genres[index];
-                            final isDefault =
-                                genre.toLowerCase() == 'no topic';
-                            final color = AppColors.categoryColors[genre] ??
-                                AppColors.primaryTeal;
-
-                            return Dismissible(
-                              key: Key('genre_$genre'),
-                              direction: isDefault
-                                  ? DismissDirection.none
-                                  : DismissDirection.endToStart,
-                              confirmDismiss: isDefault
-                                  ? null
-                                  : (_) async {
-                                      await _deleteGenre(genre);
-                                      return false;
-                                    },
-                              background: Container(
-                                decoration: BoxDecoration(
-                                  color:
-                                      AppColors.errorRed.withValues(alpha: 0.2),
-                                  borderRadius: BorderRadius.circular(20.r),
-                                  border:
-                                      Border.all(color: AppColors.errorRed),
-                                ),
-                                alignment: Alignment.centerRight,
-                                padding: EdgeInsets.only(right: 24.w),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      "Delete",
-                                      style: AppStyles.font14WhiteSemiBold
-                                          .copyWith(color: AppColors.errorRed),
-                                    ),
-                                    horizontalSpacing(8),
-                                    Icon(
-                                      CupertinoIcons.trash,
-                                      color: AppColors.errorRed,
-                                      size: 20.sp,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              child: GenreCardItem(
-                                genre: genre,
-                                isDefault: isDefault,
-                                color: color,
-                                onEdit: () => RenameGenreDialog.show(
-                                  context,
-                                  oldName: genre,
-                                  onGenreRenamed: _loadGenres,
-                                ),
-                                onDelete: () => _deleteGenre(genre),
-                              ),
-                            );
-                          },
                         ),
+                        verticalSpacing(16),
+                        Expanded(
+                          child: _genres.isEmpty
+                              ? Center(
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        CupertinoIcons.tag,
+                                        color: AppColors.lavenderGray
+                                            .withValues(alpha: 0.3),
+                                        size: 64.sp,
+                                      ),
+                                      verticalSpacing(16),
+                                      Text(
+                                        "No genres yet",
+                                        style:
+                                            AppStyles.font18WhiteBold.copyWith(
+                                          color: AppColors.lavenderGray
+                                              .withValues(alpha: 0.5),
+                                        ),
+                                      ),
+                                      verticalSpacing(8),
+                                      Text(
+                                        "Tap 'Add' to create your first genre",
+                                        style: AppStyles.font14White70,
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : ListView.separated(
+                                  physics: const BouncingScrollPhysics(),
+                                  itemCount: _genres.length,
+                                  separatorBuilder: (context, _) =>
+                                      verticalSpacing(10),
+                                  itemBuilder: (context, index) {
+                                    final genre = _genres[index];
+                                    final isDefault =
+                                        genre.toLowerCase() == 'no topic';
+                                    final color =
+                                        AppColors.categoryColors[genre] ??
+                                            AppColors.primaryTeal;
+
+                                    return Dismissible(
+                                      key: Key('genre_$genre'),
+                                      direction: isDefault
+                                          ? DismissDirection.none
+                                          : DismissDirection.endToStart,
+                                      confirmDismiss: isDefault
+                                          ? null
+                                          : (_) async {
+                                              await _deleteGenre(genre);
+                                              return false;
+                                            },
+                                      background: Container(
+                                        decoration: BoxDecoration(
+                                          color: AppColors.errorRed
+                                              .withValues(alpha: 0.2),
+                                          borderRadius:
+                                              BorderRadius.circular(20.r),
+                                          border: Border.all(
+                                            color: AppColors.errorRed,
+                                          ),
+                                        ),
+                                        alignment: Alignment.centerRight,
+                                        padding: EdgeInsets.only(right: 24.w),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: [
+                                            Text(
+                                              "Delete",
+                                              style: AppStyles
+                                                  .font14WhiteSemiBold
+                                                  .copyWith(
+                                                color: AppColors.errorRed,
+                                              ),
+                                            ),
+                                            horizontalSpacing(8),
+                                            Icon(
+                                              CupertinoIcons.trash,
+                                              color: AppColors.errorRed,
+                                              size: 20.sp,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      child: GenreCardItem(
+                                        genre: genre,
+                                        isDefault: isDefault,
+                                        color: color,
+                                        onEdit: () => RenameGenreDialog.show(
+                                          context,
+                                          oldName: genre,
+                                          onGenreRenamed: _loadGenres,
+                                        ),
+                                        onDelete: () => _deleteGenre(genre),
+                                      ),
+                                    );
+                                  },
+                                ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-              ],
-            ),
+              );
+            },
           ),
         ),
       ),

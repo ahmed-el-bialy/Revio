@@ -1,9 +1,9 @@
-import 'package:code_alpha_flash_card_app/features/cards/data/models/card_model.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../data/models/card_model.dart';
 import 'card_face.dart';
 
 class FlashCard extends StatelessWidget {
@@ -29,7 +29,7 @@ class FlashCard extends StatelessWidget {
       direction: FlipDirection.HORIZONTAL,
       side: CardSide.FRONT,
       speed: 400,
-      flipOnTouch: !isInQuiz, // Prevent cheating / manual card flipping during quiz mode!
+      flipOnTouch: !isInQuiz,
       front: CardFace(
         cardHeight: cardHeight,
         cardModel: cardModel,

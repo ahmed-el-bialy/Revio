@@ -1,14 +1,14 @@
-import 'package:code_alpha_flash_card_app/core/constants/app_constants.dart';
-import 'package:code_alpha_flash_card_app/core/widgets/app_background_glow.dart';
-import 'package:code_alpha_flash_card_app/core/widgets/genre_chip_picker.dart';
-import 'package:code_alpha_flash_card_app/features/add_new_card/ui/widgets/app_text_form.dart';
-import 'package:code_alpha_flash_card_app/features/add_new_card/ui/widgets/appbar_body.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../core/constants/app_constants.dart';
 import '../../../core/helpers/spacing.dart';
 import '../../../core/theming/app_colors.dart';
 import '../../../core/theming/app_styles.dart';
+import '../../../core/widgets/app_background_glow.dart';
+import '../../../core/widgets/genre_chip_picker.dart';
+import 'widgets/app_text_form.dart';
+import 'widgets/appbar_body.dart';
 import 'widgets/card_form_back_scope.dart';
 
 class AddCardScreen extends StatefulWidget {
@@ -44,80 +44,97 @@ class _AddCardScreenState extends State<AddCardScreen> {
         child: Scaffold(
           backgroundColor: Colors.transparent,
           body: SafeArea(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
-              child: Form(
-                key: _formKey,
-                child: CustomScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  slivers: [
-                    SliverToBoxAdapter(
-                      child: AppbarBody(
-                        questionController: _questionController,
-                        hintController: _hintController,
-                        answerController: _answerController,
-                        selectedCategory: _selectedCategory,
-                        formKey: _formKey,
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 750),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 20.w,
+                        vertical: 10.h,
+                      ),
+                      child: Form(
+                        key: _formKey,
+                        child: CustomScrollView(
+                          physics: const BouncingScrollPhysics(),
+                          slivers: [
+                            SliverToBoxAdapter(
+                              child: AppbarBody(
+                                questionController: _questionController,
+                                hintController: _hintController,
+                                answerController: _answerController,
+                                selectedCategory: _selectedCategory,
+                                formKey: _formKey,
+                              ),
+                            ),
+                            sliverVerticalSpacing(20),
+                            SliverToBoxAdapter(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const _SectionLabel(
+                                    label: "Genre / Category",
+                                  ),
+                                  verticalSpacing(10),
+                                  GenreChipPicker(
+                                    selectedCategory: _selectedCategory,
+                                    onCategorySelected: (cat) => setState(
+                                      () => _selectedCategory = cat,
+                                    ),
+                                  ),
+                                  verticalSpacing(24),
+                                  const _SectionLabel(
+                                    label: "Question (Front)",
+                                  ),
+                                  verticalSpacing(10),
+                                  AppTextForm(
+                                    controller: _questionController,
+                                    hint: "What do you want to remember?",
+                                    maxLines: 3,
+                                    validator: (v) {
+                                      if (v == null || v.trim().isEmpty) {
+                                        return 'Please enter a question';
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                  verticalSpacing(20),
+                                  const _SectionLabel(
+                                    label: "Hint",
+                                    badge: "Optional",
+                                  ),
+                                  verticalSpacing(10),
+                                  AppTextForm(
+                                    controller: _hintController,
+                                    maxLines: 2,
+                                    hint: "A small clue to help recall...",
+                                  ),
+                                  verticalSpacing(20),
+                                  const _SectionLabel(label: "Answer (Back)"),
+                                  verticalSpacing(10),
+                                  AppTextForm(
+                                    controller: _answerController,
+                                    maxLines: 4,
+                                    hint: "The answer or explanation...",
+                                    validator: (v) {
+                                      if (v == null || v.trim().isEmpty) {
+                                        return 'Please enter an answer';
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                  verticalSpacing(40),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                    sliverVerticalSpacing(20),
-                    SliverToBoxAdapter(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _SectionLabel(label: "Genre / Category"),
-                          verticalSpacing(10),
-                          GenreChipPicker(
-                            selectedCategory: _selectedCategory,
-                            onCategorySelected: (cat) =>
-                                setState(() => _selectedCategory = cat),
-                          ),
-                          verticalSpacing(24),
-                          _SectionLabel(label: "Question (Front)"),
-                          verticalSpacing(10),
-                          AppTextForm(
-                            controller: _questionController,
-                            hint: "What do you want to remember?",
-                            maxLines: 3,
-                            validator: (v) {
-                              if (v == null || v.trim().isEmpty) {
-                                return 'Please enter a question';
-                              }
-                              return null;
-                            },
-                          ),
-                          verticalSpacing(20),
-                          _SectionLabel(
-                            label: "Hint",
-                            badge: "Optional",
-                          ),
-                          verticalSpacing(10),
-                          AppTextForm(
-                            controller: _hintController,
-                            maxLines: 2,
-                            hint: "A small clue to help recall...",
-                          ),
-                          verticalSpacing(20),
-                          _SectionLabel(label: "Answer (Back)"),
-                          verticalSpacing(10),
-                          AppTextForm(
-                            controller: _answerController,
-                            maxLines: 4,
-                            hint: "The answer or explanation...",
-                            validator: (v) {
-                              if (v == null || v.trim().isEmpty) {
-                                return 'Please enter an answer';
-                              }
-                              return null;
-                            },
-                          ),
-                          verticalSpacing(40),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+                  ),
+                );
+              },
             ),
           ),
         ),

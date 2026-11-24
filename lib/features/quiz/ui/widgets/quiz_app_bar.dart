@@ -207,18 +207,18 @@ class QuizAppBar extends StatelessWidget {
         padding: EdgeInsets.all(8.w),
         decoration: BoxDecoration(
           color: state.isShuffled
-              ? AppColors.emeraldGold.withValues(alpha: 0.15)
+              ? AppColors.primaryCyan.withValues(alpha: 0.15)
               : AppColors.surfaceDark,
           borderRadius: BorderRadius.circular(10.r),
           border: Border.all(
             color: state.isShuffled
-                ? AppColors.emeraldGold.withValues(alpha: 0.4)
+                ? AppColors.primaryCyan.withValues(alpha: 0.4)
                 : AppColors.gray.withValues(alpha: 0.2),
           ),
         ),
         child: Icon(
           CupertinoIcons.shuffle,
-          color: state.isShuffled ? AppColors.emeraldGold : AppColors.gray,
+          color: state.isShuffled ? AppColors.primaryCyan : AppColors.gray,
           size: 16.sp,
         ),
       ),

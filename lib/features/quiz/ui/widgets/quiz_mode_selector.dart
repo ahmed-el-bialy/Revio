@@ -2,10 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:code_alpha_flash_card_app/core/helpers/spacing.dart';
-import 'package:code_alpha_flash_card_app/core/theming/app_colors.dart';
-import 'package:code_alpha_flash_card_app/core/theming/app_styles.dart';
-import 'package:code_alpha_flash_card_app/features/quiz/logic/quiz_state.dart';
+import '../../../../core/helpers/spacing.dart';
+import '../../../../core/theming/app_colors.dart';
+import '../../../../core/theming/app_styles.dart';
+import '../../logic/quiz_state.dart';
 
 class QuizModeSelector extends StatelessWidget {
   final void Function(QuizMode mode) onSelectMode;
@@ -25,7 +25,7 @@ class QuizModeSelector extends StatelessWidget {
           icon: CupertinoIcons.list_bullet_below_rectangle,
           title: "Multiple Choice",
           subtitle: "Pick the right answer from 4 options. Great for quick practice!",
-          accentColor: AppColors.primaryTeal,
+          accentColor: AppColors.primaryCyan,
           badgeLabel: "Recommended",
           onTap: cardCount >= 2 ? () => onSelectMode(QuizMode.multipleChoice) : null,
           isDisabled: cardCount < 2,
@@ -36,7 +36,7 @@ class QuizModeSelector extends StatelessWidget {
           icon: CupertinoIcons.keyboard,
           title: "Smart Typing",
           subtitle: "Type your answer freely. Smart matching accepts minor typos.",
-          accentColor: AppColors.emeraldGold,
+          accentColor: AppColors.indigoAccent,
           badgeLabel: "Classic",
           onTap: cardCount >= 1 ? () => onSelectMode(QuizMode.typing) : null,
           isDisabled: cardCount < 1,

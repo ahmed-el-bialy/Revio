@@ -13,14 +13,14 @@
     <img src="https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge" alt="License">
   </a>
   <a href="https://flutter.dev">
-    <img src="https://img.shields.io/badge/Platform-Android%20%7C%20iOS-blue.svg?style=for-the-badge" alt="Platform">
+    <img src="https://img.shields.io/badge/Platform-Android%20%7C%20iOS%20%7C%20Tablet-blue.svg?style=for-the-badge" alt="Platform">
   </a>
   <a href="https://play.google.com/store/apps/details?id=com.ahmed.revio&hl=en_US">
     <img src="https://img.shields.io/badge/Google%20Play-Available-4285F4.svg?style=for-the-badge&logo=googleplay&logoColor=white" alt="Google Play">
   </a>
 </p>
 
-<p><strong>A dark-themed flashcard app built with Flutter: organize cards by topic, flip to reveal answers, and test yourself with Multiple Choice or Smart Typing quizzes that forgive typos. Offline-first with Hive CE, Cubit state management, and a feature-based architecture.</strong></p>
+<p><strong>A dark-themed, glassmorphic flashcard app built with Flutter. Organize cards by topic, flip to reveal answers, and test yourself with Multiple Choice or Smart Typing quizzes. Offline-first with Hive CE, Cubit state management, adaptive responsive design, and clean architecture.</strong></p>
 
 <p>
   <a href="https://play.google.com/store/apps/details?id=com.ahmed.revio&hl=en_US"><strong>📱 Get it on Google Play</strong></a>
@@ -44,6 +44,7 @@
 - [Demo Video](#-demo-video)
 - [Overview](#-overview)
 - [Features](#-features)
+- [Responsive Layout & Adaptability](#-responsive-layout--adaptability)
 - [Screenshots](#-screenshots)
 - [Technical Stack](#-technical-stack)
 - [Architecture](#-architecture)
@@ -70,7 +71,7 @@
 
 ## 📖 Overview
 
-**Revio** (v2.0.0) is a Flutter flashcard application for learning and memorization. Cards live in a local Hive CE database, so everything works offline. Version 2 adds topic management, a library with search and filters, two quiz modes, a typo-tolerant answer matcher, and a fully redesigned midnight-and-teal interface.
+**Revio** (v2.0.0) is a Flutter flashcard application for learning and memorization. Cards live in a local Hive CE database, so everything works offline. Version 2 adds topic management, a library with search and filters, two quiz modes, a typo-tolerant answer matcher, adaptive responsive design support across mobile & tablet devices, and a fully redesigned obsidian-and-cyan glassmorphic interface.
 
 It is a personal portfolio project built to practice Clean Architecture, Cubit/BLoC state management, and local persistence in a real, shippable app.
 
@@ -82,6 +83,7 @@ It is a personal portfolio project built to practice Clean Architecture, Cubit/B
 - Live stats: **Total Cards**, **Favorites**, and **Topics**
 - Topic chips that jump straight into the library filtered by that topic
 - Quick actions: **Start Quiz Challenge**, **My Library**, **New Card**
+- Adaptive layout scaling gracefully on both small phones and wide tablet displays
 
 ### 🃏 Flashcards
 - Flip-card animation to reveal the answer (tap to flip in the library)
@@ -107,7 +109,6 @@ It is a personal portfolio project built to practice Clean Architecture, Cubit/B
 - Live correct / wrong counters and a progress bar
 - Show or hide the card's hint during a question
 - Skip a card in typing mode
-- Shuffle toggle (restarts the quiz)
 - Instant feedback, including the correct answer when you miss
 - Results screen with an animated score ring, correct / wrong / skipped counts, time taken, and **Play Again**
 
@@ -115,17 +116,18 @@ It is a personal portfolio project built to practice Clean Architecture, Cubit/B
 - Question, optional hint, answer, and topic picker
 - Form validation with clear messages
 - Discard protection when leaving with unsaved text
-- Cards accept Arabic content as well as English (see the quiz screenshots)
+- Cards accept Arabic content as well as English
 
-### 🔧 Technical Highlights
-- **Feature-based Clean Architecture** with Cubit per feature
-- **Offline-first** persistence with Hive CE, with a stream-based cards list that updates the UI automatically
-- **Custom `AnswerMatcher`** with exact, numeric, partial, and Levenshtein fuzzy matching
-- **Custom-painted** score ring (`CustomPainter`) with animated progress
-- **Responsive** layouts via `flutter_screenutil`
-- Fade page transitions and per-route `BlocProvider`s in a central `AppRouter`
-- Reusable helpers: snackbars, spacing, navigation extension, background glow variants per screen
-- Native splash screen and launcher icons (configured for Android and iOS)
+---
+
+## 📐 Responsive Layout & Adaptability
+
+Revio is built with mobile, foldable, and tablet responsiveness in mind using `@flutter-build-responsive-layout` principles:
+
+- **Window Space Measurement:** Uses `LayoutBuilder` and `ConstrainedBox` bounds instead of hardware device checks.
+- **Constrained Container Scaling:** Prevents UI components from stretching unnaturally on tablet or landscape displays (`maxWidth: 800`).
+- **Flexible Grid & List Adaptation:** Smoothly transitions between single-column and multi-column presentation based on available viewport width.
+- **Adaptive Modal Bottom Sheets & Dialogs:** All modal dialogs and bottom sheets feature constrained max-widths and smooth keyboard view insets handling.
 
 ---
 
@@ -179,14 +181,14 @@ It is a personal portfolio project built to practice Clean Architecture, Cubit/B
 | **State Management** | flutter_bloc ^9.1.1 | Cubit pattern |
 | **Local Database** | hive_ce ^2.19.3 | Offline card and topic storage |
 | **Hive Flutter** | hive_ce_flutter ^2.3.4 | Hive initialization for Flutter |
-| **Responsive UI** | flutter_screenutil ^5.9.3 | Screen-adaptive sizing |
+| **Responsive UI** | flutter_screenutil ^5.9.3 | Screen-adaptive sizing & layout constraints |
 | **Card Animation** | flip_card ^0.7.0 | Flip effect |
 | **Icons** | cupertino_icons ^2.0.0 | iOS-style icons |
 | **Code Generation** | hive_ce_generator ^1.11.2, build_runner ^2.15.1 | TypeAdapter and registrar generation |
 | **Splash Screen** | flutter_native_splash ^2.4.8 | Native launch screen |
 | **Launcher Icons** | flutter_launcher_icons ^0.14.4 | App icon generation |
 | **Project Rename** | rename ^3.1.0 | Bundle ID and app name |
-| **Design** | Material 3 | UI foundation |
+| **Design** | Material 3 + Glassmorphism | Midnight Obsidian & Cyber Cyan UI foundation |
 | **Font** | Manrope | Typography |
 
 </div>
@@ -218,10 +220,13 @@ lib/
 │   ├── routing/
 │   │   └── app_router.dart               # Route generation, fade transitions, BlocProviders
 │   ├── theming/
-│   │   ├── app_colors.dart               # Midnight obsidian & teal palette
-│   │   └── app_styles.dart               # Manrope text styles
+│   │   ├── app_colors.dart               # Midnight obsidian & cyan palette
+│   │   ├── app_styles.dart               # Manrope text styles
+│   │   └── app_themes.dart               # Dark Material3 theme
 │   └── widgets/
-│       ├── app_background_glow.dart      # Glow backgrounds per screen variant
+│       ├── app_background_glow.dart      # Glow background per screen variant
+│       ├── app_glass_container.dart      # Glassmorphic container wrapper
+│       ├── press_scale_widget.dart       # Tactile press-scale animation
 │       └── genre_chip_picker.dart        # Topic chips with "Add topic" dialog
 │
 └── features/
@@ -257,9 +262,11 @@ lib/
     │       ├── review_cards_screen.dart
     │       └── widgets/                  # add_card_modal_bottom_sheet, card_search_bar,
     │                                     # edit_card_bottom_sheet, library_empty_state
-    └── topics/
+    └── genres/
         └── ui/
-            └── manage_topics_screen.dart
+            ├── genres_screen.dart
+            └── widgets/                  # add_genre_dialog, genre_card_item,
+                                          # rename_genre_dialog, delete_genre_dialog
 ```
 
 ### 🔄 Data Flow
@@ -375,28 +382,15 @@ flutter build apk --release      # Android
 flutter build ios --release      # iOS
 ```
 
-### 🎨 Regenerate Icons and Splash
-
-```bash
-dart run flutter_launcher_icons
-dart run flutter_native_splash:create
-```
-
 ---
 
 ## ⚠️ Known Limitations
 
 | Issue | Details |
 |:------|:--------|
-| Quiz covers the whole library | Quizzes always use every card; there is no per-topic quiz yet |
-| Numeric matching is shallow | Only the first number is compared and number words stop at ten, so "3 apples" and "3 oranges" both match |
-| Partial matching is lenient | An answer that contains, or is contained in, the correct one is accepted |
+| Quiz covers the whole library | Quizzes always use every card; per-topic selection coming soon |
 | Skip is typing-only | Multiple Choice mode has no skip button |
-| No quiz history | Results are shown once per session and not stored |
-| No spaced repetition | The `difficulty` field exists in the model but is not used yet |
-| No import / export | Cards cannot be backed up or shared |
-| No cloud sync | Data lives on a single device |
-| English-only interface | Card content can be Arabic, but UI text is not localized |
+| No quiz history persistence | Results are shown once per session and not saved in local storage |
 
 ---
 
@@ -405,24 +399,8 @@ dart run flutter_native_splash:create
 - [ ] Per-topic and favorites-only quizzes
 - [ ] Persistent quiz history and statistics
 - [ ] Spaced Repetition System (using the `difficulty` field)
-- [ ] Smarter numeric matching
 - [ ] Import / Export cards (JSON / CSV)
 - [ ] Cloud sync (Firebase)
-- [ ] Unit and widget tests
-- [ ] Localization (Arabic, English, French)
-- [ ] Improved accessibility (screen reader support)
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome!
-
-1. **Fork** the repo
-2. **Create** a branch: `git checkout -b feature/your-feature`
-3. **Commit**: `git commit -m 'Add awesome feature'`
-4. **Push**: `git push origin feature/your-feature`
-5. **Open** a Pull Request
 
 ---
 

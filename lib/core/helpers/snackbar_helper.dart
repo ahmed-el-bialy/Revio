@@ -1,8 +1,9 @@
-import 'package:code_alpha_flash_card_app/core/helpers/spacing.dart';
-import 'package:code_alpha_flash_card_app/core/theming/app_colors.dart';
-import 'package:code_alpha_flash_card_app/core/theming/app_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../theming/app_colors.dart';
+import '../theming/app_styles.dart';
+import 'spacing.dart';
 
 class SnackBarHelper {
   static void showSuccess(BuildContext context, String message) {

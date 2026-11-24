@@ -58,7 +58,8 @@ class _QuizInProgressViewState extends State<QuizInProgressView> {
 
     final currentCard = widget.state.currentCard;
     final isAnswered = widget.state.isCurrentAnswered;
-    final hasHint = currentCard.hint != null && currentCard.hint!.trim().isNotEmpty;
+    final hasHint =
+        currentCard.hint != null && currentCard.hint!.trim().isNotEmpty;
 
     return Column(
       children: [
@@ -66,89 +67,107 @@ class _QuizInProgressViewState extends State<QuizInProgressView> {
         Expanded(
           child: SafeArea(
             top: false,
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              padding: EdgeInsets.only(
-                left: 18.w,
-                right: 18.w,
-                top: 8.h,
-                bottom: 50.h,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  QuizProgressBar(state: widget.state),
-                  verticalSpacing(12),
-                  SizedBox(
-                    height: 165.h,
-                    child: FlashCard(
-                      flipKey: _getFlipKey(currentCard.id),
-                      cardModel: currentCard,
-                      isInQuiz: true,
-                      showHint: _isHintVisible,
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 700),
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      padding: EdgeInsets.only(
+                        left: 18.w,
+                        right: 18.w,
+                        top: 8.h,
+                        bottom: 50.h,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          QuizProgressBar(state: widget.state),
+                          verticalSpacing(12),
+                          SizedBox(
+                            height: 165.h,
+                            child: FlashCard(
+                              flipKey: _getFlipKey(currentCard.id),
+                              cardModel: currentCard,
+                              isInQuiz: true,
+                              showHint: _isHintVisible,
+                            ),
+                          ),
+                          verticalSpacing(12),
+                          if (widget.state.showCorrectAnswer &&
+                              widget.state.lastCorrectAnswer != null) ...[
+                            CorrectAnswerBanner(
+                              answer: widget.state.lastCorrectAnswer!,
+                            ),
+                            verticalSpacing(10),
+                          ],
+                          if (widget.state.quizMode == QuizMode.multipleChoice)
+                            QuizOptionsView(
+                              options: widget.state.currentOptions ?? [],
+                              correctAnswer: currentCard.back,
+                              selectedOption: widget.state.selectedOption,
+                              isAnswered: isAnswered,
+                              onOptionSelected: (option) {
+                                if (!isAnswered) {
+                                  context
+                                      .read<QuizCubit>()
+                                      .emitSubmitAnswer(option);
+                                }
+                              },
+                            )
+                          else
+                            TypingQuizInput(
+                              controller: _answerController,
+                              isAnswered: isAnswered,
+                              onSubmit: _submitTypingAnswer,
+                              onSkip: () {
+                                context.read<QuizCubit>().emitSkipCard();
+                                _answerController.clear();
+                                setState(() => _isHintVisible = false);
+                              },
+                            ),
+                          verticalSpacing(10),
+                          Center(
+                            child: TextButton.icon(
+                              onPressed: !hasHint
+                                  ? null
+                                  : () {
+                                      setState(
+                                        () => _isHintVisible = !_isHintVisible,
+                                      );
+                                    },
+                              icon: Icon(
+                                CupertinoIcons.lightbulb,
+                                color: !hasHint
+                                    ? AppColors.gray
+                                    : (_isHintVisible
+                                        ? AppColors.softAmber
+                                        : AppColors.lavenderGray),
+                                size: 18.sp,
+                              ),
+                              label: Text(
+                                !hasHint
+                                    ? "No hint available"
+                                    : (_isHintVisible
+                                        ? "Hide Hint"
+                                        : "Show Hint"),
+                                style: AppStyles.font13GrayMedium.copyWith(
+                                  color: !hasHint
+                                      ? AppColors.gray
+                                      : (_isHintVisible
+                                          ? AppColors.softAmber
+                                          : AppColors.lavenderGray),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                  verticalSpacing(12),
-                  if (widget.state.showCorrectAnswer && widget.state.lastCorrectAnswer != null) ...[
-                    CorrectAnswerBanner(answer: widget.state.lastCorrectAnswer!),
-                    verticalSpacing(10),
-                  ],
-                  if (widget.state.quizMode == QuizMode.multipleChoice)
-                    QuizOptionsView(
-                      options: widget.state.currentOptions ?? [],
-                      correctAnswer: currentCard.back,
-                      selectedOption: widget.state.selectedOption,
-                      isAnswered: isAnswered,
-                      onOptionSelected: (option) {
-                        if (!isAnswered) {
-                          context.read<QuizCubit>().emitSubmitAnswer(option);
-                        }
-                      },
-                    )
-                  else
-                    TypingQuizInput(
-                      controller: _answerController,
-                      isAnswered: isAnswered,
-                      onSubmit: _submitTypingAnswer,
-                      onSkip: () {
-                        context.read<QuizCubit>().emitSkipCard();
-                        _answerController.clear();
-                        setState(() => _isHintVisible = false);
-                      },
-                    ),
-                  verticalSpacing(10),
-                  Center(
-                    child: TextButton.icon(
-                      onPressed: !hasHint
-                          ? null
-                          : () {
-                              setState(() => _isHintVisible = !_isHintVisible);
-                            },
-                      icon: Icon(
-                        CupertinoIcons.lightbulb,
-                        color: !hasHint
-                            ? AppColors.gray
-                            : (_isHintVisible
-                                ? AppColors.softAmber
-                                : AppColors.lavenderGray),
-                        size: 18.sp,
-                      ),
-                      label: Text(
-                        !hasHint
-                            ? "No hint available"
-                            : (_isHintVisible ? "Hide Hint" : "Show Hint"),
-                        style: AppStyles.font13GrayMedium.copyWith(
-                          color: !hasHint
-                              ? AppColors.gray
-                              : (_isHintVisible
-                                  ? AppColors.softAmber
-                                  : AppColors.lavenderGray),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                );
+              },
             ),
           ),
         ),

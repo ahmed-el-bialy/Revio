@@ -96,7 +96,7 @@ class _GenreChipPickerState extends State<GenreChipPicker> {
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
                   padding:
-                      EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                  EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                   decoration: BoxDecoration(
                     color: AppColors.primaryTeal.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(14.r),
@@ -137,7 +137,7 @@ class _GenreChipPickerState extends State<GenreChipPicker> {
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 220),
                 padding:
-                    EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                 decoration: BoxDecoration(
                   color: isSelected
                       ? catColor.withValues(alpha: 0.28)
@@ -151,12 +151,12 @@ class _GenreChipPickerState extends State<GenreChipPicker> {
                   ),
                   boxShadow: isSelected
                       ? [
-                          BoxShadow(
-                            color: catColor.withValues(alpha: 0.25),
-                            blurRadius: 8,
-                            offset: const Offset(0, 3),
-                          ),
-                        ]
+                    BoxShadow(
+                      color: catColor.withValues(alpha: 0.25),
+                      blurRadius: 8,
+                      offset: const Offset(0, 3),
+                    ),
+                  ]
                       : [],
                 ),
                 child: Row(
@@ -176,7 +176,7 @@ class _GenreChipPickerState extends State<GenreChipPicker> {
                       style: AppStyles.font13GrayMedium.copyWith(
                         color: isSelected ? AppColors.white : catColor,
                         fontWeight:
-                            isSelected ? FontWeight.w800 : FontWeight.w600,
+                        isSelected ? FontWeight.w800 : FontWeight.w600,
                         fontSize: 12.sp,
                       ),
                     ),

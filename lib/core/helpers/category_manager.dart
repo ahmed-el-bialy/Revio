@@ -67,18 +67,21 @@ class CategoryManager {
     if (trimmed.isEmpty) return false;
 
     // If it was a deleted core category, un-delete it!
-    final deletedBox = _deletedCoreBox ?? await Hive.openBox<String>(_deletedCoreBoxName);
+    final deletedBox = _deletedCoreBox ??
+        await Hive.openBox<String>(_deletedCoreBoxName);
     final deletedKeys = deletedBox.keys.toList();
     for (var key in deletedKeys) {
       final val = deletedBox.get(key);
-      if (val != null && val.toLowerCase() == trimmed.toLowerCase() && val.toLowerCase() != 'no topic') {
+      if (val != null && val.toLowerCase() == trimmed.toLowerCase() &&
+          val.toLowerCase() != 'no topic') {
         await deletedBox.delete(key);
         return true;
       }
     }
 
     final existingCustom = getCustomCategories();
-    final isDuplicate = existingCustom.any((c) => c.toLowerCase() == trimmed.toLowerCase()) ||
+    final isDuplicate = existingCustom.any((c) =>
+    c.toLowerCase() == trimmed.toLowerCase()) ||
         coreCategories.any((c) => c.toLowerCase() == trimmed.toLowerCase());
 
     if (isDuplicate) return false;
@@ -98,23 +101,30 @@ class CategoryManager {
       return false;
     }
 
-    final isCaseChangeOnly = trimmedOld.toLowerCase() == trimmedNew.toLowerCase();
+    final isCaseChangeOnly = trimmedOld.toLowerCase() ==
+        trimmedNew.toLowerCase();
 
     // Check duplicate if not a case-only change
     if (!isCaseChangeOnly) {
-      final allCurrent = [...getActiveCoreCategories(), ...getCustomCategories()];
+      final allCurrent = [
+        ...getActiveCoreCategories(),
+        ...getCustomCategories()
+      ];
       if (allCurrent.any((c) => c.toLowerCase() == trimmedNew.toLowerCase())) {
         return false;
       }
     }
 
     // Check if oldName is a core category
-    final isCore = coreCategories.any((c) => c.toLowerCase() == trimmedOld.toLowerCase());
+    final isCore = coreCategories.any((c) =>
+    c.toLowerCase() == trimmedOld.toLowerCase());
 
     if (isCore) {
       // Hide old core category and add newName as custom category
-      final matchingCore = coreCategories.firstWhere((c) => c.toLowerCase() == trimmedOld.toLowerCase());
-      final deletedBox = _deletedCoreBox ?? await Hive.openBox<String>(_deletedCoreBoxName);
+      final matchingCore = coreCategories.firstWhere((c) =>
+      c.toLowerCase() == trimmedOld.toLowerCase());
+      final deletedBox = _deletedCoreBox ??
+          await Hive.openBox<String>(_deletedCoreBoxName);
       if (!getDeletedCoreCategories().contains(matchingCore)) {
         await deletedBox.add(matchingCore);
       }
@@ -127,7 +137,8 @@ class CategoryManager {
         final keys = b.keys.toList();
         for (var key in keys) {
           final val = b.get(key);
-          if (val != null && val.trim().toLowerCase() == trimmedOld.toLowerCase()) {
+          if (val != null &&
+              val.trim().toLowerCase() == trimmedOld.toLowerCase()) {
             await b.put(key, trimmedNew);
           }
         }
@@ -156,16 +167,19 @@ class CategoryManager {
   }
 
   /// Delete any category and reassign its cards to 'No Topic' ('No Topic' cannot be deleted)
-  static Future<void> deleteCategoryAndReassignCards(String categoryName) async {
+  static Future<void> deleteCategoryAndReassignCards(
+      String categoryName) async {
     final trimmed = categoryName.trim();
     if (trimmed.toLowerCase() == 'no topic') return; // Immutable system default
-    
+
     // Check if core category
     if (coreCategories.any((c) => c.toLowerCase() == trimmed.toLowerCase())) {
-      final matchingCore = coreCategories.firstWhere((c) => c.toLowerCase() == trimmed.toLowerCase());
+      final matchingCore = coreCategories.firstWhere((c) =>
+      c.toLowerCase() == trimmed.toLowerCase());
       if (matchingCore.toLowerCase() == 'no topic') return;
-      
-      final deletedBox = _deletedCoreBox ?? await Hive.openBox<String>(_deletedCoreBoxName);
+
+      final deletedBox = _deletedCoreBox ??
+          await Hive.openBox<String>(_deletedCoreBoxName);
       if (!getDeletedCoreCategories().contains(matchingCore)) {
         await deletedBox.add(matchingCore);
       }
@@ -176,7 +190,8 @@ class CategoryManager {
         final keys = b.keys.toList();
         for (var key in keys) {
           final val = b.get(key);
-          if (val != null && val.trim().toLowerCase() == trimmed.toLowerCase()) {
+          if (val != null &&
+              val.trim().toLowerCase() == trimmed.toLowerCase()) {
             await b.delete(key);
           }
         }

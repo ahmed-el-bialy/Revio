@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:code_alpha_flash_card_app/core/helpers/answer_matcher.dart';
+import '../lib/core/helpers/answer_matcher.dart';
 
 void main() {
   group('AnswerMatcher Tests', () {

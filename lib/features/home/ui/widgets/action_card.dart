@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import '../../../../core/helpers/spacing.dart';
 import '../../../../core/theming/app_styles.dart';
-import '../../../../core/widgets/app_glass_container.dart';
+import '../../../../core/widgets/app_card.dart';
 
 class ActionCard extends StatelessWidget {
   final IconData icon;
@@ -22,10 +23,9 @@ class ActionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppGlassContainer(
+    return AppCard(
       onTap: onTap,
-      accentColor: accentColor,
-      borderRadius: 22,
+      borderRadius: 20,
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 18.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -36,17 +36,14 @@ class ActionCard extends StatelessWidget {
               Container(
                 padding: EdgeInsets.all(10.w),
                 decoration: BoxDecoration(
-                  color: accentColor.withValues(alpha: 0.15),
+                  color: accentColor.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(14.r),
-                  border: Border.all(
-                    color: accentColor.withValues(alpha: 0.35),
-                  ),
                 ),
                 child: Icon(icon, color: accentColor, size: 22.sp),
               ),
               Icon(
                 CupertinoIcons.chevron_right,
-                color: accentColor.withValues(alpha: 0.6),
+                color: accentColor.withValues(alpha: 0.5),
                 size: 14.sp,
               ),
             ],
@@ -55,7 +52,7 @@ class ActionCard extends StatelessWidget {
           Text(
             title,
             style: AppStyles.font16WhiteSemiBold.copyWith(
-              fontSize: 14.sp,
+              fontSize: 15.sp,
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -63,7 +60,7 @@ class ActionCard extends StatelessWidget {
           Text(
             subtitle,
             style: AppStyles.font12LavenderGrayFaded.copyWith(
-              fontSize: 11.sp,
+              fontSize: 11.5.sp,
             ),
           ),
         ],

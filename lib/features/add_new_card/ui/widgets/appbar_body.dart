@@ -1,9 +1,9 @@
-import 'package:code_alpha_flash_card_app/core/helpers/snackbar_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/helpers/routing_extension.dart';
+import '../../../../core/helpers/snackbar_helper.dart';
 import '../../../../core/theming/app_colors.dart';
 import '../../../../core/theming/app_styles.dart';
 import '../../../cards/data/models/card_model.dart';
@@ -61,23 +61,26 @@ class AppbarBody extends StatelessWidget {
               onTap: state is AddCardLoading
                   ? null
                   : () {
-                      if (_formKey.currentState!.validate()) {
-                        final newCard = CardModel(
-                          id: DateTime.now()
-                              .millisecondsSinceEpoch
-                              .toString(),
-                          category: selectedCategory,
-                          front: _questionController.text.trim(),
-                          hint: _hintController.text.trim().isEmpty
-                              ? null
-                              : _hintController.text.trim(),
-                          back: _answerController.text.trim(),
-                          isFavorite: false,
-                          createdAt: DateTime.now(),
-                        );
-                        context.read<AddCardCubit>().emitSaveCard(newCard);
-                      }
-                    },
+                if (_formKey.currentState!.validate()) {
+                  final newCard = CardModel(
+                    id: DateTime
+                        .now()
+                        .millisecondsSinceEpoch
+                        .toString(),
+                    category: selectedCategory,
+                    front: _questionController.text.trim(),
+                    hint: _hintController.text
+                        .trim()
+                        .isEmpty
+                        ? null
+                        : _hintController.text.trim(),
+                    back: _answerController.text.trim(),
+                    isFavorite: false,
+                    createdAt: DateTime.now(),
+                  );
+                  context.read<AddCardCubit>().emitSaveCard(newCard);
+                }
+              },
               child: Container(
                 constraints: BoxConstraints(minWidth: 60.w),
                 alignment: Alignment.center,
@@ -92,21 +95,21 @@ class AppbarBody extends StatelessWidget {
                 ),
                 child: state is AddCardLoading
                     ? SizedBox(
-                        height: 16.h,
-                        width: 16.w,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            AppColors.primaryTeal,
-                          ),
-                        ),
-                      )
+                  height: 16.h,
+                  width: 16.w,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      AppColors.primaryTeal,
+                    ),
+                  ),
+                )
                     : Text(
-                        "Save",
-                        style: AppStyles.font14WhiteSemiBold.copyWith(
-                          color: AppColors.primaryTeal,
-                        ),
-                      ),
+                  "Save",
+                  style: AppStyles.font14WhiteSemiBold.copyWith(
+                    color: AppColors.primaryTeal,
+                  ),
+                ),
               ),
             );
           },
