@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+// ignore: depend_on_referenced_packages
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/helpers/spacing.dart';
 import '../../../../core/theming/app_colors.dart';
 import '../../../../core/theming/app_styles.dart';
+import '../../../../core/widgets/app_card.dart';
 import '../../logic/quiz_state.dart';
 
 class QuizModeSelector extends StatelessWidget {
@@ -24,10 +26,12 @@ class QuizModeSelector extends StatelessWidget {
         _QuizModeCard(
           icon: CupertinoIcons.list_bullet_below_rectangle,
           title: "Multiple Choice",
-          subtitle: "Pick the right answer from 4 options. Great for quick practice!",
+          subtitle:
+              "Pick the right answer from 4 options. Great for quick practice!",
           accentColor: AppColors.primaryCyan,
           badgeLabel: "Recommended",
-          onTap: cardCount >= 2 ? () => onSelectMode(QuizMode.multipleChoice) : null,
+          onTap:
+              cardCount >= 2 ? () => onSelectMode(QuizMode.multipleChoice) : null,
           isDisabled: cardCount < 2,
           disabledHint: cardCount < 2 ? "Need at least 2 cards" : null,
         ),
@@ -35,7 +39,8 @@ class QuizModeSelector extends StatelessWidget {
         _QuizModeCard(
           icon: CupertinoIcons.keyboard,
           title: "Smart Typing",
-          subtitle: "Type your answer freely. Smart matching accepts minor typos.",
+          subtitle:
+              "Type your answer freely. Smart matching accepts minor typos.",
           accentColor: AppColors.indigoAccent,
           badgeLabel: "Classic",
           onTap: cardCount >= 1 ? () => onSelectMode(QuizMode.typing) : null,
@@ -73,88 +78,90 @@ class _QuizModeCard extends StatelessWidget {
     return AnimatedOpacity(
       opacity: isDisabled ? 0.45 : 1.0,
       duration: const Duration(milliseconds: 200),
-      child: InkWell(
+      child: AppCard(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(20.r),
-        child: Ink(
-          decoration: BoxDecoration(
-            color: AppColors.cardSurface,
-            borderRadius: BorderRadius.circular(20.r),
-            border: Border.all(
-              color: isDisabled
-                  ? AppColors.gray.withValues(alpha: 0.15)
-                  : accentColor.withValues(alpha: 0.3),
-              width: 1.5,
+        borderRadius: 20,
+        borderColor: isDisabled
+            ? AppColors.gray.withValues(alpha: 0.15)
+            : accentColor.withValues(alpha: 0.3),
+        padding: EdgeInsets.all(18.w),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: EdgeInsets.all(12.w),
+              decoration: BoxDecoration(
+                color: accentColor.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(14.r),
+              ),
+              child: Icon(icon, color: accentColor, size: 24.sp),
             ),
-          ),
-          child: Padding(
-            padding: EdgeInsets.all(20.w),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  padding: EdgeInsets.all(14.w),
-                  decoration: BoxDecoration(
-                    color: accentColor.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(14.r),
-                  ),
-                  child: Icon(icon, color: accentColor, size: 26.sp),
-                ),
-                horizontalSpacing(16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+            horizontalSpacing(14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    spacing: 8.w,
+                    runSpacing: 4.h,
                     children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              title,
-                              style: AppStyles.font16WhiteSemiBold,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          horizontalSpacing(8),
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 8.w, vertical: 2.h),
-                            decoration: BoxDecoration(
-                              color: accentColor.withValues(alpha: 0.15),
-                              borderRadius: BorderRadius.circular(6.r),
-                            ),
-                            child: Text(
-                              badgeLabel,
-                              style: AppStyles.font11GrayRegular.copyWith(
-                                color: accentColor,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ),
-                        ],
+                      Text(
+                        title,
+                        style: AppStyles.font16WhiteSemiBold.copyWith(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w800,
+                        ),
                       ),
-                      verticalSpacing(6),
-                      Text(subtitle, style: AppStyles.font13GrayMedium),
-                      if (disabledHint != null) ...[
-                        verticalSpacing(6),
-                        Text(
-                          disabledHint!,
-                          style: AppStyles.font12LavenderGray.copyWith(
-                            color: AppColors.errorRed.withValues(alpha: 0.7),
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 8.w,
+                          vertical: 2.h,
+                        ),
+                        decoration: BoxDecoration(
+                          color: accentColor.withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(6.r),
+                        ),
+                        child: Text(
+                          badgeLabel,
+                          style: AppStyles.font11GrayRegular.copyWith(
+                            color: accentColor,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 10.sp,
                           ),
                         ),
-                      ],
+                      ),
                     ],
                   ),
-                ),
-                if (!isDisabled)
-                  Icon(
-                    CupertinoIcons.chevron_right,
-                    color: accentColor.withValues(alpha: 0.6),
-                    size: 16.sp,
+                  verticalSpacing(6),
+                  Text(
+                    subtitle,
+                    style: AppStyles.font13GrayMedium.copyWith(
+                      height: 1.35,
+                    ),
                   ),
-              ],
+                  if (disabledHint != null) ...[
+                    verticalSpacing(6),
+                    Text(
+                      disabledHint!,
+                      style: AppStyles.font12LavenderGray.copyWith(
+                        color: AppColors.errorRed.withValues(alpha: 0.8),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
             ),
-          ),
+            if (!isDisabled) ...[
+              horizontalSpacing(8),
+              Icon(
+                CupertinoIcons.chevron_right,
+                color: accentColor.withValues(alpha: 0.6),
+                size: 16.sp,
+              ),
+            ],
+          ],
         ),
       ),
     );

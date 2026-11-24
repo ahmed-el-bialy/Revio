@@ -1,40 +1,48 @@
-import 'package:flutter/material.dart';
+// ignore: depend_on_referenced_packages
+import 'package:material_ui/material_ui.dart';
 
 class AppColors {
-  // ── Soft, Eye-Friendly Deep Espresso / Dark Theme Backgrounds ─────────────
+  // ── Dark Theme Backgrounds ────
+
   static const Color darkBackground = Color(0xFF0D1117);
   static const Color surfaceDark = Color(0xFF161B22);
   static const Color cardSurface = Color(0xFF1F242D);
   static const Color elevatedSurface = Color(0xFF2B3340);
   static const Color oceanBlue = Color(0xFF1E293B);
 
-  // ── Refined Muted Accents (Easy on the Eyes, Professional) ──────────────────
-  static const Color primaryCyan = Color(0xFF38BDF8); // Soft Sky Blue
-  static const Color neonAqua = Color(0xFF2DD4BF); // Soft Teal
+  // ── Refined Muted Accents ────
+
+  static const Color primaryCyan = Color(0xFF38BDF8);
+  static const Color neonAqua = Color(0xFF2DD4BF);
   static const Color primaryTeal = Color(0xFF38BDF8);
   static const Color cyberCyan = Color(0xFF7DD3FC);
   static const Color skyBlue = Color(0xFF0EA5E9);
-  static const Color indigoAccent = Color(0xFF818CF8); // Soft Lavender Indigo
+  static const Color indigoAccent = Color(0xFF818CF8);
 
-  // ── Warm & Functional Accents (Harmonized, No Neon Yellow) ──────────────────
-  static const Color emeraldGold = Color(0xFF34D399); // Soft Mint Green
-  static const Color softAmber = Color(0xFF38BDF8); // Harmonized to Sky Blue (replaced bright yellow)
+  // ── Warm & Functional Accents ─────
+
+  static const Color emeraldGold = Color(0xFF34D399);
+  static const Color softAmber = Color(
+    0xFF38BDF8,
+  );
   static const Color warmGray = Color(0xFF64748B);
-  static const Color lavenderGray = Color(0xFF94A3B8); // Muted readable text
+  static const Color lavenderGray = Color(0xFF94A3B8);
   static const Color gray = Color(0xFF475569);
   static const Color white = Colors.white;
 
-  // ── Status & Feedback ───────────────────────────────────────────────────────
-  static const Color favoriteColor = Color(0xFFEF4444); // Classic Natural Red
+  // ── Status & Feedback ────
+
+  static const Color favoriteColor = Color(0xFFEF4444);
   static const Color favoriteGlow = Color(0xFFF87171);
   static const Color iceBlue = Color(0xFFF1F5F9);
 
   static const Color success = Color(0xFF34D399);
   static const Color successGreen = Color(0xFF34D399);
-  static const Color error = Color(0xFFEF4444); // Soft Red
+  static const Color error = Color(0xFFEF4444);
   static const Color errorRed = Color(0xFFEF4444);
 
   // Category Accent Map (Soft & Harmonious)
+
   static const Map<String, Color> categoryColors = {
     'Science': Color(0xFF38BDF8),
     'Math': Color(0xFF818CF8),
@@ -45,7 +53,8 @@ class AppColors {
     'General': Color(0xFF94A3B8),
   };
 
-  // ── Subtle, Professional Gradients ─────────────────────────────────────────
+  // ── Subtle, Professional Gradients ────────
+
   static const LinearGradient primaryGradient = LinearGradient(
     colors: [Color(0xFF818CF8), Color(0xFF38BDF8)],
     begin: Alignment.topLeft,

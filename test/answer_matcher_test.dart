@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import '../lib/core/helpers/answer_matcher.dart';
+import 'package:revio/core/helpers/answer_matcher.dart';
 
 void main() {
   group('AnswerMatcher Tests', () {
@@ -35,7 +35,10 @@ void main() {
     });
 
     test('Partial containment with proper length ratio', () {
-      final res = AnswerMatcher.match('French Revolution', 'The French Revolution');
+      final res = AnswerMatcher.match(
+        'French Revolution',
+        'The French Revolution',
+      );
       expect(res.isCorrect, isTrue);
       expect(res.matchType, MatchType.partial);
     });
@@ -59,4 +62,3 @@ void main() {
     });
   });
 }
-

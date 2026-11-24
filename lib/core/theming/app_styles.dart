@@ -1,220 +1,223 @@
-import 'package:flutter/material.dart';
+// ignore: depend_on_referenced_packages
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'app_colors.dart';
 
 class AppStyles {
-  // ── Primary Brand ───────────────────────────────────────────────────────────
+  // ── Primary Brand ─────
   static TextStyle get font24BoldPrimaryManrope => TextStyle(
-        fontSize: 24.sp,
-        fontWeight: FontWeight.bold,
-        fontFamily: "Manrope",
-        color: AppColors.primaryTeal,
-        height: 1.2,
-      );
+    fontSize: 24.sp,
+    fontWeight: FontWeight.bold,
+    fontFamily: "Manrope",
+    color: AppColors.primaryTeal,
+    height: 1.2,
+  );
 
   static TextStyle get font24BoldIndigoAccentManrope => TextStyle(
-        fontSize: 24.sp,
-        fontWeight: FontWeight.bold,
-        fontFamily: "Manrope",
-        color: AppColors.primaryTeal,
-        height: 1.2,
-      );
+    fontSize: 24.sp,
+    fontWeight: FontWeight.bold,
+    fontFamily: "Manrope",
+    color: AppColors.primaryTeal,
+    height: 1.2,
+  );
 
   static TextStyle get font19BoldIndigoAccent => TextStyle(
-        fontSize: 19.sp,
-        fontWeight: FontWeight.bold,
-        fontFamily: "Manrope",
-        color: AppColors.primaryTeal,
-        height: 1.2,
-      );
+    fontSize: 19.sp,
+    fontWeight: FontWeight.bold,
+    fontFamily: "Manrope",
+    color: AppColors.primaryTeal,
+    height: 1.2,
+  );
 
   static TextStyle get font18BoldIndigoAccent => TextStyle(
-        fontSize: 18.sp,
-        fontWeight: FontWeight.bold,
-        fontFamily: "Manrope",
-        color: AppColors.primaryTeal,
-        height: 1.2,
-      );
+    fontSize: 18.sp,
+    fontWeight: FontWeight.bold,
+    fontFamily: "Manrope",
+    color: AppColors.primaryTeal,
+    height: 1.2,
+  );
 
   static TextStyle get font15IndigoAccentSemiBold => TextStyle(
-        fontSize: 15.sp,
-        fontWeight: FontWeight.w600,
-        fontFamily: "Manrope",
-        color: AppColors.primaryTeal,
-        height: 1.2,
-      );
+    fontSize: 15.sp,
+    fontWeight: FontWeight.w600,
+    fontFamily: "Manrope",
+    color: AppColors.primaryTeal,
+    height: 1.2,
+  );
 
-  // ── Ice / Light Text ────────────────────────────────────────────────────────
+  // ── Ice / Light Text ─────
+
   static TextStyle get font24BoldIceBlueManrope => TextStyle(
-        fontSize: 30.sp,
-        fontWeight: FontWeight.bold,
-        fontFamily: "Manrope",
-        color: AppColors.iceBlue,
-        height: 1.2,
-      );
+    fontSize: 30.sp,
+    fontWeight: FontWeight.bold,
+    fontFamily: "Manrope",
+    color: AppColors.iceBlue,
+    height: 1.2,
+  );
 
   static TextStyle get font28BoldIceBlue => TextStyle(
-        fontSize: 28.sp,
-        fontWeight: FontWeight.bold,
-        fontFamily: "Manrope",
-        color: AppColors.iceBlue,
-        height: 1.2,
-      );
+    fontSize: 28.sp,
+    fontWeight: FontWeight.bold,
+    fontFamily: "Manrope",
+    color: AppColors.iceBlue,
+    height: 1.2,
+  );
 
   static TextStyle get font22BoldIceBlue => TextStyle(
-        fontSize: 22.sp,
-        fontWeight: FontWeight.bold,
-        fontFamily: "Manrope",
-        color: AppColors.iceBlue,
-        height: 1.2,
-      );
+    fontSize: 22.sp,
+    fontWeight: FontWeight.bold,
+    fontFamily: "Manrope",
+    color: AppColors.iceBlue,
+    height: 1.2,
+  );
 
   static TextStyle get font17BoldIceBlue => TextStyle(
-        fontSize: 17.sp,
-        fontWeight: FontWeight.bold,
-        fontFamily: "Manrope",
-        color: AppColors.iceBlue,
-        height: 1.2,
-      );
+    fontSize: 17.sp,
+    fontWeight: FontWeight.bold,
+    fontFamily: "Manrope",
+    color: AppColors.iceBlue,
+    height: 1.2,
+  );
 
   // ── White Text Variants ──────────────────────────────────────────────────────
   static TextStyle get font40BoldWhite => TextStyle(
-        fontSize: 40.sp,
-        fontWeight: FontWeight.w800,
-        fontFamily: "Manrope",
-        color: AppColors.white,
-        height: 1.2,
-      );
+    fontSize: 40.sp,
+    fontWeight: FontWeight.w800,
+    fontFamily: "Manrope",
+    color: AppColors.white,
+    height: 1.2,
+  );
 
   static TextStyle get font20BoldWhite => TextStyle(
-        fontSize: 20.sp,
-        fontWeight: FontWeight.bold,
-        fontFamily: "Manrope",
-        color: AppColors.white,
-        height: 1.2,
-      );
+    fontSize: 20.sp,
+    fontWeight: FontWeight.bold,
+    fontFamily: "Manrope",
+    color: AppColors.white,
+    height: 1.2,
+  );
 
   static TextStyle get font18WhiteBold => TextStyle(
-        fontSize: 18.sp,
-        fontWeight: FontWeight.bold,
-        fontFamily: "Manrope",
-        color: AppColors.white,
-        height: 1.2,
-      );
+    fontSize: 18.sp,
+    fontWeight: FontWeight.bold,
+    fontFamily: "Manrope",
+    color: AppColors.white,
+    height: 1.2,
+  );
 
   static TextStyle get font17WhiteBold => TextStyle(
-        fontSize: 17.sp,
-        fontWeight: FontWeight.bold,
-        fontFamily: "Manrope",
-        color: AppColors.white,
-        height: 1.2,
-      );
+    fontSize: 17.sp,
+    fontWeight: FontWeight.bold,
+    fontFamily: "Manrope",
+    color: AppColors.white,
+    height: 1.2,
+  );
 
   static TextStyle get font16WhiteSemiBold => TextStyle(
-        fontSize: 16.sp,
-        fontWeight: FontWeight.w600,
-        fontFamily: "Manrope",
-        color: AppColors.white,
-        height: 1.25,
-      );
+    fontSize: 16.sp,
+    fontWeight: FontWeight.w600,
+    fontFamily: "Manrope",
+    color: AppColors.white,
+    height: 1.25,
+  );
 
   static TextStyle get font18WhiteMedium => TextStyle(
-        fontSize: 18.sp,
-        fontWeight: FontWeight.w500,
-        fontFamily: "Manrope",
-        color: AppColors.white,
-        height: 1.25,
-      );
+    fontSize: 18.sp,
+    fontWeight: FontWeight.w500,
+    fontFamily: "Manrope",
+    color: AppColors.white,
+    height: 1.25,
+  );
 
   static TextStyle get font14WhiteSemiBold => TextStyle(
-        fontSize: 14.sp,
-        fontWeight: FontWeight.w600,
-        fontFamily: "Manrope",
-        color: AppColors.white,
-        height: 1.25,
-      );
+    fontSize: 14.sp,
+    fontWeight: FontWeight.w600,
+    fontFamily: "Manrope",
+    color: AppColors.white,
+    height: 1.25,
+  );
 
   static TextStyle get font14White70 => TextStyle(
-        fontSize: 14.sp,
-        fontFamily: "Manrope",
-        color: AppColors.white.withValues(alpha: 0.85),
-        height: 1.4,
-      );
+    fontSize: 14.sp,
+    fontFamily: "Manrope",
+    color: AppColors.white.withValues(alpha: 0.85),
+    height: 1.4,
+  );
 
   static TextStyle get font12White38 => TextStyle(
-        fontSize: 12.sp,
-        fontFamily: "Manrope",
-        color: AppColors.white.withValues(alpha: 0.6),
-        height: 1.4,
-      );
+    fontSize: 12.sp,
+    fontFamily: "Manrope",
+    color: AppColors.white.withValues(alpha: 0.6),
+    height: 1.4,
+  );
 
   // ── Lavender / Gray Text Variants ──────────────────────────────────────────
   static TextStyle get font16LavenderGray => TextStyle(
-        fontSize: 16.sp,
-        fontFamily: "Manrope",
-        color: AppColors.lavenderGray,
-        height: 1.4,
-      );
+    fontSize: 16.sp,
+    fontFamily: "Manrope",
+    color: AppColors.lavenderGray,
+    height: 1.4,
+  );
 
   static TextStyle get font16LavenderGrayBold => TextStyle(
-        fontSize: 16.sp,
-        fontWeight: FontWeight.w600,
-        fontFamily: "Manrope",
-        color: AppColors.lavenderGray,
-        height: 1.4,
-      );
+    fontSize: 16.sp,
+    fontWeight: FontWeight.w600,
+    fontFamily: "Manrope",
+    color: AppColors.lavenderGray,
+    height: 1.4,
+  );
 
   static TextStyle get font14LavenderGrayMedium => TextStyle(
-        fontSize: 14.sp,
-        fontWeight: FontWeight.w500,
-        fontFamily: "Manrope",
-        color: AppColors.lavenderGray,
-        height: 1.4,
-      );
+    fontSize: 14.sp,
+    fontWeight: FontWeight.w500,
+    fontFamily: "Manrope",
+    color: AppColors.lavenderGray,
+    height: 1.4,
+  );
 
   static TextStyle get font12LavenderGray => TextStyle(
-        fontSize: 12.sp,
-        fontFamily: "Manrope",
-        color: AppColors.lavenderGray,
-        height: 1.4,
-      );
+    fontSize: 12.sp,
+    fontFamily: "Manrope",
+    color: AppColors.lavenderGray,
+    height: 1.4,
+  );
 
   static TextStyle get font12LavenderGrayFaded => TextStyle(
-        fontSize: 12.sp,
-        fontFamily: "Manrope",
-        color: AppColors.lavenderGray.withValues(alpha: 0.65),
-        height: 1.4,
-      );
+    fontSize: 12.sp,
+    fontFamily: "Manrope",
+    color: AppColors.lavenderGray.withValues(alpha: 0.65),
+    height: 1.4,
+  );
 
   static TextStyle get font14Gray => TextStyle(
-        fontSize: 14.sp,
-        fontFamily: "Manrope",
-        color: AppColors.lavenderGray,
-        height: 1.4,
-      );
+    fontSize: 14.sp,
+    fontFamily: "Manrope",
+    color: AppColors.lavenderGray,
+    height: 1.4,
+  );
 
   static TextStyle get font13GrayMedium => TextStyle(
-        fontSize: 13.sp,
-        fontWeight: FontWeight.w500,
-        fontFamily: "Manrope",
-        color: AppColors.lavenderGray,
-        height: 1.4,
-      );
+    fontSize: 13.sp,
+    fontWeight: FontWeight.w500,
+    fontFamily: "Manrope",
+    color: AppColors.lavenderGray,
+    height: 1.4,
+  );
 
   static TextStyle get font11GrayRegular => TextStyle(
-        fontSize: 12.sp,
-        fontWeight: FontWeight.w500,
-        fontFamily: "Manrope",
-        color: AppColors.lavenderGray,
-        height: 1.3,
-      );
+    fontSize: 12.sp,
+    fontWeight: FontWeight.w500,
+    fontFamily: "Manrope",
+    color: AppColors.lavenderGray,
+    height: 1.3,
+  );
 
-  // ── Accent Accent Styles ─────────────────────────────────────────────────
+  // ── Accent Accent Styles ───────────
   static TextStyle get font14AccentCyan => TextStyle(
-        fontSize: 14.sp,
-        fontWeight: FontWeight.w500,
-        fontFamily: "Manrope",
-        color: AppColors.cyberCyan,
-        height: 1.3,
-      );
+    fontSize: 14.sp,
+    fontWeight: FontWeight.w500,
+    fontFamily: "Manrope",
+    color: AppColors.cyberCyan,
+    height: 1.3,
+  );
 }

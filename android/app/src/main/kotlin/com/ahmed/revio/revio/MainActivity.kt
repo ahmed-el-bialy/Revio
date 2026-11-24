@@ -1,4 +1,4 @@
-package com.ahmed.revio
+package com.ahmed.revio.revio
 
 import io.flutter.embedding.android.FlutterActivity
 

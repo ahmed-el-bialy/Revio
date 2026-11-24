@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+// ignore: depend_on_referenced_packages
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/helpers/routing_extension.dart';
@@ -12,94 +13,153 @@ import 'quiz_mode_selector.dart';
 
 class QuizModeSelectionView extends StatelessWidget {
   final List<CardModel> cards;
+  final bool isLoading;
+  final bool hasError;
+  final VoidCallback? onRetry;
   final Function(QuizMode mode) onSelectMode;
 
   const QuizModeSelectionView({
     super.key,
     required this.cards,
+    this.isLoading = false,
+    this.hasError = false,
+    this.onRetry,
     required this.onSelectMode,
   });
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          return Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 700),
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        IconButton(
-                          onPressed: () => context.maybePop(),
-                          icon: Icon(
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      body: SafeArea(
+        top: true,
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 700),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  verticalSpacing(6),
+                  Row(
+                    children: [
+                      GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () => context.maybePop(),
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                            right: 6.w,
+                            top: 4.h,
+                            bottom: 4.h,
+                          ),
+                          child: Icon(
                             CupertinoIcons.back,
                             color: AppColors.lavenderGray,
                             size: 22.sp,
                           ),
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(),
-                        ),
-                        horizontalSpacing(8),
-                        Text(
-                          "Quiz Mode",
-                          style: AppStyles.font18BoldIndigoAccent,
-                        ),
-                      ],
-                    ),
-                    verticalSpacing(20),
-                    Text(
-                      "Choose how you\nwant to be tested",
-                      style: AppStyles.font24BoldIceBlueManrope.copyWith(
-                        fontSize: 25.sp,
-                        height: 1.25,
-                      ),
-                    ),
-                    verticalSpacing(6),
-                    Text(
-                      "${cards.length} cards ready · Pick your challenge",
-                      style: AppStyles.font14White70,
-                    ),
-                    verticalSpacing(24),
-                    QuizModeSelector(
-                      onSelectMode: onSelectMode,
-                      cardCount: cards.length,
-                    ),
-                    verticalSpacing(24),
-                    if (cards.isEmpty)
-                      Center(
-                        child: Column(
-                          children: [
-                            Icon(
-                              CupertinoIcons.rectangle_stack_badge_minus,
-                              size: 48.sp,
-                              color: AppColors.gray,
-                            ),
-                            verticalSpacing(10),
-                            Text(
-                              "No cards yet!",
-                              style: AppStyles.font18WhiteBold,
-                            ),
-                            verticalSpacing(4),
-                            Text(
-                              "Add cards first to start a quiz.",
-                              style: AppStyles.font14White70,
-                            ),
-                          ],
                         ),
                       ),
-                  ],
-                ),
+                      horizontalSpacing(4),
+                      Text(
+                        "Quiz Mode",
+                        style: AppStyles.font18BoldIndigoAccent.copyWith(
+                          color: AppColors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      padding: EdgeInsets.only(
+                        top: 12.h,
+                        bottom: 20.h,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Choose how you\nwant to be tested",
+                            style: AppStyles.font24BoldIceBlueManrope.copyWith(
+                              fontSize: 26.sp,
+                              height: 1.25,
+                            ),
+                          ),
+                          verticalSpacing(8),
+                          Text(
+                            isLoading
+                                ? "Loading your cards..."
+                                : "${cards.length} cards ready · Pick your challenge",
+                            style: AppStyles.font14White70,
+                          ),
+                          verticalSpacing(24),
+                          QuizModeSelector(
+                            onSelectMode: onSelectMode,
+                            cardCount: isLoading ? 0 : cards.length,
+                          ),
+                          verticalSpacing(24),
+                          if (isLoading)
+                            const Center(
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(vertical: 20),
+                                child: CircularProgressIndicator(),
+                              ),
+                            )
+                          else if (hasError)
+                            Center(
+                              child: Column(
+                                children: [
+                                  Icon(
+                                    CupertinoIcons.exclamationmark_circle,
+                                    size: 44.sp,
+                                    color: AppColors.gray,
+                                  ),
+                                  verticalSpacing(10),
+                                  Text(
+                                    "Couldn't load cards",
+                                    style: AppStyles.font18WhiteBold,
+                                  ),
+                                  verticalSpacing(8),
+                                  if (onRetry != null)
+                                    TextButton(
+                                      onPressed: onRetry,
+                                      child: const Text("Try again"),
+                                    ),
+                                ],
+                              ),
+                            )
+                          else if (cards.isEmpty)
+                              Center(
+                                child: Column(
+                                  children: [
+                                    Icon(
+                                      CupertinoIcons.rectangle_stack_badge_minus,
+                                      size: 48.sp,
+                                      color: AppColors.gray,
+                                    ),
+                                    verticalSpacing(10),
+                                    Text(
+                                      "No cards yet!",
+                                      style: AppStyles.font18WhiteBold,
+                                    ),
+                                    verticalSpacing(4),
+                                    Text(
+                                      "Add cards first to start a quiz.",
+                                      style: AppStyles.font14White70,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-          );
-        },
+          ),
+        ),
       ),
     );
   }

@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+// ignore: depend_on_referenced_packages
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 
 /// A wrapper that adds a tactile press-down scale animation to any child widget.
