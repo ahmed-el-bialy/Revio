@@ -8,10 +8,9 @@ import '../../../../core/helpers/snackbar_helper.dart';
 import '../../../../core/helpers/spacing.dart';
 import '../../../../core/theming/app_colors.dart';
 import '../../../../core/theming/app_styles.dart';
-import '../../../../core/widgets/genre_chip_picker.dart';
 import '../../../cards/data/models/card_model.dart';
 import '../../../cards/data/repo/cards_repo.dart';
-import '../../../add_new_card/ui/widgets/app_text_form.dart';
+import 'flashcard_form_fields.dart';
 
 class AddCardModalBottomSheet extends StatefulWidget {
   final String? initialCategory;
@@ -164,78 +163,15 @@ class _AddCardModalBottomSheetState extends State<AddCardModalBottomSheet> {
                   ],
                 ),
                 verticalSpacing(20),
-                Text(
-                  "Topic / Category",
-                  style: AppStyles.font16LavenderGray.copyWith(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14.sp,
-                    color: AppColors.lavenderGray,
-                  ),
-                ),
-                verticalSpacing(10),
-                GenreChipPicker(
+                FlashcardFormFields(
+                  questionController: _questionController,
+                  hintController: _hintController,
+                  answerController: _answerController,
                   selectedCategory: _selectedCategory,
                   onCategorySelected: (category) {
                     setState(() {
                       _selectedCategory = category;
                     });
-                  },
-                ),
-                verticalSpacing(20),
-                Text(
-                  "Question (Front)",
-                  style: AppStyles.font16LavenderGray.copyWith(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14.sp,
-                    color: AppColors.lavenderGray,
-                  ),
-                ),
-                verticalSpacing(8),
-                AppTextForm(
-                  controller: _questionController,
-                  hint: "What do you want to remember?",
-                  maxLines: 2,
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Please enter a question';
-                    }
-                    return null;
-                  },
-                ),
-                verticalSpacing(16),
-                Text(
-                  "Hint (Optional)",
-                  style: AppStyles.font16LavenderGray.copyWith(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14.sp,
-                    color: AppColors.lavenderGray,
-                  ),
-                ),
-                verticalSpacing(8),
-                AppTextForm(
-                  controller: _hintController,
-                  hint: "Enter a helpful hint...",
-                  maxLines: 2,
-                ),
-                verticalSpacing(16),
-                Text(
-                  "Answer (Back)",
-                  style: AppStyles.font16LavenderGray.copyWith(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14.sp,
-                    color: AppColors.lavenderGray,
-                  ),
-                ),
-                verticalSpacing(8),
-                AppTextForm(
-                  controller: _answerController,
-                  hint: "Enter the answer...",
-                  maxLines: 3,
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Please enter an answer';
-                    }
-                    return null;
                   },
                 ),
                 verticalSpacing(28),

@@ -1,15 +1,14 @@
-import 'package:code_alpha_flash_card_app/core/constants/app_constants.dart';
-import 'package:code_alpha_flash_card_app/core/helpers/routing_extension.dart';
-import 'package:code_alpha_flash_card_app/core/widgets/genre_chip_picker.dart';
-import 'package:code_alpha_flash_card_app/features/cards/data/models/card_model.dart';
-import 'package:code_alpha_flash_card_app/core/theming/app_colors.dart';
-import 'package:code_alpha_flash_card_app/core/theming/app_styles.dart';
-import 'package:code_alpha_flash_card_app/features/add_new_card/ui/widgets/app_text_form.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../core/constants/app_constants.dart';
+import '../../../../core/helpers/routing_extension.dart';
 import '../../../../core/helpers/spacing.dart';
+import '../../../../core/theming/app_colors.dart';
+import '../../../../core/theming/app_styles.dart';
+import '../../../cards/data/models/card_model.dart';
+import 'flashcard_form_fields.dart';
 
 class EditCardBottomSheet extends StatefulWidget {
   final CardModel cardModel;
@@ -146,78 +145,15 @@ class _EditCardBottomSheetState extends State<EditCardBottomSheet> {
                   ],
                 ),
                 verticalSpacing(20),
-                Text(
-                  "Topic / Category",
-                  style: AppStyles.font16LavenderGray.copyWith(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14.sp,
-                    color: AppColors.lavenderGray,
-                  ),
-                ),
-                verticalSpacing(10),
-                GenreChipPicker(
+                FlashcardFormFields(
+                  questionController: _questionController,
+                  hintController: _hintController,
+                  answerController: _answerController,
                   selectedCategory: _selectedCategory,
                   onCategorySelected: (category) {
                     setState(() {
                       _selectedCategory = category;
                     });
-                  },
-                ),
-                verticalSpacing(20),
-                Text(
-                  "Question (Front)",
-                  style: AppStyles.font16LavenderGray.copyWith(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14.sp,
-                    color: AppColors.lavenderGray,
-                  ),
-                ),
-                verticalSpacing(8),
-                AppTextForm(
-                  controller: _questionController,
-                  hint: "Enter the question...",
-                  maxLines: 2,
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Please enter a question';
-                    }
-                    return null;
-                  },
-                ),
-                verticalSpacing(16),
-                Text(
-                  "Hint (Optional)",
-                  style: AppStyles.font16LavenderGray.copyWith(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14.sp,
-                    color: AppColors.lavenderGray,
-                  ),
-                ),
-                verticalSpacing(8),
-                AppTextForm(
-                  controller: _hintController,
-                  hint: "Enter a helpful hint...",
-                  maxLines: 2,
-                ),
-                verticalSpacing(16),
-                Text(
-                  "Answer (Back)",
-                  style: AppStyles.font16LavenderGray.copyWith(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14.sp,
-                    color: AppColors.lavenderGray,
-                  ),
-                ),
-                verticalSpacing(8),
-                AppTextForm(
-                  controller: _answerController,
-                  hint: "Enter the answer...",
-                  maxLines: 3,
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Please enter an answer';
-                    }
-                    return null;
                   },
                 ),
                 verticalSpacing(28),
