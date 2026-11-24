@@ -1,51 +1,16 @@
-// ignore: depend_on_referenced_packages
-import 'package:material_ui/material_ui.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../core/helpers/routing_extension.dart';
-import '../../../../core/theming/app_colors.dart';
-import '../../../../core/theming/app_styles.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 
-class QuizExitDialog extends StatelessWidget {
-  const QuizExitDialog({super.key});
+import '../../../../core/widgets/app_confirm_dialog.dart';
 
-  static Future<bool?> show(BuildContext context) {
-    return showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => const QuizExitDialog(),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      backgroundColor: AppColors.cardSurface,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20.r),
-      ),
-      title: Text(
-        "Exit Quiz?",
-        style: AppStyles.font18BoldIndigoAccent.copyWith(color: AppColors.white),
-      ),
-      content: Text(
-        "Your current progress will be lost.",
-        style: AppStyles.font14White70,
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => context.pop(false),
-          child: Text("Cancel", style: AppStyles.font14Gray),
-        ),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.error,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.r),
-            ),
-          ),
-          onPressed: () => context.pop(true),
-          child: Text("Exit", style: AppStyles.font14WhiteSemiBold),
-        ),
-      ],
+class QuizExitDialog {
+  static Future<bool> show(BuildContext context) {
+    return AppConfirmDialog.show(
+      context,
+      title: 'Exit Quiz?',
+      message: 'Your current quiz progress will be lost if you leave now.',
+      confirmLabel: 'Exit',
+      icon: CupertinoIcons.exclamationmark_triangle_fill,
+      isDestructive: true,
     );
   }
 }

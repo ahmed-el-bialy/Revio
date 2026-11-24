@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
-// ignore: depend_on_referenced_packages
-import 'package:material_ui/material_ui.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -8,6 +6,7 @@ import '../../../../core/helpers/spacing.dart';
 import '../../../../core/theming/app_colors.dart';
 import '../../../../core/theming/app_styles.dart';
 import '../../../../core/widgets/app_card.dart';
+import '../../../../core/widgets/app_sheet.dart';
 import '../../../../features/review/logic/delete_card/delete_card_cubit.dart';
 import '../../../../features/review/logic/edit_card/edit_card_cubit.dart';
 import '../../../../features/review/ui/widgets/edit_card_bottom_sheet.dart';
@@ -34,7 +33,8 @@ class CardFace extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool shouldDisplayHint = isFront &&
+    final bool shouldDisplayHint =
+        isFront &&
         cardModel.hint != null &&
         cardModel.hint!.trim().isNotEmpty &&
         (!isInQuiz || (isInQuiz && showHint));
@@ -156,7 +156,9 @@ class CardFace extends StatelessWidget {
                     color: isFav
                         ? AppColors.favoriteColor
                         : AppColors.lavenderGray,
-                    tooltip: isFav ? "Remove from favorites" : "Add to favorites",
+                    tooltip: isFav
+                        ? "Remove from favorites"
+                        : "Add to favorites",
                     onPressed: () => CardsRepo().toggleFavorite(cardModel.id),
                   ),
                   horizontalSpacing(4),
@@ -166,15 +168,8 @@ class CardFace extends StatelessWidget {
                     tooltip: "Edit card",
                     onPressed: () {
                       final editCubit = context.read<EditCardCubit>();
-                      showModalBottomSheet(
-                        context: context,
-                        isScrollControlled: true,
-                        backgroundColor: AppColors.darkBackground,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(28.r),
-                          ),
-                        ),
+                      AppSheet.show(
+                        context,
                         builder: (_) => EditCardBottomSheet(
                           cardModel: cardModel,
                           onCardUpdated: (updated) =>
@@ -195,12 +190,10 @@ class CardFace extends StatelessWidget {
                 tooltip: "Delete card",
                 onPressed: () {
                   final deleteCubit = context.read<DeleteCardCubit>();
-                  showDialog(
-                    context: context,
-                    builder: (context) => ConfirmMessage(
-                      deleteCubit: deleteCubit,
-                      cardModel: cardModel,
-                    ),
+                  ConfirmMessage.show(
+                    context,
+                    deleteCubit: deleteCubit,
+                    cardModel: cardModel,
                   );
                 },
               ),

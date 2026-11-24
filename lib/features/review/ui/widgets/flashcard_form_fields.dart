@@ -1,4 +1,3 @@
-// ignore: depend_on_referenced_packages
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -41,6 +40,7 @@ class FlashcardFormFields extends StatelessWidget {
         GenreChipPicker(
           selectedCategory: selectedCategory,
           onCategorySelected: onCategorySelected,
+          horizontalPadding: 0,
         ),
         verticalSpacing(20),
         Text(

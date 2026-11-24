@@ -1,4 +1,3 @@
-// ignore: depend_on_referenced_packages
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -19,10 +18,7 @@ class QuizScreen extends StatelessWidget {
   const QuizScreen({super.key});
 
   void _startQuiz(BuildContext context, QuizMode mode, List<CardModel> cards) {
-    context.read<QuizCubit>().emitStartQuiz(
-          List.from(cards),
-          mode: mode,
-        );
+    context.read<QuizCubit>().emitStartQuiz(List.from(cards), mode: mode);
   }
 
   @override
@@ -36,55 +32,56 @@ class QuizScreen extends StatelessWidget {
           final quizState = context.read<QuizCubit>().state;
           if (quizState is QuizInProgress) {
             final confirm = await QuizExitDialog.show(context);
-            if (confirm == true && context.mounted) {
+            if (confirm && context.mounted) {
               context.read<QuizCubit>().emitShowModeSelection();
             }
           } else {
             context.pop();
           }
         },
-        child: Scaffold(
-          backgroundColor: Colors.transparent,
-          body: BlocListener<QuizCubit, QuizState>(
-            listener: (context, state) async {
-              if (state is QuizCompleted) {
-                await context.pushNamed(
-                  AppConstants.quizResultsScreen,
-                  QuizResultsArguments(
-                    totalCards: state.totalCards,
-                    correctCount: state.correctCount,
-                    wrongCount: state.wrongCount,
-                    skippedCount: state.skippedCount,
-                    timeTaken: state.timeTaken,
-                  ),
-                );
-                if (!context.mounted) return;
-                context.read<QuizCubit>().emitShowModeSelection();
-              }
+        child: BlocListener<QuizCubit, QuizState>(
+          listener: (context, state) async {
+            if (state is QuizCompleted) {
+              await context.pushNamed(
+                AppConstants.quizResultsScreen,
+                QuizResultsArguments(
+                  totalCards: state.totalCards,
+                  correctCount: state.correctCount,
+                  wrongCount: state.wrongCount,
+                  skippedCount: state.skippedCount,
+                  timeTaken: state.timeTaken,
+                ),
+              );
+              if (!context.mounted) return;
+              context.read<QuizCubit>().emitShowModeSelection();
+            }
+          },
+          child: BlocBuilder<GetAllCardsCubit, GetAllCardsState>(
+            builder: (context, cardsState) {
+              return BlocBuilder<QuizCubit, QuizState>(
+                builder: (context, quizState) {
+                  if (quizState is QuizModeSelection) {
+                    final cards = cardsState is CardsLoadedSuccess
+                        ? cardsState.cards
+                        : <CardModel>[];
+                    return QuizModeSelectionView(
+                      cards: cards,
+                      isLoading: cardsState is CardsLoading,
+                      hasError: cardsState is CardsError,
+                      onRetry: () =>
+                          context.read<GetAllCardsCubit>().fetchAllCards(),
+                      onSelectMode: (mode) => _startQuiz(context, mode, cards),
+                    );
+                  }
+
+                  if (quizState is QuizInProgress) {
+                    return QuizInProgressView(state: quizState);
+                  }
+
+                  return const SizedBox.shrink();
+                },
+              );
             },
-            child: BlocBuilder<GetAllCardsCubit, GetAllCardsState>(
-              builder: (context, cardsState) {
-                return BlocBuilder<QuizCubit, QuizState>(
-                  builder: (context, quizState) {
-                    if (quizState is QuizModeSelection) {
-                      final cards = cardsState is CardsLoadedSuccess
-                          ? cardsState.cards
-                          : <CardModel>[];
-                      return QuizModeSelectionView(
-                        cards: cards,
-                        onSelectMode: (mode) => _startQuiz(context, mode, cards),
-                      );
-                    }
-
-                    if (quizState is QuizInProgress) {
-                      return QuizInProgressView(state: quizState);
-                    }
-
-                    return const SizedBox.shrink();
-                  },
-                );
-              },
-            ),
           ),
         ),
       ),

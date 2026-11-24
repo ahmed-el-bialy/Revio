@@ -1,10 +1,10 @@
-// ignore: depend_on_referenced_packages
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/helpers/spacing.dart';
 import '../../../../core/theming/app_colors.dart';
 import '../../../../core/theming/app_styles.dart';
+import '../../../../core/widgets/app_buttons.dart';
 
 class TypingQuizInput extends StatelessWidget {
   final TextEditingController controller;
@@ -28,9 +28,10 @@ class TypingQuizInput extends StatelessWidget {
         TextField(
           controller: controller,
           readOnly: isAnswered,
+          textInputAction: TextInputAction.done,
           style: AppStyles.font16WhiteSemiBold,
           decoration: InputDecoration(
-            hintText: isAnswered ? "Answer submitted" : "Type your answer...",
+            hintText: isAnswered ? 'Answer submitted' : 'Type your answer...',
             hintStyle: AppStyles.font14White70,
             filled: true,
             fillColor: AppColors.oceanBlue.withValues(alpha: 0.5),
@@ -40,53 +41,35 @@ class TypingQuizInput extends StatelessWidget {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14.r),
-              borderSide:
-                  const BorderSide(color: AppColors.primaryTeal, width: 1.5),
+              borderSide: const BorderSide(
+                color: AppColors.primaryCyan,
+                width: 1.5,
+              ),
             ),
-            contentPadding:
-                EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+            contentPadding: EdgeInsets.symmetric(
+              horizontal: 16.w,
+              vertical: 14.h,
+            ),
           ),
-          onSubmitted: (_) => onSubmit(),
+          onSubmitted: (_) {
+            if (!isAnswered) onSubmit();
+          },
         ),
         verticalSpacing(12),
         Row(
           children: [
             Expanded(
               flex: 2,
-              child: ElevatedButton(
+              child: AppButton.primary(
+                label: 'Check answer',
                 onPressed: isAnswered ? null : onSubmit,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primaryTeal,
-                  disabledBackgroundColor:
-                      AppColors.gray.withValues(alpha: 0.2),
-                  padding: EdgeInsets.symmetric(vertical: 14.h),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14.r),
-                  ),
-                ),
-                child: Text(
-                  "Submit",
-                  style: AppStyles.font16WhiteSemiBold.copyWith(
-                    color: AppColors.darkBackground,
-                  ),
-                ),
               ),
             ),
             horizontalSpacing(10),
             Expanded(
-              flex: 1,
-              child: OutlinedButton(
+              child: AppButton.secondary(
+                label: 'Skip',
                 onPressed: isAnswered ? null : onSkip,
-                style: OutlinedButton.styleFrom(
-                  side: BorderSide(
-                    color: AppColors.lavenderGray.withValues(alpha: 0.25),
-                  ),
-                  padding: EdgeInsets.symmetric(vertical: 14.h),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14.r),
-                  ),
-                ),
-                child: Text("Skip", style: AppStyles.font14White70),
               ),
             ),
           ],

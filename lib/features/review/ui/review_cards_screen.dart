@@ -1,5 +1,4 @@
-import 'package:flutter/cupertino.dart';
-// ignore: depend_on_referenced_packages
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -9,6 +8,7 @@ import '../../../core/helpers/spacing.dart';
 import '../../../core/theming/app_colors.dart';
 import '../../../core/theming/app_styles.dart';
 import '../../../core/widgets/app_background_glow.dart';
+import '../../../core/widgets/app_sheet.dart';
 import '../../../core/widgets/genre_chip_picker.dart';
 import '../../cards/data/models/card_model.dart';
 import '../../cards/logic/get_all_cards_cubit.dart';
@@ -54,19 +54,21 @@ class _ReviewCardsScreenState extends State<ReviewCardsScreen> {
 
   List<CardModel> _filterCards(List<CardModel> cards) {
     return cards.where((card) {
-      final matchesSearch = _searchController.text.trim().isEmpty ||
-          card.front
-              .toLowerCase()
-              .contains(_searchController.text.trim().toLowerCase()) ||
-          card.back
-              .toLowerCase()
-              .contains(_searchController.text.trim().toLowerCase()) ||
-          (card.hint
-                  ?.toLowerCase()
-                  .contains(_searchController.text.trim().toLowerCase()) ??
+      final matchesSearch =
+          _searchController.text.trim().isEmpty ||
+          card.front.toLowerCase().contains(
+            _searchController.text.trim().toLowerCase(),
+          ) ||
+          card.back.toLowerCase().contains(
+            _searchController.text.trim().toLowerCase(),
+          ) ||
+          (card.hint?.toLowerCase().contains(
+                _searchController.text.trim().toLowerCase(),
+              ) ??
               false);
 
-      final matchesCategory = _selectedCategory == 'All' ||
+      final matchesCategory =
+          _selectedCategory == 'All' ||
           card.category == _selectedCategory ||
           (_selectedCategory == 'No Topic' &&
               (card.category == null ||
@@ -103,15 +105,8 @@ class _ReviewCardsScreenState extends State<ReviewCardsScreen> {
                 size: 24.sp,
               ),
               onPressed: () {
-                showModalBottomSheet(
-                  context: context,
-                  isScrollControlled: true,
-                  backgroundColor: AppColors.darkBackground,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(28.r),
-                    ),
-                  ),
+                AppSheet.show(
+                  context,
                   builder: (_) => AddCardModalBottomSheet(
                     initialCategory: _selectedCategory,
                   ),
@@ -201,12 +196,12 @@ class _ReviewCardsScreenState extends State<ReviewCardsScreen> {
                                 child: Row(
                                   children: [
                                     Text(
-                                      "Showing: ${filteredCards.length} / ${state.cards.length} cards",
+                                      "Showing: ${filteredCards.length} ${filteredCards.length == 1 ? 'card' : 'cards'} / ${state.cards.length} ${state.cards.length == 1 ? 'card' : 'cards'}",
                                       style: AppStyles.font14White70,
                                     ),
                                     const Spacer(),
                                     Text(
-                                      "Tap card to flip",
+                                      "Tap a card to edit",
                                       style: AppStyles.font12LavenderGrayFaded,
                                     ),
                                   ],

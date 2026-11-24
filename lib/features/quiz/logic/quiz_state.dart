@@ -37,6 +37,39 @@ class QuizInProgress extends QuizState {
 
   CardModel get currentCard => cards[currentIndex];
   bool get isCurrentAnswered => answeredCardIds.contains(currentCard.id);
+  double get progress =>
+      cards.isEmpty ? 0 : (currentIndex + 1) / cards.length;
+
+  QuizInProgress copyWith({
+    List<CardModel>? cards,
+    int? currentIndex,
+    int? correctCount,
+    int? wrongCount,
+    Set<String>? answeredCardIds,
+    bool? isShuffled,
+    bool? showCorrectAnswer,
+    String? lastCorrectAnswer,
+    QuizMode? quizMode,
+    List<String>? currentOptions,
+    String? selectedOption,
+    bool clearSelection = false,
+  }) {
+    return QuizInProgress(
+      cards: cards ?? this.cards,
+      currentIndex: currentIndex ?? this.currentIndex,
+      correctCount: correctCount ?? this.correctCount,
+      wrongCount: wrongCount ?? this.wrongCount,
+      answeredCardIds: answeredCardIds ?? this.answeredCardIds,
+      quizMode: quizMode ?? this.quizMode,
+      isShuffled: isShuffled ?? this.isShuffled,
+      showCorrectAnswer: showCorrectAnswer ?? this.showCorrectAnswer,
+      lastCorrectAnswer: lastCorrectAnswer ?? this.lastCorrectAnswer,
+      currentOptions: currentOptions ?? this.currentOptions,
+      selectedOption: clearSelection
+          ? null
+          : (selectedOption ?? this.selectedOption),
+    );
+  }
 }
 
 class QuizCompleted extends QuizState {

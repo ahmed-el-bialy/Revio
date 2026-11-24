@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
-// ignore: depend_on_referenced_packages
-import 'package:material_ui/material_ui.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/helpers/spacing.dart';
@@ -25,27 +23,28 @@ class QuizModeSelector extends StatelessWidget {
       children: [
         _QuizModeCard(
           icon: CupertinoIcons.list_bullet_below_rectangle,
-          title: "Multiple Choice",
+          title: 'Multiple Choice',
           subtitle:
-              "Pick the right answer from 4 options. Great for quick practice!",
+              'Pick the right answer from unique options. Fast recognition practice.',
           accentColor: AppColors.primaryCyan,
-          badgeLabel: "Recommended",
-          onTap:
-              cardCount >= 2 ? () => onSelectMode(QuizMode.multipleChoice) : null,
+          badgeLabel: 'Quick',
+          onTap: cardCount >= 2
+              ? () => onSelectMode(QuizMode.multipleChoice)
+              : null,
           isDisabled: cardCount < 2,
-          disabledHint: cardCount < 2 ? "Need at least 2 cards" : null,
+          disabledHint: cardCount < 2 ? 'Need at least 2 cards' : null,
         ),
-        verticalSpacing(16),
+        verticalSpacing(14),
         _QuizModeCard(
           icon: CupertinoIcons.keyboard,
-          title: "Smart Typing",
+          title: 'Smart Typing',
           subtitle:
-              "Type your answer freely. Smart matching accepts minor typos.",
+              'Type the answer. Typos, short forms, and alternatives like USA / United States are accepted.',
           accentColor: AppColors.indigoAccent,
-          badgeLabel: "Classic",
+          badgeLabel: 'Recall',
           onTap: cardCount >= 1 ? () => onSelectMode(QuizMode.typing) : null,
           isDisabled: cardCount < 1,
-          disabledHint: cardCount < 1 ? "No cards available" : null,
+          disabledHint: cardCount < 1 ? 'No cards available' : null,
         ),
       ],
     );
@@ -75,15 +74,14 @@ class _QuizModeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedOpacity(
-      opacity: isDisabled ? 0.45 : 1.0,
-      duration: const Duration(milliseconds: 200),
+    return Opacity(
+      opacity: isDisabled ? 0.55 : 1,
       child: AppCard(
-        onTap: onTap,
-        borderRadius: 20,
+        onTap: isDisabled ? null : onTap,
+        borderRadius: 22,
         borderColor: isDisabled
             ? AppColors.gray.withValues(alpha: 0.15)
-            : accentColor.withValues(alpha: 0.3),
+            : accentColor.withValues(alpha: 0.35),
         padding: EdgeInsets.all(18.w),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -91,8 +89,9 @@ class _QuizModeCard extends StatelessWidget {
             Container(
               padding: EdgeInsets.all(12.w),
               decoration: BoxDecoration(
-                color: accentColor.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(14.r),
+                color: accentColor.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(16.r),
+                border: Border.all(color: accentColor.withValues(alpha: 0.3)),
               ),
               child: Icon(icon, color: accentColor, size: 24.sp),
             ),
@@ -116,10 +115,10 @@ class _QuizModeCard extends StatelessWidget {
                       Container(
                         padding: EdgeInsets.symmetric(
                           horizontal: 8.w,
-                          vertical: 2.h,
+                          vertical: 3.h,
                         ),
                         decoration: BoxDecoration(
-                          color: accentColor.withValues(alpha: 0.15),
+                          color: accentColor.withValues(alpha: 0.18),
                           borderRadius: BorderRadius.circular(6.r),
                         ),
                         child: Text(
@@ -136,16 +135,14 @@ class _QuizModeCard extends StatelessWidget {
                   verticalSpacing(6),
                   Text(
                     subtitle,
-                    style: AppStyles.font13GrayMedium.copyWith(
-                      height: 1.35,
-                    ),
+                    style: AppStyles.font13GrayMedium.copyWith(height: 1.4),
                   ),
                   if (disabledHint != null) ...[
-                    verticalSpacing(6),
+                    verticalSpacing(8),
                     Text(
                       disabledHint!,
                       style: AppStyles.font12LavenderGray.copyWith(
-                        color: AppColors.errorRed.withValues(alpha: 0.8),
+                        color: AppColors.errorRed.withValues(alpha: 0.9),
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -157,7 +154,7 @@ class _QuizModeCard extends StatelessWidget {
               horizontalSpacing(8),
               Icon(
                 CupertinoIcons.chevron_right,
-                color: accentColor.withValues(alpha: 0.6),
+                color: accentColor,
                 size: 16.sp,
               ),
             ],

@@ -1,4 +1,3 @@
-// ignore: depend_on_referenced_packages
 import 'package:material_ui/material_ui.dart';
 
 class AppColors {
@@ -25,15 +24,15 @@ class AppColors {
   static const Color softAmber = Color(
     0xFF38BDF8,
   );
-  static const Color warmGray = Color(0xFF64748B);
-  static const Color lavenderGray = Color(0xFF94A3B8);
+  static const Color warmGray = Color(0xFF94A3B8);
+  static const Color lavenderGray = Color(0xFFCBD5E1);
   static const Color gray = Color(0xFF475569);
   static const Color white = Colors.white;
 
   // ── Status & Feedback ────
 
-  static const Color favoriteColor = Color(0xFFEF4444);
-  static const Color favoriteGlow = Color(0xFFF87171);
+  static const Color favoriteColor = Color(0xFF38BDF8);
+  static const Color favoriteGlow = Color(0xFF7DD3FC);
   static const Color iceBlue = Color(0xFFF1F5F9);
 
   static const Color success = Color(0xFF34D399);

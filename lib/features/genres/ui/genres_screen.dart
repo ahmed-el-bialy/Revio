@@ -1,5 +1,4 @@
-import 'package:flutter/cupertino.dart';
-// ignore: depend_on_referenced_packages
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -70,7 +69,7 @@ class _GenresScreenState extends State<GenresScreen> {
             onPressed: () => context.pop(),
           ),
           title: Text(
-            "Genres",
+            "Topics",
             style: AppStyles.font18BoldIndigoAccent,
           ),
           centerTitle: true,
@@ -142,7 +141,7 @@ class _GenresScreenState extends State<GenresScreen> {
                               horizontalSpacing(10),
                               Expanded(
                                 child: Text(
-                                  "${_genres.length} genres available",
+                                  "${_genres.length} ${_genres.length == 1 ? 'topic' : 'topics'} available",
                                   style: AppStyles.font14LavenderGrayMedium
                                       .copyWith(
                                     color: AppColors.primaryTeal,
@@ -174,7 +173,7 @@ class _GenresScreenState extends State<GenresScreen> {
                                       ),
                                       verticalSpacing(16),
                                       Text(
-                                        "No genres yet",
+                                        "No topics yet",
                                         style:
                                             AppStyles.font18WhiteBold.copyWith(
                                           color: AppColors.lavenderGray
@@ -183,7 +182,7 @@ class _GenresScreenState extends State<GenresScreen> {
                                       ),
                                       verticalSpacing(8),
                                       Text(
-                                        "Tap 'Add' to create your first genre",
+                                        "Tap 'Add' to create your first topic",
                                         style: AppStyles.font14White70,
                                       ),
                                     ],

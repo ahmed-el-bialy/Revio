@@ -1,6 +1,6 @@
-// ignore: depend_on_referenced_packages
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:material_ui/material_ui.dart';
 
 import '../../features/add_new_card/logic/add_card_cubit.dart';
 import '../../features/add_new_card/ui/add_new_card_screen.dart';
@@ -66,11 +66,12 @@ class AppRouter {
       pageBuilder: (context, animation, secondaryAnimation) => child,
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         return FadeTransition(
-          opacity: animation,
+          opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
           child: child,
         );
       },
       transitionDuration: const Duration(milliseconds: 250),
+      reverseTransitionDuration: const Duration(milliseconds: 200),
     );
   }
 }

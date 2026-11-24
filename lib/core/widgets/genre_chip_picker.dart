@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../helpers/category_manager.dart';
 import '../helpers/spacing.dart';
@@ -12,6 +12,7 @@ class GenreChipPicker extends StatefulWidget {
   final ValueChanged<String> onCategorySelected;
   final bool includeAllOption;
   final List<String>? customCategories;
+  final double horizontalPadding;
 
   const GenreChipPicker({
     super.key,
@@ -19,6 +20,7 @@ class GenreChipPicker extends StatefulWidget {
     required this.onCategorySelected,
     this.includeAllOption = false,
     this.customCategories,
+    this.horizontalPadding = 20,
   });
 
   @override
@@ -83,7 +85,7 @@ class _GenreChipPickerState extends State<GenreChipPicker> {
       child: SizedBox(
         height: 38.h,
         child: ListView.separated(
-          padding: EdgeInsets.symmetric(horizontal: 20.w),
+          padding: EdgeInsets.symmetric(horizontal: widget.horizontalPadding.w),
           scrollDirection: Axis.horizontal,
           physics: const BouncingScrollPhysics(),
           itemCount: displayCategories.length + 1,

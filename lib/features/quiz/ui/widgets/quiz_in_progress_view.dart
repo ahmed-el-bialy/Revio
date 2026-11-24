@@ -1,6 +1,5 @@
 import 'package:flip_card/flip_card.dart';
-import 'package:flutter/cupertino.dart';
-// ignore: depend_on_referenced_packages
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -30,7 +29,15 @@ class _QuizInProgressViewState extends State<QuizInProgressView> {
   final TextEditingController _answerController = TextEditingController();
   final Map<String, GlobalKey<FlipCardState>> _flipKeys = {};
   bool _isHintVisible = false;
-  int? _lastIndex;
+
+  @override
+  void didUpdateWidget(covariant QuizInProgressView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.state.currentIndex != widget.state.currentIndex) {
+      _answerController.clear();
+      _isHintVisible = false;
+    }
+  }
 
   @override
   void dispose() {
@@ -46,130 +53,116 @@ class _QuizInProgressViewState extends State<QuizInProgressView> {
     final text = _answerController.text.trim();
     if (text.isEmpty) return;
     context.read<QuizCubit>().emitSubmitAnswer(text);
+  }
+
+  void _skip() {
+    context.read<QuizCubit>().emitSkipCard();
     _answerController.clear();
     setState(() => _isHintVisible = false);
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_lastIndex != widget.state.currentIndex) {
-      _lastIndex = widget.state.currentIndex;
-      _isHintVisible = false;
-    }
-
     final currentCard = widget.state.currentCard;
     final isAnswered = widget.state.isCurrentAnswered;
     final hasHint =
         currentCard.hint != null && currentCard.hint!.trim().isNotEmpty;
+    final keyboardInset = MediaQuery.viewInsetsOf(context).bottom;
 
     return Column(
       children: [
         QuizAppBar(state: widget.state),
         Expanded(
-          child: SafeArea(
-            top: false,
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                return Center(
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 700),
-                    child: SingleChildScrollView(
-                      physics: const BouncingScrollPhysics(),
-                      padding: EdgeInsets.only(
-                        left: 18.w,
-                        right: 18.w,
-                        top: 8.h,
-                        bottom: 50.h,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          QuizProgressBar(state: widget.state),
-                          verticalSpacing(12),
-                          SizedBox(
-                            height: 165.h,
-                            child: FlashCard(
-                              flipKey: _getFlipKey(currentCard.id),
-                              cardModel: currentCard,
-                              isInQuiz: true,
-                              showHint: _isHintVisible,
-                            ),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final cardHeight = (constraints.maxHeight * 0.28)
+                  .clamp(150.0, 230.0);
+
+              return Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 700),
+                  child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    padding: EdgeInsets.fromLTRB(
+                      18.w,
+                      4.h,
+                      18.w,
+                      24.h + keyboardInset,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        QuizProgressBar(state: widget.state),
+                        verticalSpacing(14),
+                        FlashCard(
+                          flipKey: _getFlipKey(currentCard.id),
+                          cardModel: currentCard,
+                          isInQuiz: true,
+                          showHint: _isHintVisible,
+                          cardHeight: cardHeight,
+                        ),
+                        verticalSpacing(14),
+                        if (widget.state.showCorrectAnswer &&
+                            widget.state.lastCorrectAnswer != null) ...[
+                          CorrectAnswerBanner(
+                            answer: widget.state.lastCorrectAnswer!,
                           ),
-                          verticalSpacing(12),
-                          if (widget.state.showCorrectAnswer &&
-                              widget.state.lastCorrectAnswer != null) ...[
-                            CorrectAnswerBanner(
-                              answer: widget.state.lastCorrectAnswer!,
-                            ),
-                            verticalSpacing(10),
-                          ],
-                          if (widget.state.quizMode == QuizMode.multipleChoice)
-                            QuizOptionsView(
-                              options: widget.state.currentOptions ?? [],
-                              correctAnswer: currentCard.back,
-                              selectedOption: widget.state.selectedOption,
-                              isAnswered: isAnswered,
-                              onOptionSelected: (option) {
-                                if (!isAnswered) {
-                                  context
-                                      .read<QuizCubit>()
-                                      .emitSubmitAnswer(option);
-                                }
-                              },
-                            )
-                          else
-                            TypingQuizInput(
-                              controller: _answerController,
-                              isAnswered: isAnswered,
-                              onSubmit: _submitTypingAnswer,
-                              onSkip: () {
-                                context.read<QuizCubit>().emitSkipCard();
-                                _answerController.clear();
-                                setState(() => _isHintVisible = false);
-                              },
-                            ),
                           verticalSpacing(10),
+                        ],
+                        if (widget.state.quizMode == QuizMode.multipleChoice)
+                          QuizOptionsView(
+                            options: widget.state.currentOptions ?? [],
+                            correctAnswer: currentCard.back,
+                            selectedOption: widget.state.selectedOption,
+                            isAnswered: isAnswered,
+                            onOptionSelected: (option) {
+                              if (!isAnswered) {
+                                context.read<QuizCubit>().emitSubmitAnswer(
+                                  option,
+                                );
+                              }
+                            },
+                            onSkip: _skip,
+                          )
+                        else
+                          TypingQuizInput(
+                            controller: _answerController,
+                            isAnswered: isAnswered,
+                            onSubmit: _submitTypingAnswer,
+                            onSkip: _skip,
+                          ),
+                        if (hasHint) ...[
+                          verticalSpacing(4),
                           Center(
                             child: TextButton.icon(
-                              onPressed: !hasHint
-                                  ? null
-                                  : () {
-                                      setState(
-                                        () => _isHintVisible = !_isHintVisible,
-                                      );
-                                    },
+                              onPressed: () {
+                                setState(
+                                  () => _isHintVisible = !_isHintVisible,
+                                );
+                              },
                               icon: Icon(
                                 CupertinoIcons.lightbulb,
-                                color: !hasHint
-                                    ? AppColors.gray
-                                    : (_isHintVisible
-                                        ? AppColors.softAmber
-                                        : AppColors.lavenderGray),
+                                color: _isHintVisible
+                                    ? AppColors.primaryCyan
+                                    : AppColors.lavenderGray,
                                 size: 18.sp,
                               ),
                               label: Text(
-                                !hasHint
-                                    ? "No hint available"
-                                    : (_isHintVisible
-                                        ? "Hide Hint"
-                                        : "Show Hint"),
+                                _isHintVisible ? 'Hide hint' : 'Show hint',
                                 style: AppStyles.font13GrayMedium.copyWith(
-                                  color: !hasHint
-                                      ? AppColors.gray
-                                      : (_isHintVisible
-                                          ? AppColors.softAmber
-                                          : AppColors.lavenderGray),
+                                  color: AppColors.white,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
                             ),
                           ),
                         ],
-                      ),
+                      ],
                     ),
                   ),
-                );
-              },
-            ),
+                ),
+              );
+            },
           ),
         ),
       ],

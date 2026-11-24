@@ -1,111 +1,27 @@
-import 'package:flutter/cupertino.dart';
-// ignore: depend_on_referenced_packages
-import 'package:material_ui/material_ui.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 
-import '../../../../core/helpers/routing_extension.dart';
-import '../../../../core/helpers/spacing.dart';
-import '../../../../core/theming/app_colors.dart';
-import '../../../../core/theming/app_styles.dart';
-import '../../../../features/review/logic/delete_card/delete_card_cubit.dart';
+import '../../../../core/widgets/app_confirm_dialog.dart';
+import '../../../review/logic/delete_card/delete_card_cubit.dart';
 import '../../data/models/card_model.dart';
 
-class ConfirmMessage extends StatelessWidget {
-  const ConfirmMessage({
-    super.key,
-    required this.deleteCubit,
-    required this.cardModel,
-  });
-
-  final DeleteCardCubit deleteCubit;
-  final CardModel cardModel;
-
-  @override
-  Widget build(BuildContext context) {
-    return Dialog(
-      backgroundColor: AppColors.darkBackground,
-      elevation: 10,
-      insetPadding: EdgeInsets.symmetric(horizontal: 32.w),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.r)),
-      child: Container(
-        padding: EdgeInsets.all(20.w),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              CupertinoIcons.exclamationmark_triangle_fill,
-              color: AppColors.error,
-              size: 40.sp,
-            ),
-            verticalSpacing(16),
-            Text(
-              "Delete Card",
-              style: AppStyles.font17WhiteBold.copyWith(fontSize: 18.sp),
-            ),
-            verticalSpacing(12),
-            Text(
-              "Are you sure you want to delete this card? This action cannot be undone.",
-              style: AppStyles.font14White70,
-              textAlign: TextAlign.center,
-            ),
-            verticalSpacing(24),
-            Row(
-              children: [
-                Expanded(
-                  child: TextButton(
-                    onPressed: () => context.pop(false),
-                    style: TextButton.styleFrom(
-                      padding: EdgeInsets.symmetric(vertical: 12.h),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.r),
-                        side: BorderSide(
-                          color: AppColors.gray.withValues(alpha: 0.3),
-                          width: 1,
-                        ),
-                      ),
-                    ),
-                    child: Text(
-                      "Cancel",
-                      style: AppStyles.font14Gray.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ),
-                horizontalSpacing(12),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      deleteCubit.emitDeleteCard(cardModel.id);
-                      context.pop(true);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.error.withValues(alpha: 0.2),
-                      foregroundColor: AppColors.error,
-                      elevation: 0,
-                      padding: EdgeInsets.symmetric(vertical: 12.h),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.r),
-                        side: const BorderSide(
-                          color: AppColors.error,
-                          width: 1.5,
-                        ),
-                      ),
-                    ),
-                    child: Text(
-                      "Delete",
-                      style: AppStyles.font14WhiteSemiBold.copyWith(
-                        color: AppColors.error,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
+class ConfirmMessage {
+  static Future<bool> show(
+    BuildContext context, {
+    required DeleteCardCubit deleteCubit,
+    required CardModel cardModel,
+  }) async {
+    final confirmed = await AppConfirmDialog.show(
+      context,
+      title: 'Delete Flashcard',
+      message:
+          'Are you sure you want to delete this card? This action cannot be undone.',
+      confirmLabel: 'Delete',
+      icon: CupertinoIcons.trash_fill,
+      isDestructive: true,
     );
+    if (confirmed) {
+      deleteCubit.emitDeleteCard(cardModel.id);
+    }
+    return confirmed;
   }
 }

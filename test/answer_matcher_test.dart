@@ -34,13 +34,13 @@ void main() {
       expect(res.matchType, MatchType.wrong);
     });
 
-    test('Partial containment with proper length ratio', () {
+    test('Leading article normalizes to an exact match', () {
       final res = AnswerMatcher.match(
         'French Revolution',
         'The French Revolution',
       );
       expect(res.isCorrect, isTrue);
-      expect(res.matchType, MatchType.partial);
+      expect(res.matchType, MatchType.exact);
     });
 
     test('Fuzzy match with minor typo on long word', () {
