@@ -31,6 +31,10 @@ class CardFace extends StatelessWidget {
   final bool isFront;
   final bool showHint;
 
+  bool _isArabic(String text) {
+    return RegExp(r'[\u0600-\u06FF]').hasMatch(text);
+  }
+
   @override
   Widget build(BuildContext context) {
     final bool shouldDisplayHint =
@@ -42,6 +46,8 @@ class CardFace extends StatelessWidget {
     final isFav = cardModel.isFavorite ?? false;
     final cat = cardModel.category;
     final catColor = AppColors.categoryColors[cat] ?? AppColors.primaryCyan;
+    final textToShow = isFront ? cardModel.front : cardModel.back;
+    final isTextArabic = _isArabic(textToShow);
 
     final semanticsLabel = isFront
         ? "Flashcard Front: ${cardModel.front}${cat != null ? ', Category $cat' : ''}"
@@ -103,37 +109,47 @@ class CardFace extends StatelessWidget {
                       ),
                       verticalSpacing(12),
                     ],
-                    Text(
-                      isFront ? cardModel.front : cardModel.back,
-                      style: AppStyles.font18WhiteMedium.copyWith(
-                        fontWeight: FontWeight.w600,
-                        height: 1.4,
+                    Directionality(
+                      textDirection: isTextArabic
+                          ? TextDirection.rtl
+                          : TextDirection.ltr,
+                      child: Text(
+                        textToShow,
+                        style: AppStyles.font18WhiteMedium.copyWith(
+                          fontWeight: FontWeight.w600,
+                          height: 1.4,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
                     ),
                     if (shouldDisplayHint) ...[
                       verticalSpacing(14),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            CupertinoIcons.lightbulb_fill,
-                            color: AppColors.softAmber,
-                            size: 15.sp,
-                          ),
-                          horizontalSpacing(5),
-                          Flexible(
-                            child: Text(
-                              cardModel.hint!,
-                              style: AppStyles.font14AccentCyan.copyWith(
-                                color: AppColors.softAmber,
-                                fontSize: 13.sp,
-                                fontWeight: FontWeight.w600,
-                              ),
-                              textAlign: TextAlign.center,
+                      Directionality(
+                        textDirection: _isArabic(cardModel.hint!)
+                            ? TextDirection.rtl
+                            : TextDirection.ltr,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              CupertinoIcons.lightbulb_fill,
+                              color: AppColors.softAmber,
+                              size: 15.sp,
                             ),
-                          ),
-                        ],
+                            horizontalSpacing(5),
+                            Flexible(
+                              child: Text(
+                                cardModel.hint!,
+                                style: AppStyles.font14AccentCyan.copyWith(
+                                  color: AppColors.softAmber,
+                                  fontSize: 13.sp,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ],

@@ -18,6 +18,7 @@ class AppbarBody extends StatelessWidget {
     required this._answerController,
     required this.selectedCategory,
     required this._formKey,
+    required this.isFavorite,
   });
 
   final TextEditingController _questionController;
@@ -25,6 +26,7 @@ class AppbarBody extends StatelessWidget {
   final TextEditingController _answerController;
   final String selectedCategory;
   final GlobalKey<FormState> _formKey;
+  final bool isFavorite;
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +77,7 @@ class AppbarBody extends StatelessWidget {
                         ? null
                         : _hintController.text.trim(),
                     back: _answerController.text.trim(),
-                    isFavorite: false,
+                    isFavorite: isFavorite,
                     createdAt: DateTime.now(),
                   );
                   context.read<AddCardCubit>().emitSaveCard(newCard);

@@ -30,6 +30,7 @@ class _EditCardBottomSheetState extends State<EditCardBottomSheet> {
   late final TextEditingController _hintController;
   late final TextEditingController _answerController;
   late String _selectedCategory;
+  late bool _isFavorite;
 
   @override
   void initState() {
@@ -38,6 +39,7 @@ class _EditCardBottomSheetState extends State<EditCardBottomSheet> {
     _hintController = TextEditingController(text: widget.cardModel.hint ?? '');
     _answerController = TextEditingController(text: widget.cardModel.back);
     _selectedCategory = widget.cardModel.category ?? AppConstants.defaultTopic;
+    _isFavorite = widget.cardModel.isFavorite ?? false;
   }
 
   @override
@@ -60,7 +62,7 @@ class _EditCardBottomSheetState extends State<EditCardBottomSheet> {
             ? null
             : _hintController.text.trim(),
         back: _answerController.text.trim(),
-        isFavorite: widget.cardModel.isFavorite,
+        isFavorite: _isFavorite,
         difficulty: widget.cardModel.difficulty,
         createdAt: widget.cardModel.createdAt,
       ),
@@ -109,6 +111,8 @@ class _EditCardBottomSheetState extends State<EditCardBottomSheet> {
           onCategorySelected: (category) {
             setState(() => _selectedCategory = category);
           },
+          isFavorite: _isFavorite,
+          onFavoriteChanged: (fav) => setState(() => _isFavorite = fav),
         ),
       ),
     );

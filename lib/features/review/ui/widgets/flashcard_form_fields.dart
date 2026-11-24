@@ -1,5 +1,7 @@
-import 'package:material_ui/material_ui.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+// ignore: depend_on_referenced_packages
+import 'package:material_ui/material_ui.dart';
 
 import '../../../../core/helpers/spacing.dart';
 import '../../../../core/theming/app_colors.dart';
@@ -13,6 +15,8 @@ class FlashcardFormFields extends StatelessWidget {
   final TextEditingController answerController;
   final String selectedCategory;
   final ValueChanged<String> onCategorySelected;
+  final bool isFavorite;
+  final ValueChanged<bool> onFavoriteChanged;
 
   const FlashcardFormFields({
     super.key,
@@ -21,6 +25,8 @@ class FlashcardFormFields extends StatelessWidget {
     required this.answerController,
     required this.selectedCategory,
     required this.onCategorySelected,
+    required this.isFavorite,
+    required this.onFavoriteChanged,
   });
 
   @override
@@ -98,6 +104,73 @@ class FlashcardFormFields extends StatelessWidget {
             }
             return null;
           },
+        ),
+        verticalSpacing(24),
+        GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () => onFavoriteChanged(!isFavorite),
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+            decoration: BoxDecoration(
+              color: AppColors.surfaceDark,
+              borderRadius: BorderRadius.circular(16.r),
+              border: Border.all(
+                color: isFavorite
+                    ? AppColors.primaryCyan
+                    : AppColors.white.withValues(alpha: 0.08),
+                width: isFavorite ? 1.5 : 1,
+              ),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  padding: EdgeInsets.all(8.w),
+                  decoration: BoxDecoration(
+                    color: isFavorite
+                        ? AppColors.primaryCyan.withValues(alpha: 0.15)
+                        : AppColors.cardSurface,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    isFavorite
+                        ? CupertinoIcons.heart_fill
+                        : CupertinoIcons.heart,
+                    color: isFavorite
+                        ? AppColors.primaryCyan
+                        : AppColors.lavenderGray,
+                    size: 18.sp,
+                  ),
+                ),
+                horizontalSpacing(12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Mark as Favorite",
+                        style: AppStyles.font16WhiteSemiBold.copyWith(
+                          fontSize: 15.sp,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      verticalSpacing(2),
+                      Text(
+                        "Add this card to your favorites list instantly",
+                        style: AppStyles.font13GrayMedium.copyWith(
+                          color: AppColors.lavenderGray,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                CupertinoSwitch(
+                  value: isFavorite,
+                  activeTrackColor: AppColors.primaryCyan,
+                  onChanged: onFavoriteChanged,
+                ),
+              ],
+            ),
+          ),
         ),
       ],
     );

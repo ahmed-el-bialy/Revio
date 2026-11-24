@@ -1,3 +1,5 @@
+import 'package:cupertino_ui/cupertino_ui.dart';
+// ignore: depend_on_referenced_packages
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -24,6 +26,7 @@ class _AddCardScreenState extends State<AddCardScreen> {
   final _hintController = TextEditingController();
   final _answerController = TextEditingController();
   String _selectedCategory = AppConstants.defaultTopic;
+  bool _isFavorite = false;
 
   @override
   void dispose() {
@@ -66,6 +69,7 @@ class _AddCardScreenState extends State<AddCardScreen> {
                                 answerController: _answerController,
                                 selectedCategory: _selectedCategory,
                                 formKey: _formKey,
+                                isFavorite: _isFavorite,
                               ),
                             ),
                             sliverVerticalSpacing(20),
@@ -74,7 +78,7 @@ class _AddCardScreenState extends State<AddCardScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   const _SectionLabel(
-                                    label: "Genre / Category",
+                                    label: "Topic / Category",
                                   ),
                                   verticalSpacing(10),
                                   GenreChipPicker(
@@ -123,6 +127,91 @@ class _AddCardScreenState extends State<AddCardScreen> {
                                       }
                                       return null;
                                     },
+                                  ),
+                                  verticalSpacing(24),
+                                  GestureDetector(
+                                    behavior: HitTestBehavior.opaque,
+                                    onTap: () => setState(
+                                      () => _isFavorite = !_isFavorite,
+                                    ),
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 16.w,
+                                        vertical: 12.h,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: AppColors.surfaceDark,
+                                        borderRadius:
+                                            BorderRadius.circular(16.r),
+                                        border: Border.all(
+                                          color: _isFavorite
+                                              ? AppColors.primaryCyan
+                                              : AppColors.white.withValues(
+                                                  alpha: 0.08,
+                                                ),
+                                          width: _isFavorite ? 1.5 : 1,
+                                        ),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            padding: EdgeInsets.all(8.w),
+                                            decoration: BoxDecoration(
+                                              color: _isFavorite
+                                                  ? AppColors.primaryCyan
+                                                      .withValues(alpha: 0.15)
+                                                  : AppColors.cardSurface,
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: Icon(
+                                              _isFavorite
+                                                  ? CupertinoIcons.heart_fill
+                                                  : CupertinoIcons.heart,
+                                              color: _isFavorite
+                                                  ? AppColors.primaryCyan
+                                                  : AppColors.lavenderGray,
+                                              size: 18.sp,
+                                            ),
+                                          ),
+                                          horizontalSpacing(12),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  "Mark as Favorite",
+                                                  style: AppStyles
+                                                      .font16WhiteSemiBold
+                                                      .copyWith(
+                                                    fontSize: 15.sp,
+                                                    fontWeight:
+                                                        FontWeight.w700,
+                                                  ),
+                                                ),
+                                                verticalSpacing(2),
+                                                Text(
+                                                  "Add this card to your favorites list instantly",
+                                                  style: AppStyles
+                                                      .font13GrayMedium
+                                                      .copyWith(
+                                                    color: AppColors
+                                                        .lavenderGray,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          CupertinoSwitch(
+                                            value: _isFavorite,
+                                            activeTrackColor: AppColors.primaryCyan,
+                                            onChanged: (fav) => setState(
+                                              () => _isFavorite = fav,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   ),
                                   verticalSpacing(40),
                                 ],

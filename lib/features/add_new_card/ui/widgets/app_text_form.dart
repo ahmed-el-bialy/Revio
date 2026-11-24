@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/theming/app_colors.dart';
 import '../../../../core/theming/app_styles.dart';
 
-class AppTextForm extends StatelessWidget {
+class AppTextForm extends StatefulWidget {
   const AppTextForm({
     super.key,
     required this.controller,
@@ -25,15 +25,50 @@ class AppTextForm extends StatelessWidget {
   final TextStyle? textStyle;
 
   @override
+  State<AppTextForm> createState() => _AppTextFormState();
+}
+
+class _AppTextFormState extends State<AppTextForm> {
+  bool _isArabic = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkArabic(widget.controller.text);
+    widget.controller.addListener(_onTextChanged);
+  }
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(_onTextChanged);
+    super.dispose();
+  }
+
+  void _onTextChanged() {
+    _checkArabic(widget.controller.text);
+  }
+
+  void _checkArabic(String text) {
+    final hasArabic = RegExp(r'[\u0600-\u06FF]').hasMatch(text);
+    if (hasArabic != _isArabic) {
+      setState(() {
+        _isArabic = hasArabic;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return TextFormField(
-      controller: controller,
-      style: textStyle ?? AppStyles.font16WhiteSemiBold,
-      maxLines: maxLines,
+      controller: widget.controller,
+      style: widget.textStyle ?? AppStyles.font16WhiteSemiBold,
+      maxLines: widget.maxLines,
+      textDirection: _isArabic ? TextDirection.rtl : TextDirection.ltr,
+      textAlign: _isArabic ? TextAlign.right : TextAlign.left,
       decoration: InputDecoration(
-        hintText: hint,
-        hintStyle: hintStyle ?? AppStyles.font14White70,
-        fillColor: fillColor ?? AppColors.white.withValues(alpha: 0.05),
+        hintText: widget.hint,
+        hintStyle: widget.hintStyle ?? AppStyles.font14White70,
+        fillColor: widget.fillColor ?? AppColors.white.withValues(alpha: 0.05),
         filled: true,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14.r),
@@ -56,7 +91,7 @@ class AppTextForm extends StatelessWidget {
         ),
         contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
       ),
-      validator: validator,
+      validator: widget.validator,
     );
   }
 }

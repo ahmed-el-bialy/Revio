@@ -1,4 +1,5 @@
 import 'package:cupertino_ui/cupertino_ui.dart';
+// ignore: depend_on_referenced_packages
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -9,6 +10,7 @@ import '../../../core/helpers/spacing.dart';
 import '../../../core/theming/app_colors.dart';
 import '../../../core/theming/app_styles.dart';
 import '../../../core/widgets/app_background_glow.dart';
+import '../../cards/data/repo/cards_repo.dart';
 import 'widgets/add_genre_dialog.dart';
 import 'widgets/delete_genre_dialog.dart';
 import 'widgets/genre_card_item.dart';
@@ -39,14 +41,19 @@ class _GenresScreenState extends State<GenresScreen> {
   }
 
   Future<void> _deleteGenre(String genre) async {
-    final confirm = await DeleteGenreDialog.show(context, genre: genre);
+    final cardCount = CardsRepo().getCardsByCategory(genre).length;
+    final confirm = await DeleteGenreDialog.show(
+      context,
+      genre: genre,
+      cardCount: cardCount,
+    );
     if (confirm == true && mounted) {
       await CategoryManager.deleteCategoryAndReassignCards(genre);
       if (!mounted) return;
       _loadGenres();
       SnackBarHelper.showInfo(
         context,
-        "Deleted '$genre' (cards moved to No Topic)",
+        "Deleted '$genre' (${cardCount == 1 ? '1 card' : '$cardCount cards'} moved to No Topic)",
       );
     }
   }
@@ -200,6 +207,9 @@ class _GenresScreenState extends State<GenresScreen> {
                                     final color =
                                         AppColors.categoryColors[genre] ??
                                             AppColors.primaryTeal;
+                                    final cardCount = CardsRepo()
+                                        .getCardsByCategory(genre)
+                                        .length;
 
                                     return Dismissible(
                                       key: Key('genre_$genre'),
@@ -247,6 +257,7 @@ class _GenresScreenState extends State<GenresScreen> {
                                       ),
                                       child: GenreCardItem(
                                         genre: genre,
+                                        cardCount: cardCount,
                                         isDefault: isDefault,
                                         color: color,
                                         onEdit: () => RenameGenreDialog.show(

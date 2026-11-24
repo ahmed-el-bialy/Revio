@@ -1,6 +1,7 @@
 import 'package:cupertino_ui/cupertino_ui.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+// ignore: depend_on_referenced_packages
+import 'package:material_ui/material_ui.dart';
 
 import '../../../../core/helpers/spacing.dart';
 import '../../../../core/theming/app_colors.dart';
@@ -9,6 +10,7 @@ import '../../../../core/widgets/app_card.dart';
 
 class GenreCardItem extends StatelessWidget {
   final String genre;
+  final int cardCount;
   final bool isDefault;
   final Color color;
   final VoidCallback onEdit;
@@ -17,6 +19,7 @@ class GenreCardItem extends StatelessWidget {
   const GenreCardItem({
     super.key,
     required this.genre,
+    required this.cardCount,
     required this.isDefault,
     required this.color,
     required this.onEdit,
@@ -27,7 +30,7 @@ class GenreCardItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppCard(
       borderRadius: 18,
-      padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 16.h),
+      padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 14.h),
       child: Row(
         children: [
           Container(
@@ -46,12 +49,26 @@ class GenreCardItem extends StatelessWidget {
           ),
           horizontalSpacing(14),
           Expanded(
-            child: Text(
-              genre,
-              style: AppStyles.font18WhiteMedium.copyWith(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w700,
-              ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  genre,
+                  style: AppStyles.font18WhiteMedium.copyWith(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                verticalSpacing(3),
+                Text(
+                  "$cardCount ${cardCount == 1 ? 'card' : 'cards'}",
+                  style: AppStyles.font13GrayMedium.copyWith(
+                    color: AppColors.lavenderGray,
+                    fontSize: 12.sp,
+                  ),
+                ),
+              ],
             ),
           ),
           if (!isDefault) ...[

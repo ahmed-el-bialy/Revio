@@ -26,14 +26,15 @@ class _AddCardModalBottomSheetState extends State<AddCardModalBottomSheet> {
   final TextEditingController _answerController = TextEditingController();
   late String _selectedCategory;
   bool _isSaving = false;
+  bool _isFavorite = false;
 
   @override
   void initState() {
     super.initState();
     _selectedCategory =
         widget.initialCategory != null && widget.initialCategory != 'All'
-        ? widget.initialCategory!
-        : AppConstants.categories.first;
+            ? widget.initialCategory!
+            : AppConstants.categories.first;
   }
 
   @override
@@ -57,7 +58,7 @@ class _AddCardModalBottomSheetState extends State<AddCardModalBottomSheet> {
           ? null
           : _hintController.text.trim(),
       back: _answerController.text.trim(),
-      isFavorite: false,
+      isFavorite: _isFavorite,
       createdAt: DateTime.now(),
     );
 
@@ -96,6 +97,8 @@ class _AddCardModalBottomSheetState extends State<AddCardModalBottomSheet> {
           onCategorySelected: (category) {
             setState(() => _selectedCategory = category);
           },
+          isFavorite: _isFavorite,
+          onFavoriteChanged: (fav) => setState(() => _isFavorite = fav),
         ),
       ),
     );
