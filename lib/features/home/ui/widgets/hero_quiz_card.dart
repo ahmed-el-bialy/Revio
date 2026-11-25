@@ -16,7 +16,7 @@ class HeroQuizCard extends StatelessWidget {
     const accentColor = AppColors.softAmber;
 
     return AppCard(
-      onTap: () => context.pushNamed(AppConstants.quizScreen, null),
+      onTap: () => context.pushNamed(AppConstants.quizScreen),
       borderRadius: 22,
       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
       child: Row(

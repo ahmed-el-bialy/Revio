@@ -8,11 +8,14 @@ import '../../features/cards/data/repo/cards_repo.dart';
 import '../../features/genres/ui/genres_screen.dart';
 import '../../features/home/ui/home_screen.dart';
 import '../../features/quiz/logic/quiz_cubit.dart';
+import '../../features/quiz/ui/quiz_history_screen.dart';
 import '../../features/quiz/ui/quiz_results_screen.dart';
 import '../../features/quiz/ui/quiz_screen.dart';
 import '../../features/review/logic/delete_card/delete_card_cubit.dart';
 import '../../features/review/logic/edit_card/edit_card_cubit.dart';
 import '../../features/review/ui/review_cards_screen.dart';
+import '../../features/review/ui/review_deck_screen.dart';
+import '../../features/study/ui/study_screen.dart';
 import '../constants/app_constants.dart';
 
 class AppRouter {
@@ -55,6 +58,24 @@ class AppRouter {
 
       case AppConstants.genresScreen:
         return _fadeRoute(const GenresScreen());
+
+      case AppConstants.reviewDeckScreen:
+        final initialCategory = setting.arguments as String?;
+        return _fadeRoute(
+          MultiBlocProvider(
+            providers: [
+              BlocProvider(create: (context) => DeleteCardCubit(CardsRepo())),
+              BlocProvider(create: (context) => EditCardCubit(CardsRepo())),
+            ],
+            child: ReviewDeckScreen(initialCategory: initialCategory),
+          ),
+        );
+
+      case AppConstants.quizHistoryScreen:
+        return _fadeRoute(const QuizHistoryScreen());
+
+      case AppConstants.studyScreen:
+        return _fadeRoute(const StudyScreen());
 
       default:
         return _fadeRoute(const HomeScreen());

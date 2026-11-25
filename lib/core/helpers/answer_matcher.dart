@@ -16,6 +16,13 @@ class AnswerMatcher {
   static const _articles = {'a', 'an', 'the'};
   static const _splitPattern = r'\s*(?:/|\||;|,|\bor\b)\s*';
 
+  static bool isCorrect({
+    required String userAnswer,
+    required String correctAnswer,
+  }) {
+    return match(userAnswer, correctAnswer).isCorrect;
+  }
+
   static AnswerResult match(String userAnswer, String correctAnswer) {
     final user = _normalize(userAnswer);
     final correct = _normalize(correctAnswer);

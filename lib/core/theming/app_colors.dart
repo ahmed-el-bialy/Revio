@@ -21,9 +21,7 @@ class AppColors {
   // ── Warm & Functional Accents ─────
 
   static const Color emeraldGold = Color(0xFF34D399);
-  static const Color softAmber = Color(
-    0xFF38BDF8,
-  );
+  static const Color softAmber = Color(0xFFFBBF24);
   static const Color warmGray = Color(0xFF94A3B8);
   static const Color lavenderGray = Color(0xFFCBD5E1);
   static const Color gray = Color(0xFF475569);

@@ -2,6 +2,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/helpers/answer_matcher.dart';
 import '../../cards/data/models/card_model.dart';
+import '../data/models/quiz_result_model.dart';
+import '../data/repo/quiz_history_repo.dart';
 import 'quiz_state.dart';
 
 class QuizCubit extends Cubit<QuizState> {
@@ -19,155 +21,148 @@ class QuizCubit extends Cubit<QuizState> {
 
   void emitStartQuiz(
     List<CardModel> cards, {
-    required QuizMode mode,
-    bool shuffle = false,
+    QuizMode mode = QuizMode.multipleChoice,
   }) {
     if (cards.isEmpty) return;
 
-    final quizCards = List<CardModel>.from(cards);
-    if (shuffle) quizCards.shuffle();
-
-    _beginSession(quizCards, mode: mode, shuffled: shuffle);
-  }
-
-  void _beginSession(
-    List<CardModel> quizCards, {
-    required QuizMode mode,
-    required bool shuffled,
-  }) {
     _sessionId++;
-    _stopwatch = Stopwatch()..start();
     _skippedCount = 0;
-    _uniqueAnswers
-      ..clear()
-      ..addAll(_collectUniqueAnswers(quizCards));
+    _stopwatch = Stopwatch()..start();
+
+    _uniqueAnswers.clear();
+    for (var card in cards) {
+      final answer = card.back.trim();
+      if (answer.isNotEmpty && !_uniqueAnswers.contains(answer)) {
+        _uniqueAnswers.add(answer);
+      }
+    }
 
     emit(
       QuizInProgress(
-        cards: quizCards,
+        cards: cards,
         currentIndex: 0,
         correctCount: 0,
         wrongCount: 0,
-        answeredCardIds: {},
+        answeredCardIds: const {},
         quizMode: mode,
-        isShuffled: shuffled,
         currentOptions: mode == QuizMode.multipleChoice
-            ? _generateOptions(quizCards, 0)
+            ? _generateOptions(cards, 0)
             : null,
       ),
     );
   }
 
-  List<String> _collectUniqueAnswers(List<CardModel> cards) {
-    final seen = <String>{};
-    final unique = <String>[];
-    for (final card in cards) {
-      final answer = card.back.trim();
-      if (answer.isEmpty) continue;
-      final key = answer.toLowerCase();
-      if (seen.add(key)) unique.add(answer);
-    }
-    return unique;
-  }
-
   List<String> _generateOptions(List<CardModel> cards, int currentIndex) {
-    final correctAnswer = cards[currentIndex].back.trim();
-    final correctKey = correctAnswer.toLowerCase();
+    if (cards.isEmpty) return [];
 
-    final distractors =
-        _uniqueAnswers
-            .where((answer) => answer.toLowerCase() != correctKey)
-            .toList()
+    final correctAnswer = cards[currentIndex].back.trim();
+
+    final otherAnswers =
+        _uniqueAnswers.where((ans) => ans != correctAnswer).toList()
           ..shuffle();
 
-    final options = <String>[correctAnswer, ...distractors.take(3)];
+    final distractors = otherAnswers.take(3).toList();
+
+    final options = [correctAnswer, ...distractors];
     options.shuffle();
     return options;
   }
 
-  Future<void> emitSubmitAnswer(String userAnswer) async {
-    final currentState = state;
-    if (currentState is! QuizInProgress) return;
+  void emitSubmitAnswer(String selectedOption) {
+    if (state is! QuizInProgress) return;
+    final currentState = state as QuizInProgress;
+    final currentCard = currentState.currentCard;
+
     if (currentState.isCurrentAnswered) return;
 
-    final session = _sessionId;
-    final currentCard = currentState.currentCard;
-    final isCorrect = AnswerMatcher.match(
-      userAnswer,
-      currentCard.back,
-    ).isCorrect;
+    final isMcq = currentState.quizMode == QuizMode.multipleChoice;
 
-    final updatedAnsweredIds = Set<String>.from(currentState.answeredCardIds)
+    final bool isCorrect = isMcq
+        ? selectedOption.trim() == currentCard.back.trim()
+        : AnswerMatcher.isCorrect(
+            userAnswer: selectedOption,
+            correctAnswer: currentCard.back,
+          );
+
+    final updatedCardIds = Set<String>.from(currentState.answeredCardIds)
       ..add(currentCard.id);
 
-    final nextState = currentState.copyWith(
-      correctCount: currentState.correctCount + (isCorrect ? 1 : 0),
-      wrongCount: currentState.wrongCount + (isCorrect ? 0 : 1),
-      answeredCardIds: updatedAnsweredIds,
-      showCorrectAnswer: !isCorrect,
-      lastCorrectAnswer: isCorrect
-          ? currentState.lastCorrectAnswer
-          : currentCard.back,
-      selectedOption: currentState.quizMode == QuizMode.multipleChoice
-          ? userAnswer
-          : currentState.selectedOption,
+    final newCorrect =
+        isCorrect ? currentState.correctCount + 1 : currentState.correctCount;
+    final newWrong =
+        isCorrect ? currentState.wrongCount : currentState.wrongCount + 1;
+
+    emit(
+      QuizInProgress(
+        cards: currentState.cards,
+        currentIndex: currentState.currentIndex,
+        correctCount: newCorrect,
+        wrongCount: newWrong,
+        answeredCardIds: updatedCardIds,
+        selectedOption: selectedOption,
+        quizMode: currentState.quizMode,
+        isShuffled: currentState.isShuffled,
+        currentOptions: currentState.currentOptions,
+      ),
     );
 
-    emit(nextState);
-
-    final delay = isCorrect
-        ? const Duration(milliseconds: 700)
-        : const Duration(milliseconds: 1600);
-    await Future<void>.delayed(delay);
-    if (_sessionId != session) return;
-    if (state is! QuizInProgress) return;
-    final latest = state as QuizInProgress;
-    if (latest.currentIndex != nextState.currentIndex) return;
-    _moveToNextOrComplete(latest);
-  }
-
-  void emitAdvanceNext() {
-    final currentState = state;
-    if (currentState is! QuizInProgress) return;
-    if (!currentState.isCurrentAnswered) return;
-    _sessionId++;
-    _moveToNextOrComplete(currentState);
+    final currentSession = _sessionId;
+    Future.delayed(const Duration(milliseconds: 1000), () {
+      if (_sessionId != currentSession) return;
+      if (state is QuizInProgress) {
+        _moveToNextOrComplete(state as QuizInProgress);
+      }
+    });
   }
 
   void emitSkipCard() {
-    final currentState = state;
-    if (currentState is! QuizInProgress) return;
+    if (state is! QuizInProgress) return;
+    final currentState = state as QuizInProgress;
+
     if (currentState.isCurrentAnswered) return;
 
-    _sessionId++;
     _skippedCount++;
-    final updatedIds = Set<String>.from(currentState.answeredCardIds)
+    final updatedCardIds = Set<String>.from(currentState.answeredCardIds)
       ..add(currentState.currentCard.id);
 
-    _moveToNextOrComplete(
-      currentState.copyWith(
-        answeredCardIds: updatedIds,
-        showCorrectAnswer: false,
-        clearSelection: true,
+    emit(
+      QuizInProgress(
+        cards: currentState.cards,
+        currentIndex: currentState.currentIndex,
+        correctCount: currentState.correctCount,
+        wrongCount: currentState.wrongCount + 1,
+        answeredCardIds: updatedCardIds,
+        quizMode: currentState.quizMode,
+        isShuffled: currentState.isShuffled,
+        currentOptions: currentState.currentOptions,
       ),
     );
+
+    final currentSession = _sessionId;
+    Future.delayed(const Duration(milliseconds: 600), () {
+      if (_sessionId != currentSession) return;
+      if (state is QuizInProgress) {
+        _moveToNextOrComplete(state as QuizInProgress);
+      }
+    });
+  }
+
+  void emitShuffleCurrentQuiz() {
+    if (state is! QuizInProgress) return;
+    final currentState = state as QuizInProgress;
+
+    final newCards = List<CardModel>.from(currentState.cards)..shuffle();
+    emit(currentState.copyWith(cards: newCards, isShuffled: true));
   }
 
   void emitShuffleRemaining() {
-    final currentState = state;
-    if (currentState is! QuizInProgress) return;
-    if (currentState.isCurrentAnswered) return;
+    emitShuffleCurrentQuiz();
+  }
 
-    final nextIndex = currentState.currentIndex + 1;
-    if (nextIndex >= currentState.cards.length) return;
-
-    final remaining = currentState.cards.sublist(nextIndex)..shuffle();
-    final newCards = [
-      ...currentState.cards.sublist(0, nextIndex),
-      ...remaining,
-    ];
-
-    emit(currentState.copyWith(cards: newCards, isShuffled: true));
+  void emitAdvanceNext() {
+    if (state is! QuizInProgress) return;
+    final currentState = state as QuizInProgress;
+    _moveToNextOrComplete(currentState);
   }
 
   void _moveToNextOrComplete(QuizInProgress currentState) {
@@ -190,6 +185,24 @@ class QuizCubit extends Cubit<QuizState> {
       );
     } else {
       _stopwatch.stop();
+      final timeTakenSec = _stopwatch.elapsed.inSeconds;
+      final modeName = currentState.quizMode == QuizMode.multipleChoice
+          ? 'Multiple Choice'
+          : 'Smart Typing';
+
+      QuizHistoryRepo().saveResult(
+        QuizResultModel(
+          id: DateTime.now().millisecondsSinceEpoch.toString(),
+          modeName: modeName,
+          totalCards: currentState.cards.length,
+          correctCount: currentState.correctCount,
+          wrongCount: currentState.wrongCount,
+          skippedCount: _skippedCount,
+          timeTakenSeconds: timeTakenSec,
+          timestamp: DateTime.now(),
+        ),
+      );
+
       emit(
         QuizCompleted(
           totalCards: currentState.cards.length,

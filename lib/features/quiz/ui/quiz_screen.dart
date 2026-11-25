@@ -70,7 +70,8 @@ class QuizScreen extends StatelessWidget {
                       hasError: cardsState is CardsError,
                       onRetry: () =>
                           context.read<GetAllCardsCubit>().fetchAllCards(),
-                      onSelectMode: (mode) => _startQuiz(context, mode, cards),
+                      onSelectMode: (mode, selectedCards) =>
+                          _startQuiz(context, mode, selectedCards),
                     );
                   }
 

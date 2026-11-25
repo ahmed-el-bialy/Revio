@@ -16,11 +16,11 @@ class AppBackgroundGlow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.darkBackground,
-      body: Stack(
+    return Container(
+      color: AppColors.darkBackground,
+      child: Stack(
         children: [
-          // Distinct, elegant static ambient background circles for visual depth
+          // Subtle ambient background circles for visual depth
           Positioned(
             top: -100.h,
             left: -80.w,
@@ -29,7 +29,7 @@ class AppBackgroundGlow extends StatelessWidget {
               height: 300.h,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.primaryCyan.withValues(alpha: 0.08),
+                color: AppColors.primaryCyan.withValues(alpha: 0.06),
               ),
             ),
           ),
@@ -41,7 +41,7 @@ class AppBackgroundGlow extends StatelessWidget {
               height: 320.h,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.indigoAccent.withValues(alpha: 0.08),
+                color: AppColors.indigoAccent.withValues(alpha: 0.06),
               ),
             ),
           ),
