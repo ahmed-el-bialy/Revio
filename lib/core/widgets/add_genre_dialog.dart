@@ -4,14 +4,14 @@ import '../helpers/category_manager.dart';
 import '../helpers/snackbar_helper.dart';
 import 'app_text_dialog.dart';
 
-class AddCustomCategoryDialog {
+class AddGenreDialog {
   static Future<void> show(
     BuildContext context, {
-    required VoidCallback onCategoryAdded,
+    required VoidCallback onGenreAdded,
   }) async {
     final added = await AppTextDialog.show(
       context,
-      title: 'Add Custom Topic',
+      title: 'Add New Topic',
       subtitle: 'Create a new topic category for your flashcards.',
       hint: 'Topic name...',
       confirmLabel: 'Add',
@@ -24,7 +24,7 @@ class AddCustomCategoryDialog {
     );
 
     if (added == null || !context.mounted) return;
-    onCategoryAdded();
+    onGenreAdded();
     SnackBarHelper.showSuccess(context, "Added topic '$added'");
   }
 }

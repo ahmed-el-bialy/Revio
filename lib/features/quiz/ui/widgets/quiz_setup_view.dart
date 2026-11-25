@@ -10,6 +10,8 @@ import '../../../../core/theming/app_styles.dart';
 import '../../../../core/widgets/app_buttons.dart';
 import '../../../cards/data/models/card_model.dart';
 import '../../logic/quiz_state.dart';
+import 'quiz_back_chip.dart';
+import 'quiz_mode_card.dart';
 
 class QuizSetupView extends StatefulWidget {
   final List<CardModel> cards;
@@ -81,8 +83,8 @@ class _QuizSetupViewState extends State<QuizSetupView> {
     final activeSubset = _filteredCards;
     final topicDisplayText =
         _selectedCategories.contains('All') || _selectedCategories.isEmpty
-        ? 'All Topics'
-        : _selectedCategories.join(', ');
+            ? 'All Topics'
+            : _selectedCategories.join(', ');
 
     return SafeArea(
       child: Center(
@@ -96,7 +98,7 @@ class _QuizSetupViewState extends State<QuizSetupView> {
                 verticalSpacing(8),
                 Row(
                   children: [
-                    _BackChip(onTap: () => context.maybePop()),
+                    QuizBackChip(onTap: () => context.maybePop()),
                     const Spacer(),
                     Container(
                       padding: EdgeInsets.symmetric(
@@ -308,7 +310,7 @@ class _QuizSetupViewState extends State<QuizSetupView> {
                         Row(
                           children: [
                             Expanded(
-                              child: _ModeCard(
+                              child: QuizModeCard(
                                 title: "Multiple Choice",
                                 subtitle: "Pick from 4 options",
                                 icon: CupertinoIcons.list_bullet,
@@ -321,7 +323,7 @@ class _QuizSetupViewState extends State<QuizSetupView> {
                             ),
                             horizontalSpacing(12),
                             Expanded(
-                              child: _ModeCard(
+                              child: QuizModeCard(
                                 title: "Smart Typing",
                                 subtitle: "Type the answer",
                                 icon: CupertinoIcons.keyboard,
@@ -398,112 +400,6 @@ class _QuizSetupViewState extends State<QuizSetupView> {
               ],
             ),
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _ModeCard extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final IconData icon;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  const _ModeCard({
-    required this.title,
-    required this.subtitle,
-    required this.icon,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.all(14.w),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? AppColors.primaryCyan.withValues(alpha: 0.15)
-              : AppColors.surfaceDark,
-          borderRadius: BorderRadius.circular(16.r),
-          border: Border.all(
-            color: isSelected
-                ? AppColors.primaryCyan
-                : AppColors.white.withValues(alpha: 0.08),
-            width: isSelected ? 1.5 : 1,
-          ),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(
-              icon,
-              color: isSelected
-                  ? AppColors.primaryCyan
-                  : AppColors.lavenderGray,
-              size: 22.sp,
-            ),
-            verticalSpacing(10),
-            Text(
-              title,
-              style: AppStyles.font16WhiteSemiBold.copyWith(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w700,
-                color: isSelected ? AppColors.white : AppColors.lavenderGray,
-              ),
-            ),
-            verticalSpacing(2),
-            Text(
-              subtitle,
-              style: AppStyles.font12LavenderGrayFaded.copyWith(
-                fontSize: 11.sp,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _BackChip extends StatelessWidget {
-  final VoidCallback onTap;
-
-  const _BackChip({required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-        decoration: BoxDecoration(
-          color: AppColors.surfaceDark,
-          borderRadius: BorderRadius.circular(14.r),
-          border: Border.all(color: AppColors.white.withValues(alpha: 0.08)),
-        ),
-        child: Row(
-          children: [
-            Icon(
-              CupertinoIcons.back,
-              color: AppColors.primaryCyan,
-              size: 18.sp,
-            ),
-            horizontalSpacing(6),
-            Text(
-              "Back",
-              style: AppStyles.font14White70.copyWith(
-                color: AppColors.white,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
         ),
       ),
     );

@@ -4,7 +4,7 @@ import '../helpers/category_manager.dart';
 import '../helpers/spacing.dart';
 import '../theming/app_colors.dart';
 import '../theming/app_styles.dart';
-import 'add_custom_category_dialog.dart';
+import 'add_genre_dialog.dart';
 import 'press_scale_widget.dart';
 
 class GenreChipPicker extends StatefulWidget {
@@ -62,9 +62,9 @@ class _GenreChipPickerState extends State<GenreChipPicker> {
   }
 
   void _openAddCategoryDialog() {
-    AddCustomCategoryDialog.show(
+    AddGenreDialog.show(
       context,
-      onCategoryAdded: () {
+      onGenreAdded: () {
         if (mounted) {
           setState(() {
             _initCategories();

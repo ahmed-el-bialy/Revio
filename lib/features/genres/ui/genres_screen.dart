@@ -10,7 +10,7 @@ import '../../../core/theming/app_colors.dart';
 import '../../../core/theming/app_styles.dart';
 import '../../../core/widgets/app_background_glow.dart';
 import '../../cards/data/repo/cards_repo.dart';
-import 'widgets/add_genre_dialog.dart';
+import '../../../core/widgets/add_genre_dialog.dart';
 import 'widgets/delete_genre_dialog.dart';
 import 'widgets/genre_card_item.dart';
 import 'widgets/rename_genre_dialog.dart';

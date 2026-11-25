@@ -102,7 +102,7 @@ class LibraryCardTile extends StatelessWidget {
                             vertical: 3.h,
                           ),
                           decoration: BoxDecoration(
-                            color: AppColors.softAmber.withValues(alpha: 0.15),
+                            color: AppColors.indigoAccent.withValues(alpha: 0.15),
                             borderRadius: BorderRadius.circular(6.r),
                           ),
                           child: Row(
@@ -110,14 +110,14 @@ class LibraryCardTile extends StatelessWidget {
                             children: [
                               Icon(
                                 CupertinoIcons.lightbulb_fill,
-                                color: AppColors.softAmber,
+                                color: AppColors.indigoAccent,
                                 size: 10.sp,
                               ),
                               horizontalSpacing(3),
                               Text(
                                 "Hint",
                                 style: AppStyles.font11GrayRegular.copyWith(
-                                  color: AppColors.softAmber,
+                                  color: AppColors.indigoAccent,
                                   fontWeight: FontWeight.w700,
                                   fontSize: 9.sp,
                                 ),
