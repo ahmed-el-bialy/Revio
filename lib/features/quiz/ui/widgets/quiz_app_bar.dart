@@ -3,12 +3,14 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../core/helpers/routing_extension.dart';
 import '../../../../core/helpers/spacing.dart';
 import '../../../../core/theming/app_colors.dart';
 import '../../../../core/theming/app_styles.dart';
 import '../../../../core/widgets/app_confirm_dialog.dart';
 import '../../logic/quiz_cubit.dart';
 import '../../logic/quiz_state.dart';
+import 'quiz_exit_dialog.dart';
 
 class QuizAppBar extends StatelessWidget {
   final QuizInProgress state;
@@ -28,15 +30,10 @@ class QuizAppBar extends StatelessWidget {
             IconButton(
               tooltip: 'Exit quiz',
               onPressed: () async {
-                final confirm = await AppConfirmDialog.show(
-                  context,
-                  title: 'Exit Quiz?',
-                  message: 'Your current progress will be lost.',
-                  confirmLabel: 'Exit',
-                  isDestructive: true,
-                );
+                final confirm = await QuizExitDialog.show(context);
                 if (confirm && context.mounted) {
-                  context.read<QuizCubit>().emitShowModeSelection();
+                  context.read<QuizCubit>().emitShowTopicSelection();
+                  context.pop();
                 }
               },
               icon: Icon(

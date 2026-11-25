@@ -34,6 +34,7 @@ class QuizScreen extends StatelessWidget {
             final confirm = await QuizExitDialog.show(context);
             if (confirm && context.mounted) {
               context.read<QuizCubit>().emitShowTopicSelection();
+              context.pop();
             }
           } else {
             context.pop();
@@ -60,7 +61,8 @@ class QuizScreen extends StatelessWidget {
             builder: (context, cardsState) {
               return BlocBuilder<QuizCubit, QuizState>(
                 builder: (context, quizState) {
-                  if (quizState is QuizTopicSelection) {
+                  if (quizState is QuizTopicSelection ||
+                      quizState is QuizModeSelection) {
                     final cards = cardsState is CardsLoadedSuccess
                         ? cardsState.cards
                         : <CardModel>[];
@@ -80,7 +82,18 @@ class QuizScreen extends StatelessWidget {
                     return QuizInProgressView(state: quizState);
                   }
 
-                  return const SizedBox.shrink();
+                  return QuizSetupView(
+                    cards: cardsState is CardsLoadedSuccess
+                        ? cardsState.cards
+                        : [],
+                    isLoading: cardsState is CardsLoading,
+                    hasError: cardsState is CardsError,
+                    onRetry: () =>
+                        context.read<GetAllCardsCubit>().fetchAllCards(),
+                    onStartQuiz: (mode, selectedCards) {
+                      _startQuiz(context, mode, selectedCards);
+                    },
+                  );
                 },
               );
             },
