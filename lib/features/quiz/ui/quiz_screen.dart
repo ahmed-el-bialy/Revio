@@ -13,6 +13,7 @@ import 'quiz_results_screen.dart';
 import 'widgets/quiz_exit_dialog.dart';
 import 'widgets/quiz_in_progress_view.dart';
 import 'widgets/quiz_mode_selection_view.dart';
+import 'widgets/quiz_topic_selection_view.dart';
 
 class QuizScreen extends StatelessWidget {
   const QuizScreen({super.key});
@@ -53,25 +54,38 @@ class QuizScreen extends StatelessWidget {
                 ),
               );
               if (!context.mounted) return;
-              context.read<QuizCubit>().emitShowModeSelection();
+              context.read<QuizCubit>().emitShowTopicSelection();
             }
           },
           child: BlocBuilder<GetAllCardsCubit, GetAllCardsState>(
             builder: (context, cardsState) {
               return BlocBuilder<QuizCubit, QuizState>(
                 builder: (context, quizState) {
-                  if (quizState is QuizModeSelection) {
+                  if (quizState is QuizTopicSelection) {
                     final cards = cardsState is CardsLoadedSuccess
                         ? cardsState.cards
                         : <CardModel>[];
-                    return QuizModeSelectionView(
+                    return QuizTopicSelectionView(
                       cards: cards,
                       isLoading: cardsState is CardsLoading,
                       hasError: cardsState is CardsError,
                       onRetry: () =>
                           context.read<GetAllCardsCubit>().fetchAllCards(),
-                      onSelectMode: (mode, selectedCards) =>
-                          _startQuiz(context, mode, selectedCards),
+                      onContinue: (topic, onlyFavorites, filteredCards) {
+                        context
+                            .read<QuizCubit>()
+                            .emitProceedToModeSelection(filteredCards);
+                      },
+                    );
+                  }
+
+                  if (quizState is QuizModeSelection) {
+                    return QuizModeSelectionView(
+                      cards: quizState.selectedCards,
+                      onBackToTopics: () =>
+                          context.read<QuizCubit>().emitShowTopicSelection(),
+                      onSelectMode: (mode) =>
+                          _startQuiz(context, mode, quizState.selectedCards),
                     );
                   }
 

@@ -7,16 +7,33 @@ import '../data/repo/quiz_history_repo.dart';
 import 'quiz_state.dart';
 
 class QuizCubit extends Cubit<QuizState> {
-  QuizCubit() : super(QuizModeSelection());
+  QuizCubit() : super(QuizTopicSelection());
 
   late Stopwatch _stopwatch;
   int _skippedCount = 0;
   int _sessionId = 0;
   final List<String> _uniqueAnswers = [];
 
-  void emitShowModeSelection() {
+  void emitShowTopicSelection() {
     _sessionId++;
-    emit(QuizModeSelection());
+    emit(QuizTopicSelection());
+  }
+
+  void emitShowModeSelection({List<CardModel>? cards}) {
+    _sessionId++;
+    if (cards != null && cards.isNotEmpty) {
+      emit(QuizModeSelection(selectedCards: cards));
+    } else if (state is QuizInProgress) {
+      emit(QuizModeSelection(selectedCards: (state as QuizInProgress).cards));
+    } else {
+      emit(QuizTopicSelection());
+    }
+  }
+
+  void emitProceedToModeSelection(List<CardModel> selectedCards) {
+    if (selectedCards.isEmpty) return;
+    _sessionId++;
+    emit(QuizModeSelection(selectedCards: selectedCards));
   }
 
   void emitStartQuiz(

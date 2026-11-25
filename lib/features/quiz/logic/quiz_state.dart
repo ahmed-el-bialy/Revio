@@ -6,7 +6,13 @@ abstract class QuizState {}
 
 class QuizInitial extends QuizState {}
 
-class QuizModeSelection extends QuizState {}
+class QuizTopicSelection extends QuizState {}
+
+class QuizModeSelection extends QuizState {
+  final List<CardModel> selectedCards;
+
+  QuizModeSelection({required this.selectedCards});
+}
 
 class QuizInProgress extends QuizState {
   final List<CardModel> cards;

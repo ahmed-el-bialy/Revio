@@ -132,7 +132,7 @@ class HomeScreen extends StatelessWidget {
                         children: [
                           const HeroQuizCard(),
                           verticalSpacing(12),
-                          // Study Mode Banner
+                          // Study Mode Banner (single entry — replaces duplicate)
                           AppCard(
                             borderRadius: 20,
                             borderColor: AppColors.emeraldGold.withValues(alpha: 0.3),
@@ -143,7 +143,12 @@ class HomeScreen extends StatelessWidget {
                                 Container(
                                   padding: EdgeInsets.all(12.w),
                                   decoration: BoxDecoration(
-                                    color: AppColors.emeraldGold.withValues(alpha: 0.12),
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        AppColors.emeraldGold.withValues(alpha: 0.15),
+                                        AppColors.primaryCyan.withValues(alpha: 0.08),
+                                      ],
+                                    ),
                                     borderRadius: BorderRadius.circular(14.r),
                                   ),
                                   child: Icon(
@@ -165,7 +170,7 @@ class HomeScreen extends StatelessWidget {
                                       ),
                                       verticalSpacing(2),
                                       Text(
-                                        "Flip cards & learn at your own pace",
+                                        "Flip, shuffle & study cards at your pace",
                                         style: AppStyles.font13GrayMedium.copyWith(
                                           color: AppColors.lavenderGray,
                                         ),
@@ -176,62 +181,6 @@ class HomeScreen extends StatelessWidget {
                                 Icon(
                                   CupertinoIcons.chevron_right,
                                   color: AppColors.emeraldGold,
-                                  size: 16.sp,
-                                ),
-                              ],
-                            ),
-                          ),
-                          verticalSpacing(12),
-                          // Flashcard Deck Banner
-                          AppCard(
-                            borderRadius: 20,
-                            borderColor: AppColors.primaryCyan
-                                .withValues(alpha: 0.25),
-                            padding: EdgeInsets.all(16.w),
-                            onTap: () => context
-                                .pushNamed(AppConstants.reviewDeckScreen),
-                            child: Row(
-                              children: [
-                                Container(
-                                  padding: EdgeInsets.all(12.w),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.primaryCyan
-                                        .withValues(alpha: 0.15),
-                                    borderRadius: BorderRadius.circular(14.r),
-                                  ),
-                                  child: Icon(
-                                    CupertinoIcons.layers_fill,
-                                    color: AppColors.primaryCyan,
-                                    size: 22.sp,
-                                  ),
-                                ),
-                                horizontalSpacing(14),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Flashcard Review Deck",
-                                        style: AppStyles.font16WhiteSemiBold
-                                            .copyWith(
-                                          fontWeight: FontWeight.w800,
-                                        ),
-                                      ),
-                                      verticalSpacing(2),
-                                      Text(
-                                        "Flip & study cards at your own pace",
-                                        style: AppStyles.font13GrayMedium
-                                            .copyWith(
-                                          color: AppColors.lavenderGray,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Icon(
-                                  CupertinoIcons.chevron_right,
-                                  color: AppColors.primaryCyan,
                                   size: 16.sp,
                                 ),
                               ],
