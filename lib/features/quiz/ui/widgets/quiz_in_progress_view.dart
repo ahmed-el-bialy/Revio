@@ -69,103 +69,106 @@ class _QuizInProgressViewState extends State<QuizInProgressView> {
         currentCard.hint != null && currentCard.hint!.trim().isNotEmpty;
     final keyboardInset = MediaQuery.viewInsetsOf(context).bottom;
 
-    return Column(
-      children: [
-        QuizAppBar(state: widget.state),
-        Expanded(
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final cardHeight = (constraints.maxHeight * 0.28)
-                  .clamp(150.0, 230.0);
+    return Material(
+      color: Colors.transparent,
+      child: Column(
+        children: [
+          QuizAppBar(state: widget.state),
+          Expanded(
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final cardHeight = (constraints.maxHeight * 0.28)
+                    .clamp(150.0, 230.0);
 
-              return Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 700),
-                  child: SingleChildScrollView(
-                    physics: const BouncingScrollPhysics(),
-                    padding: EdgeInsets.fromLTRB(
-                      18.w,
-                      4.h,
-                      18.w,
-                      24.h + keyboardInset,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        QuizProgressBar(state: widget.state),
-                        verticalSpacing(14),
-                        FlashCard(
-                          flipKey: _getFlipKey(currentCard.id),
-                          cardModel: currentCard,
-                          isInQuiz: true,
-                          showHint: _isHintVisible,
-                          cardHeight: cardHeight,
-                        ),
-                        verticalSpacing(14),
-                        if (widget.state.showCorrectAnswer &&
-                            widget.state.lastCorrectAnswer != null) ...[
-                          CorrectAnswerBanner(
-                            answer: widget.state.lastCorrectAnswer!,
+                return Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 700),
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      padding: EdgeInsets.fromLTRB(
+                        18.w,
+                        4.h,
+                        18.w,
+                        24.h + keyboardInset,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          QuizProgressBar(state: widget.state),
+                          verticalSpacing(14),
+                          FlashCard(
+                            flipKey: _getFlipKey(currentCard.id),
+                            cardModel: currentCard,
+                            isInQuiz: true,
+                            showHint: _isHintVisible,
+                            cardHeight: cardHeight,
                           ),
-                          verticalSpacing(10),
-                        ],
-                        if (widget.state.quizMode == QuizMode.multipleChoice)
-                          QuizOptionsView(
-                            options: widget.state.currentOptions ?? [],
-                            correctAnswer: currentCard.back,
-                            selectedOption: widget.state.selectedOption,
-                            isAnswered: isAnswered,
-                            onOptionSelected: (option) {
-                              if (!isAnswered) {
-                                context.read<QuizCubit>().emitSubmitAnswer(
-                                  option,
-                                );
-                              }
-                            },
-                            onSkip: _skip,
-                          )
-                        else
-                          TypingQuizInput(
-                            controller: _answerController,
-                            isAnswered: isAnswered,
-                            onSubmit: _submitTypingAnswer,
-                            onSkip: _skip,
-                          ),
-                        if (hasHint) ...[
-                          verticalSpacing(4),
-                          Center(
-                            child: TextButton.icon(
-                              onPressed: () {
-                                setState(
-                                  () => _isHintVisible = !_isHintVisible,
-                                );
+                          verticalSpacing(14),
+                          if (widget.state.showCorrectAnswer &&
+                              widget.state.lastCorrectAnswer != null) ...[
+                            CorrectAnswerBanner(
+                              answer: widget.state.lastCorrectAnswer!,
+                            ),
+                            verticalSpacing(10),
+                          ],
+                          if (widget.state.quizMode == QuizMode.multipleChoice)
+                            QuizOptionsView(
+                              options: widget.state.currentOptions ?? [],
+                              correctAnswer: currentCard.back,
+                              selectedOption: widget.state.selectedOption,
+                              isAnswered: isAnswered,
+                              onOptionSelected: (option) {
+                                if (!isAnswered) {
+                                  context.read<QuizCubit>().emitSubmitAnswer(
+                                    option,
+                                  );
+                                }
                               },
-                              icon: Icon(
-                                CupertinoIcons.lightbulb,
-                                color: _isHintVisible
-                                    ? AppColors.primaryCyan
-                                    : AppColors.lavenderGray,
-                                size: 18.sp,
-                              ),
-                              label: Text(
-                                _isHintVisible ? 'Hide hint' : 'Show hint',
-                                style: AppStyles.font13GrayMedium.copyWith(
-                                  color: AppColors.white,
-                                  fontWeight: FontWeight.w600,
+                              onSkip: _skip,
+                            )
+                          else
+                            TypingQuizInput(
+                              controller: _answerController,
+                              isAnswered: isAnswered,
+                              onSubmit: _submitTypingAnswer,
+                              onSkip: _skip,
+                            ),
+                          if (hasHint) ...[
+                            verticalSpacing(4),
+                            Center(
+                              child: TextButton.icon(
+                                onPressed: () {
+                                  setState(
+                                    () => _isHintVisible = !_isHintVisible,
+                                  );
+                                },
+                                icon: Icon(
+                                  CupertinoIcons.lightbulb,
+                                  color: _isHintVisible
+                                      ? AppColors.primaryCyan
+                                      : AppColors.lavenderGray,
+                                  size: 18.sp,
+                                ),
+                                label: Text(
+                                  _isHintVisible ? 'Hide hint' : 'Show hint',
+                                  style: AppStyles.font13GrayMedium.copyWith(
+                                    color: AppColors.white,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
+                          ],
                         ],
-                      ],
+                      ),
                     ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
