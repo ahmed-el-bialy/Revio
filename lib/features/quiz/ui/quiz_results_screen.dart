@@ -1,4 +1,5 @@
 import 'package:cupertino_ui/cupertino_ui.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../core/helpers/routing_extension.dart';
@@ -103,181 +104,184 @@ class _QuizResultsScreenState extends State<QuizResultsScreen>
 
     return AppBackgroundGlow(
       variant: GlowVariant.quiz,
-      child: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 700),
-                child: SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 24.w,
-                    vertical: 20.h,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      verticalSpacing(10),
-                      Text(
-                        "Quiz Completed",
-                        style: AppStyles.font28BoldIceBlue.copyWith(
-                          letterSpacing: 0.5,
-                          fontWeight: FontWeight.w800,
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: SafeArea(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 700),
+                  child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 24.w,
+                      vertical: 20.h,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        verticalSpacing(10),
+                        Text(
+                          "Quiz Completed",
+                          style: AppStyles.font28BoldIceBlue.copyWith(
+                            letterSpacing: 0.5,
+                            fontWeight: FontWeight.w800,
+                          ),
+                          textAlign: TextAlign.center,
                         ),
-                        textAlign: TextAlign.center,
-                      ),
-                      verticalSpacing(6),
-                      Text(
-                        "Here is how you performed",
-                        style: AppStyles.font14White70,
-                        textAlign: TextAlign.center,
-                      ),
-                      verticalSpacing(30),
-                      Center(
-                        child: SizedBox(
-                          width: 200.w,
-                          height: 200.w,
-                          child: AnimatedBuilder(
-                            animation: _scoreAnimation,
-                            builder: (context, child) {
-                              return CustomPaint(
-                                painter: ScoreRingPainter(
-                                  score: _scoreAnimation.value,
-                                  color: scoreColor,
-                                ),
-                                child: Center(
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        "${_scoreAnimation.value.toInt()}%",
-                                        style: AppStyles.font40BoldWhite
-                                            .copyWith(letterSpacing: -1),
-                                      ),
-                                      verticalSpacing(6),
-                                      Container(
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 12.w,
-                                          vertical: 4.h,
+                        verticalSpacing(6),
+                        Text(
+                          "Here is how you performed",
+                          style: AppStyles.font14White70,
+                          textAlign: TextAlign.center,
+                        ),
+                        verticalSpacing(30),
+                        Center(
+                          child: SizedBox(
+                            width: 200.w,
+                            height: 200.w,
+                            child: AnimatedBuilder(
+                              animation: _scoreAnimation,
+                              builder: (context, child) {
+                                return CustomPaint(
+                                  painter: ScoreRingPainter(
+                                    score: _scoreAnimation.value,
+                                    color: scoreColor,
+                                  ),
+                                  child: Center(
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          "${_scoreAnimation.value.toInt()}%",
+                                          style: AppStyles.font40BoldWhite
+                                              .copyWith(letterSpacing: -1),
                                         ),
-                                        decoration: BoxDecoration(
-                                          color: scoreColor.withValues(
-                                            alpha: 0.15,
+                                        verticalSpacing(6),
+                                        Container(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 12.w,
+                                            vertical: 4.h,
                                           ),
-                                          borderRadius: BorderRadius.circular(
-                                            12.r,
-                                          ),
-                                          border: Border.all(
+                                          decoration: BoxDecoration(
                                             color: scoreColor.withValues(
-                                              alpha: 0.35,
+                                              alpha: 0.15,
                                             ),
-                                            width: 1,
+                                            borderRadius: BorderRadius.circular(
+                                              12.r,
+                                            ),
+                                            border: Border.all(
+                                              color: scoreColor.withValues(
+                                                alpha: 0.35,
+                                              ),
+                                              width: 1,
+                                            ),
+                                          ),
+                                          child: Text(
+                                            _getPerformanceMessage(),
+                                            style: AppStyles.font13GrayMedium
+                                                .copyWith(
+                                                  color: scoreColor,
+                                                  fontWeight: FontWeight.w700,
+                                                ),
                                           ),
                                         ),
-                                        child: Text(
-                                          _getPerformanceMessage(),
-                                          style: AppStyles.font13GrayMedium
-                                              .copyWith(
-                                                color: scoreColor,
-                                                fontWeight: FontWeight.w700,
-                                              ),
-                                        ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      ),
-                      verticalSpacing(36),
-                      AnimatedBuilder(
-                        animation: _statsEntranceAnimation,
-                        builder: (context, child) {
-                          return Opacity(
-                            opacity: _statsEntranceAnimation.value,
-                            child: Transform.translate(
-                              offset: Offset(
-                                0,
-                                20 * (1.0 - _statsEntranceAnimation.value),
-                              ),
-                              child: child,
+                                );
+                              },
                             ),
-                          );
-                        },
-                        child: QuizResultsStatsCard(
-                          args: widget.args,
-                          formattedTime: _formatTime(widget.args.timeTaken),
-                        ),
-                      ),
-                      verticalSpacing(36),
-                      PressScale(
-                        onTap: () => context.pop(true),
-                        scaleDown: 0.97,
-                        child: Container(
-                          padding: EdgeInsets.symmetric(vertical: 16.h),
-                          decoration: BoxDecoration(
-                            color: AppColors.primaryCyan,
-                            borderRadius: BorderRadius.circular(18.r),
-                            boxShadow: [
-                              BoxShadow(
-                                color: AppColors.primaryCyan.withValues(
-                                  alpha: 0.25,
-                                ),
-                                blurRadius: 16,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
                           ),
-                          child: Center(
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  CupertinoIcons.arrow_counterclockwise,
-                                  color: AppColors.darkBackground,
-                                  size: 18.sp,
+                        ),
+                        verticalSpacing(36),
+                        AnimatedBuilder(
+                          animation: _statsEntranceAnimation,
+                          builder: (context, child) {
+                            return Opacity(
+                              opacity: _statsEntranceAnimation.value,
+                              child: Transform.translate(
+                                offset: Offset(
+                                  0,
+                                  20 * (1.0 - _statsEntranceAnimation.value),
                                 ),
-                                horizontalSpacing(8),
-                                Text(
-                                  "Play Again",
-                                  style: AppStyles.font16WhiteSemiBold.copyWith(
-                                    color: AppColors.darkBackground,
-                                    fontWeight: FontWeight.w800,
-                                    letterSpacing: 0.3,
+                                child: child,
+                              ),
+                            );
+                          },
+                          child: QuizResultsStatsCard(
+                            args: widget.args,
+                            formattedTime: _formatTime(widget.args.timeTaken),
+                          ),
+                        ),
+                        verticalSpacing(36),
+                        PressScale(
+                          onTap: () => context.pop(true),
+                          scaleDown: 0.97,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(vertical: 16.h),
+                            decoration: BoxDecoration(
+                              color: AppColors.primaryCyan,
+                              borderRadius: BorderRadius.circular(18.r),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppColors.primaryCyan.withValues(
+                                    alpha: 0.25,
                                   ),
+                                  blurRadius: 16,
+                                  offset: const Offset(0, 4),
                                 ),
                               ],
                             ),
-                          ),
-                        ),
-                      ),
-                      verticalSpacing(12),
-                      PressScale(
-                        onTap: () => context.pop(false),
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(vertical: 12.h),
-                          child: Center(
-                            child: Text(
-                              "Back to Modes",
-                              style: AppStyles.font15IndigoAccentSemiBold
-                                  .copyWith(
-                                    color: AppColors.lavenderGray,
-                                    fontWeight: FontWeight.w600,
+                            child: Center(
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    CupertinoIcons.arrow_counterclockwise,
+                                    color: AppColors.darkBackground,
+                                    size: 18.sp,
                                   ),
+                                  horizontalSpacing(8),
+                                  Text(
+                                    "Play Again",
+                                    style: AppStyles.font16WhiteSemiBold.copyWith(
+                                      color: AppColors.darkBackground,
+                                      fontWeight: FontWeight.w800,
+                                      letterSpacing: 0.3,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      verticalSpacing(20),
-                    ],
+                        verticalSpacing(12),
+                        PressScale(
+                          onTap: () => context.pop(false),
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(vertical: 12.h),
+                            child: Center(
+                              child: Text(
+                                "Back to Modes",
+                                style: AppStyles.font15IndigoAccentSemiBold
+                                    .copyWith(
+                                      color: AppColors.lavenderGray,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        verticalSpacing(20),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
     );
