@@ -33,7 +33,7 @@ class AppDrawer extends StatelessWidget {
                       borderRadius: BorderRadius.circular(14.r),
                     ),
                     child: Icon(
-                      CupertinoIcons.sparkles,
+                      Icons.style_rounded,
                       color: AppColors.darkBackground,
                       size: 22.sp,
                     ),

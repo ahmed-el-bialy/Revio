@@ -73,7 +73,7 @@ class HeroQuizCard extends StatelessWidget {
                 ),
                 verticalSpacing(3),
                 Text(
-                  "MCQ & Smart Typing with fuzzy matching",
+                  "MCQ & Smart Typing with flexible answer checking",
                   style: AppStyles.font12LavenderGrayFaded.copyWith(
                     fontSize: 11.sp,
                   ),

@@ -42,7 +42,7 @@ class GenresWideCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Genres & Topics",
+                  "Topics",
                   style: AppStyles.font16WhiteSemiBold.copyWith(
                     fontSize: 15.sp,
                     fontWeight: FontWeight.w700,

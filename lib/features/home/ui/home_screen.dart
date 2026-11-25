@@ -44,7 +44,7 @@ class HomeScreen extends StatelessWidget {
               icon: Icon(
                 CupertinoIcons.bars,
                 color: AppColors.white,
-                size: 22.sp,
+                size: 24.sp,
               ),
               onPressed: () => Scaffold.of(ctx).openDrawer(),
             ),
