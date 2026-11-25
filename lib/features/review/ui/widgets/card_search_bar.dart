@@ -12,6 +12,8 @@ class CardSearchBar extends StatefulWidget {
   final bool onlyFavorites;
   final VoidCallback onToggleFavorites;
   final ValueChanged<String> onChanged;
+  final VoidCallback onOpenFilter;
+  final bool hasActiveFilter;
 
   const CardSearchBar({
     super.key,
@@ -19,6 +21,8 @@ class CardSearchBar extends StatefulWidget {
     required this.onlyFavorites,
     required this.onToggleFavorites,
     required this.onChanged,
+    required this.onOpenFilter,
+    required this.hasActiveFilter,
   });
 
   @override
@@ -122,6 +126,66 @@ class _CardSearchBarState extends State<CardSearchBar> {
                   ),
                 ),
               ),
+            ),
+          ),
+          horizontalSpacing(8),
+          PressScale(
+            onTap: widget.onOpenFilter,
+            scaleDown: 0.90,
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Container(
+                  width: 44.w,
+                  height: 44.w,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: widget.hasActiveFilter
+                        ? AppColors.primaryCyan.withValues(alpha: 0.18)
+                        : AppColors.cardSurface.withValues(alpha: 0.5),
+                    border: Border.all(
+                      color: widget.hasActiveFilter
+                          ? AppColors.primaryCyan.withValues(alpha: 0.5)
+                          : AppColors.white.withValues(alpha: 0.1),
+                      width: 1.2,
+                    ),
+                    boxShadow: widget.hasActiveFilter
+                        ? [
+                            BoxShadow(
+                              color: AppColors.primaryCyan
+                                  .withValues(alpha: 0.25),
+                              blurRadius: 8,
+                            ),
+                          ]
+                        : null,
+                  ),
+                  child: Icon(
+                    CupertinoIcons.slider_horizontal_3,
+                    color: widget.hasActiveFilter
+                        ? AppColors.primaryCyan
+                        : AppColors.lavenderGray,
+                    size: 20.sp,
+                  ),
+                ),
+                if (widget.hasActiveFilter)
+                  Positioned(
+                    top: 2.h,
+                    right: 2.w,
+                    child: Container(
+                      width: 9.w,
+                      height: 9.w,
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryCyan,
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: AppColors.darkBackground,
+                          width: 1.5,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
             ),
           ),
           horizontalSpacing(8),

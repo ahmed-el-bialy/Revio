@@ -3,10 +3,12 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../core/helpers/category_filter_helper.dart';
 import '../../../core/helpers/snackbar_helper.dart';
 import '../../../core/helpers/spacing.dart';
 import '../../../core/theming/app_colors.dart';
 import '../../../core/theming/app_styles.dart';
+import '../../../core/widgets/active_filter_banner.dart';
 import '../../../core/widgets/app_background_glow.dart';
 import '../../../core/widgets/app_sheet.dart';
 import '../../../core/widgets/genre_chip_picker.dart';
@@ -156,6 +158,8 @@ class _ReviewCardsScreenState extends State<ReviewCardsScreen> {
 
                 if (state is CardsLoadedSuccess) {
                   final filteredCards = _filterCards(state.cards);
+                  final hasActiveFilter =
+                      _selectedCategory != 'All' || _onlyFavorites;
 
                   return LayoutBuilder(
                     builder: (context, constraints) {
@@ -167,12 +171,47 @@ class _ReviewCardsScreenState extends State<ReviewCardsScreen> {
                               CardSearchBar(
                                 searchController: _searchController,
                                 onlyFavorites: _onlyFavorites,
+                                hasActiveFilter: hasActiveFilter,
+                                onOpenFilter: () {
+                                  CategoryFilterHelper.showCategoryFilterModal(
+                                    context: context,
+                                    selectedCategory: _selectedCategory,
+                                    onlyFavorites: _onlyFavorites,
+                                    cards: state.cards,
+                                    onCategorySelected: (cat) {
+                                      setState(() {
+                                        _selectedCategory = cat;
+                                      });
+                                    },
+                                    onFavoritesToggled: (fav) {
+                                      setState(() {
+                                        _onlyFavorites = fav;
+                                      });
+                                    },
+                                    onResetFilters: () {
+                                      setState(() {
+                                        _selectedCategory = 'All';
+                                        _onlyFavorites = false;
+                                      });
+                                    },
+                                  );
+                                },
                                 onToggleFavorites: () {
                                   setState(() {
                                     _onlyFavorites = !_onlyFavorites;
                                   });
                                 },
                                 onChanged: (_) => setState(() {}),
+                              ),
+                              ActiveFilterBanner(
+                                selectedCategory: _selectedCategory,
+                                onlyFavorites: _onlyFavorites,
+                                onClearFilters: () {
+                                  setState(() {
+                                    _selectedCategory = 'All';
+                                    _onlyFavorites = false;
+                                  });
+                                },
                               ),
                               GenreChipPicker(
                                 selectedCategory: _selectedCategory,
