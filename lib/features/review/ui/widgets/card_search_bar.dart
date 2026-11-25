@@ -9,8 +9,6 @@ import '../../../../core/widgets/press_scale_widget.dart';
 
 class CardSearchBar extends StatefulWidget {
   final TextEditingController searchController;
-  final bool onlyFavorites;
-  final VoidCallback onToggleFavorites;
   final ValueChanged<String> onChanged;
   final VoidCallback onOpenFilter;
   final bool hasActiveFilter;
@@ -18,8 +16,6 @@ class CardSearchBar extends StatefulWidget {
   const CardSearchBar({
     super.key,
     required this.searchController,
-    required this.onlyFavorites,
-    required this.onToggleFavorites,
     required this.onChanged,
     required this.onOpenFilter,
     required this.hasActiveFilter,
@@ -161,7 +157,7 @@ class _CardSearchBarState extends State<CardSearchBar> {
                         : null,
                   ),
                   child: Icon(
-                    CupertinoIcons.slider_horizontal_3,
+                    CupertinoIcons.line_horizontal_3_decrease,
                     color: widget.hasActiveFilter
                         ? AppColors.primaryCyan
                         : AppColors.lavenderGray,
@@ -186,45 +182,6 @@ class _CardSearchBarState extends State<CardSearchBar> {
                     ),
                   ),
               ],
-            ),
-          ),
-          horizontalSpacing(8),
-          PressScale(
-            onTap: widget.onToggleFavorites,
-            scaleDown: 0.90,
-            child: Container(
-              width: 44.w,
-              height: 44.w,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: widget.onlyFavorites
-                    ? AppColors.softAmber.withValues(alpha: 0.18)
-                    : AppColors.cardSurface.withValues(alpha: 0.5),
-                border: Border.all(
-                  color: widget.onlyFavorites
-                      ? AppColors.softAmber.withValues(alpha: 0.5)
-                      : AppColors.white.withValues(alpha: 0.1),
-                  width: 1.2,
-                ),
-                boxShadow: widget.onlyFavorites
-                    ? [
-                        BoxShadow(
-                          color: AppColors.softAmber.withValues(alpha: 0.25),
-                          blurRadius: 8,
-                        ),
-                      ]
-                    : null,
-              ),
-              child: Icon(
-                widget.onlyFavorites
-                    ? CupertinoIcons.heart_fill
-                    : CupertinoIcons.heart,
-                color: widget.onlyFavorites
-                    ? AppColors.softAmber
-                    : AppColors.lavenderGray,
-                size: 20.sp,
-              ),
             ),
           ),
         ],

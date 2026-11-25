@@ -12,7 +12,6 @@ import '../../../core/theming/app_styles.dart';
 import '../../../core/widgets/active_filter_banner.dart';
 import '../../../core/widgets/app_background_glow.dart';
 import '../../../core/widgets/app_buttons.dart';
-import '../../../core/widgets/genre_chip_picker.dart';
 import '../../../core/widgets/press_scale_widget.dart';
 import '../../cards/data/models/card_model.dart';
 import '../../cards/logic/get_all_cards_cubit.dart';
@@ -30,7 +29,7 @@ class ReviewDeckScreen extends StatefulWidget {
 
 class _ReviewDeckScreenState extends State<ReviewDeckScreen> {
   int _currentIndex = 0;
-  String _selectedCategory = 'All';
+  Set<String> _selectedCategories = {'All'};
   bool _onlyFavorites = false;
   final Map<String, GlobalKey<FlipCardState>> _flipKeys = {};
 
@@ -41,7 +40,7 @@ class _ReviewDeckScreenState extends State<ReviewDeckScreen> {
       if (widget.initialCategory == '__FAVORITES__') {
         _onlyFavorites = true;
       } else {
-        _selectedCategory = widget.initialCategory!;
+        _selectedCategories = {widget.initialCategory!};
       }
     }
   }
@@ -53,9 +52,10 @@ class _ReviewDeckScreenState extends State<ReviewDeckScreen> {
   List<CardModel> _filterCards(List<CardModel> allCards) {
     return allCards.where((card) {
       final matchesCat =
-          _selectedCategory == 'All' ||
-          card.category == _selectedCategory ||
-          (_selectedCategory == 'No Topic' &&
+          _selectedCategories.contains('All') ||
+          _selectedCategories.isEmpty ||
+          _selectedCategories.contains(card.category ?? 'No Topic') ||
+          (_selectedCategories.contains('No Topic') &&
               (card.category == null ||
                   card.category!.isEmpty ||
                   card.category == 'No Topic'));
@@ -87,9 +87,11 @@ class _ReviewDeckScreenState extends State<ReviewDeckScreen> {
             Builder(
               builder: (context) {
                 final hasActiveFilter =
-                    _selectedCategory != 'All' || _onlyFavorites;
+                    (!_selectedCategories.contains('All') &&
+                            _selectedCategories.isNotEmpty) ||
+                        _onlyFavorites;
                 return Padding(
-                  padding: EdgeInsets.only(right: 4.w),
+                  padding: EdgeInsets.only(right: 12.w),
                   child: PressScale(
                     onTap: () {
                       final cardsState =
@@ -100,12 +102,12 @@ class _ReviewDeckScreenState extends State<ReviewDeckScreen> {
 
                       CategoryFilterHelper.showCategoryFilterModal(
                         context: context,
-                        selectedCategory: _selectedCategory,
+                        selectedCategories: _selectedCategories,
                         onlyFavorites: _onlyFavorites,
                         cards: cards,
-                        onCategorySelected: (cat) {
+                        onCategoriesChanged: (cats) {
                           setState(() {
-                            _selectedCategory = cat;
+                            _selectedCategories = cats;
                             _currentIndex = 0;
                           });
                         },
@@ -117,7 +119,7 @@ class _ReviewDeckScreenState extends State<ReviewDeckScreen> {
                         },
                         onResetFilters: () {
                           setState(() {
-                            _selectedCategory = 'All';
+                            _selectedCategories = {'All'};
                             _onlyFavorites = false;
                             _currentIndex = 0;
                           });
@@ -143,7 +145,7 @@ class _ReviewDeckScreenState extends State<ReviewDeckScreen> {
                             ),
                           ),
                           child: Icon(
-                            CupertinoIcons.slider_horizontal_3,
+                            CupertinoIcons.line_horizontal_3_decrease,
                             color: hasActiveFilter
                                 ? AppColors.primaryCyan
                                 : AppColors.lavenderGray,
@@ -173,20 +175,6 @@ class _ReviewDeckScreenState extends State<ReviewDeckScreen> {
                 );
               },
             ),
-            IconButton(
-              icon: Icon(
-                _onlyFavorites
-                    ? CupertinoIcons.heart_fill
-                    : CupertinoIcons.heart,
-                color: _onlyFavorites
-                    ? AppColors.softAmber
-                    : AppColors.lavenderGray,
-              ),
-              onPressed: () => setState(() {
-                _onlyFavorites = !_onlyFavorites;
-                _currentIndex = 0;
-              }),
-            ),
           ],
         ),
         body: SafeArea(
@@ -203,11 +191,11 @@ class _ReviewDeckScreenState extends State<ReviewDeckScreen> {
                   return Column(
                     children: [
                       ActiveFilterBanner(
-                        selectedCategory: _selectedCategory,
+                        selectedCategories: _selectedCategories,
                         onlyFavorites: _onlyFavorites,
                         onClearFilters: () {
                           setState(() {
-                            _selectedCategory = 'All';
+                            _selectedCategories = {'All'};
                             _onlyFavorites = false;
                             _currentIndex = 0;
                           });
@@ -256,26 +244,17 @@ class _ReviewDeckScreenState extends State<ReviewDeckScreen> {
                       child: Column(
                         children: [
                           ActiveFilterBanner(
-                            selectedCategory: _selectedCategory,
+                            selectedCategories: _selectedCategories,
                             onlyFavorites: _onlyFavorites,
                             onClearFilters: () {
                               setState(() {
-                                _selectedCategory = 'All';
+                                _selectedCategories = {'All'};
                                 _onlyFavorites = false;
                                 _currentIndex = 0;
                               });
                             },
                           ),
-                          GenreChipPicker(
-                            selectedCategory: _selectedCategory,
-                            onCategorySelected: (cat) {
-                              setState(() {
-                                _selectedCategory = cat;
-                                _currentIndex = 0;
-                              });
-                            },
-                          ),
-                          verticalSpacing(16),
+                          verticalSpacing(10),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [

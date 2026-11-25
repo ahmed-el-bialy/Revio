@@ -11,7 +11,6 @@ import '../../../core/theming/app_styles.dart';
 import '../../../core/widgets/active_filter_banner.dart';
 import '../../../core/widgets/app_background_glow.dart';
 import '../../../core/widgets/app_sheet.dart';
-import '../../../core/widgets/genre_chip_picker.dart';
 import '../../cards/data/models/card_model.dart';
 import '../../cards/logic/get_all_cards_cubit.dart';
 import '../../cards/logic/get_all_cards_state.dart';
@@ -34,17 +33,20 @@ class ReviewCardsScreen extends StatefulWidget {
 
 class _ReviewCardsScreenState extends State<ReviewCardsScreen> {
   final TextEditingController _searchController = TextEditingController();
-  late String _selectedCategory;
+  late Set<String> _selectedCategories;
   bool _onlyFavorites = false;
 
   @override
   void initState() {
     super.initState();
     if (widget.initialCategory == '__FAVORITES__') {
-      _selectedCategory = 'All';
+      _selectedCategories = {'All'};
       _onlyFavorites = true;
+    } else if (widget.initialCategory != null &&
+        widget.initialCategory!.isNotEmpty) {
+      _selectedCategories = {widget.initialCategory!};
     } else {
-      _selectedCategory = widget.initialCategory ?? 'All';
+      _selectedCategories = {'All'};
     }
   }
 
@@ -70,9 +72,10 @@ class _ReviewCardsScreenState extends State<ReviewCardsScreen> {
               false);
 
       final matchesCategory =
-          _selectedCategory == 'All' ||
-          card.category == _selectedCategory ||
-          (_selectedCategory == 'No Topic' &&
+          _selectedCategories.contains('All') ||
+          _selectedCategories.isEmpty ||
+          _selectedCategories.contains(card.category ?? 'No Topic') ||
+          (_selectedCategories.contains('No Topic') &&
               (card.category == null ||
                   card.category!.isEmpty ||
                   card.category == 'No Topic'));
@@ -110,7 +113,9 @@ class _ReviewCardsScreenState extends State<ReviewCardsScreen> {
                 AppSheet.show(
                   context,
                   builder: (_) => AddCardModalBottomSheet(
-                    initialCategory: _selectedCategory,
+                    initialCategory: _selectedCategories.contains('All')
+                        ? 'General'
+                        : _selectedCategories.first,
                   ),
                 );
               },
@@ -159,7 +164,9 @@ class _ReviewCardsScreenState extends State<ReviewCardsScreen> {
                 if (state is CardsLoadedSuccess) {
                   final filteredCards = _filterCards(state.cards);
                   final hasActiveFilter =
-                      _selectedCategory != 'All' || _onlyFavorites;
+                      (!_selectedCategories.contains('All') &&
+                              _selectedCategories.isNotEmpty) ||
+                          _onlyFavorites;
 
                   return LayoutBuilder(
                     builder: (context, constraints) {
@@ -170,17 +177,16 @@ class _ReviewCardsScreenState extends State<ReviewCardsScreen> {
                             children: [
                               CardSearchBar(
                                 searchController: _searchController,
-                                onlyFavorites: _onlyFavorites,
                                 hasActiveFilter: hasActiveFilter,
                                 onOpenFilter: () {
                                   CategoryFilterHelper.showCategoryFilterModal(
                                     context: context,
-                                    selectedCategory: _selectedCategory,
+                                    selectedCategories: _selectedCategories,
                                     onlyFavorites: _onlyFavorites,
                                     cards: state.cards,
-                                    onCategorySelected: (cat) {
+                                    onCategoriesChanged: (cats) {
                                       setState(() {
-                                        _selectedCategory = cat;
+                                        _selectedCategories = cats;
                                       });
                                     },
                                     onFavoritesToggled: (fav) {
@@ -190,40 +196,21 @@ class _ReviewCardsScreenState extends State<ReviewCardsScreen> {
                                     },
                                     onResetFilters: () {
                                       setState(() {
-                                        _selectedCategory = 'All';
+                                        _selectedCategories = {'All'};
                                         _onlyFavorites = false;
                                       });
                                     },
                                   );
                                 },
-                                onToggleFavorites: () {
-                                  setState(() {
-                                    _onlyFavorites = !_onlyFavorites;
-                                  });
-                                },
                                 onChanged: (_) => setState(() {}),
                               ),
                               ActiveFilterBanner(
-                                selectedCategory: _selectedCategory,
+                                selectedCategories: _selectedCategories,
                                 onlyFavorites: _onlyFavorites,
                                 onClearFilters: () {
                                   setState(() {
-                                    _selectedCategory = 'All';
+                                    _selectedCategories = {'All'};
                                     _onlyFavorites = false;
-                                  });
-                                },
-                              ),
-                              GenreChipPicker(
-                                selectedCategory: _selectedCategory,
-                                includeAllOption: true,
-                                customCategories: state.cards
-                                    .map((c) => c.category ?? 'No Topic')
-                                    .where((cat) => cat != 'All')
-                                    .toSet()
-                                    .toList(),
-                                onCategorySelected: (cat) {
-                                  setState(() {
-                                    _selectedCategory = cat;
                                   });
                                 },
                               ),

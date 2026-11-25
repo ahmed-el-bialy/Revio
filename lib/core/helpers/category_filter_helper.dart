@@ -1,6 +1,5 @@
 import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-// ignore: depend_on_referenced_packages
 import 'package:material_ui/material_ui.dart';
 
 import '../../features/cards/data/models/card_model.dart';
@@ -13,9 +12,9 @@ import '../theming/app_styles.dart';
 class CategoryFilterHelper {
   static void showCategoryFilterModal({
     required BuildContext context,
-    required String selectedCategory,
+    required Set<String> selectedCategories,
     required List<CardModel> cards,
-    required ValueChanged<String> onCategorySelected,
+    required ValueChanged<Set<String>> onCategoriesChanged,
     bool onlyFavorites = false,
     ValueChanged<bool>? onFavoritesToggled,
     VoidCallback? onResetFilters,
@@ -36,7 +35,6 @@ class CategoryFilterHelper {
     }.toList();
 
     final favCount = cards.where((c) => c.isFavorite ?? false).length;
-    final hasActiveFilter = selectedCategory != 'All' || onlyFavorites;
 
     int getCategoryCount(String cat) {
       if (cat == 'All') return cards.length;
@@ -51,6 +49,11 @@ class CategoryFilterHelper {
       return cards.where((c) => c.category == cat).length;
     }
 
+    Set<String> tempSelected = Set<String>.from(
+      selectedCategories.isEmpty ? {'All'} : selectedCategories,
+    );
+    bool tempFavorites = onlyFavorites;
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -61,9 +64,13 @@ class CategoryFilterHelper {
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setModalState) {
+            final hasActiveFilter =
+                (!tempSelected.contains('All') && tempSelected.isNotEmpty) ||
+                    tempFavorites;
+
             return Container(
               constraints: BoxConstraints(
-                maxHeight: MediaQuery.of(context).size.height * 0.75,
+                maxHeight: MediaQuery.of(context).size.height * 0.80,
               ),
               padding: EdgeInsets.all(20.w),
               child: Column(
@@ -80,7 +87,7 @@ class CategoryFilterHelper {
                           borderRadius: BorderRadius.circular(10.r),
                         ),
                         child: Icon(
-                          CupertinoIcons.slider_horizontal_3,
+                          CupertinoIcons.line_horizontal_3_decrease,
                           color: AppColors.primaryCyan,
                           size: 18.sp,
                         ),
@@ -94,21 +101,27 @@ class CategoryFilterHelper {
                         ),
                       ),
                       const Spacer(),
-                      if (hasActiveFilter && onResetFilters != null)
+                      if (hasActiveFilter)
                         TextButton.icon(
                           onPressed: () {
-                            onResetFilters();
+                            setModalState(() {
+                              tempSelected = {'All'};
+                              tempFavorites = false;
+                            });
+                            onResetFilters?.call();
+                            onCategoriesChanged({'All'});
+                            onFavoritesToggled?.call(false);
                             context.pop();
                           },
                           icon: Icon(
                             CupertinoIcons.arrow_counterclockwise,
                             size: 14.sp,
-                            color: AppColors.softAmber,
+                            color: AppColors.primaryCyan,
                           ),
                           label: Text(
                             "Reset",
                             style: AppStyles.font12LavenderGrayFaded.copyWith(
-                              color: AppColors.softAmber,
+                              color: AppColors.primaryCyan,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
@@ -129,34 +142,36 @@ class CategoryFilterHelper {
                     GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       onTap: () {
-                        onFavoritesToggled(!onlyFavorites);
-                        context.pop();
+                        setModalState(() {
+                          tempFavorites = !tempFavorites;
+                        });
+                        onFavoritesToggled(tempFavorites);
                       },
                       child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 200),
+                        duration: const Duration(milliseconds: 180),
                         padding: EdgeInsets.symmetric(
                           horizontal: 16.w,
                           vertical: 14.h,
                         ),
                         decoration: BoxDecoration(
-                          color: onlyFavorites
-                              ? AppColors.softAmber.withValues(alpha: 0.18)
+                          color: tempFavorites
+                              ? AppColors.primaryCyan.withValues(alpha: 0.18)
                               : AppColors.cardSurface,
                           borderRadius: BorderRadius.circular(14.r),
                           border: Border.all(
-                            color: onlyFavorites
-                                ? AppColors.softAmber
+                            color: tempFavorites
+                                ? AppColors.primaryCyan
                                 : AppColors.white.withValues(alpha: 0.08),
-                            width: onlyFavorites ? 1.5 : 1,
+                            width: tempFavorites ? 1.5 : 1,
                           ),
                         ),
                         child: Row(
                           children: [
                             Icon(
-                              onlyFavorites
+                              tempFavorites
                                   ? CupertinoIcons.heart_fill
                                   : CupertinoIcons.heart,
-                              color: AppColors.softAmber,
+                              color: AppColors.primaryCyan,
                               size: 20.sp,
                             ),
                             horizontalSpacing(12),
@@ -166,10 +181,10 @@ class CategoryFilterHelper {
                                 Text(
                                   "Favorites Only",
                                   style: AppStyles.font16WhiteSemiBold.copyWith(
-                                    color: onlyFavorites
+                                    color: tempFavorites
                                         ? AppColors.white
                                         : AppColors.lavenderGray,
-                                    fontWeight: onlyFavorites
+                                    fontWeight: tempFavorites
                                         ? FontWeight.w700
                                         : FontWeight.w500,
                                   ),
@@ -185,12 +200,16 @@ class CategoryFilterHelper {
                               ],
                             ),
                             const Spacer(),
-                            if (onlyFavorites)
-                              Icon(
-                                CupertinoIcons.checkmark_alt_circle_fill,
-                                color: AppColors.softAmber,
-                                size: 20.sp,
-                              ),
+                            Icon(
+                              tempFavorites
+                                  ? CupertinoIcons.checkmark_alt_circle_fill
+                                  : CupertinoIcons.circle,
+                              color: tempFavorites
+                                  ? AppColors.primaryCyan
+                                  : AppColors.lavenderGray
+                                      .withValues(alpha: 0.4),
+                              size: 20.sp,
+                            ),
                           ],
                         ),
                       ),
@@ -199,7 +218,7 @@ class CategoryFilterHelper {
                     Row(
                       children: [
                         Text(
-                          "Topics & Genres",
+                          "Topics & Genres (Select Multiple)",
                           style: AppStyles.font14White70.copyWith(
                             fontWeight: FontWeight.w700,
                             color: AppColors.lavenderGray,
@@ -210,7 +229,7 @@ class CategoryFilterHelper {
                     verticalSpacing(10),
                   ],
 
-                  // Category List
+                  // Category List (Multi-select)
                   Flexible(
                     child: ListView.separated(
                       shrinkWrap: true,
@@ -219,7 +238,7 @@ class CategoryFilterHelper {
                       separatorBuilder: (context, _) => verticalSpacing(8),
                       itemBuilder: (context, index) {
                         final cat = allCategories[index];
-                        final isSelected = cat == selectedCategory;
+                        final isSelected = tempSelected.contains(cat);
                         final count = getCategoryCount(cat);
                         final catColor = cat == 'All'
                             ? AppColors.primaryTeal
@@ -229,8 +248,22 @@ class CategoryFilterHelper {
                         return GestureDetector(
                           behavior: HitTestBehavior.opaque,
                           onTap: () {
-                            onCategorySelected(cat);
-                            context.pop();
+                            setModalState(() {
+                              if (cat == 'All') {
+                                tempSelected = {'All'};
+                              } else {
+                                tempSelected.remove('All');
+                                if (tempSelected.contains(cat)) {
+                                  tempSelected.remove(cat);
+                                  if (tempSelected.isEmpty) {
+                                    tempSelected.add('All');
+                                  }
+                                } else {
+                                  tempSelected.add(cat);
+                                }
+                              }
+                            });
+                            onCategoriesChanged(tempSelected);
                           },
                           child: AnimatedContainer(
                             duration: const Duration(milliseconds: 180),
@@ -296,19 +329,51 @@ class CategoryFilterHelper {
                                     ),
                                   ),
                                 ),
-                                if (isSelected) ...[
-                                  horizontalSpacing(8),
-                                  Icon(
-                                    CupertinoIcons.checkmark_alt_circle_fill,
-                                    color: catColor,
-                                    size: 20.sp,
-                                  ),
-                                ],
+                                horizontalSpacing(8),
+                                Icon(
+                                  isSelected
+                                      ? CupertinoIcons.checkmark_alt_circle_fill
+                                      : CupertinoIcons.circle,
+                                  color: isSelected
+                                      ? catColor
+                                      : AppColors.lavenderGray
+                                          .withValues(alpha: 0.3),
+                                  size: 20.sp,
+                                ),
                               ],
                             ),
                           ),
                         );
                       },
+                    ),
+                  ),
+
+                  verticalSpacing(16),
+                  // Apply Button
+                  SizedBox(
+                    width: double.infinity,
+                    child: GestureDetector(
+                      onTap: () {
+                        onCategoriesChanged(tempSelected);
+                        onFavoritesToggled?.call(tempFavorites);
+                        context.pop();
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(vertical: 14.h),
+                        decoration: BoxDecoration(
+                          color: AppColors.primaryCyan,
+                          borderRadius: BorderRadius.circular(16.r),
+                        ),
+                        child: Center(
+                          child: Text(
+                            "Done",
+                            style: AppStyles.font16WhiteSemiBold.copyWith(
+                              color: AppColors.darkBackground,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ],

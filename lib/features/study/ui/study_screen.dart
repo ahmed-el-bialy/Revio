@@ -13,7 +13,6 @@ import '../../../core/theming/app_styles.dart';
 import '../../../core/widgets/active_filter_banner.dart';
 import '../../../core/widgets/app_background_glow.dart';
 import '../../../core/widgets/app_card.dart';
-import '../../../core/widgets/genre_chip_picker.dart';
 import '../../../core/widgets/press_scale_widget.dart';
 import '../../cards/data/models/card_model.dart';
 import '../../cards/logic/get_all_cards_cubit.dart';
@@ -28,7 +27,7 @@ class StudyScreen extends StatefulWidget {
 
 class _StudyScreenState extends State<StudyScreen> {
   int _currentIndex = 0;
-  String _selectedCategory = 'All';
+  Set<String> _selectedCategories = {'All'};
   bool _onlyFavorites = false;
   final Map<String, GlobalKey<FlipCardState>> _flipKeys = {};
 
@@ -39,9 +38,10 @@ class _StudyScreenState extends State<StudyScreen> {
   List<CardModel> _filterCards(List<CardModel> allCards) {
     final filtered = allCards.where((card) {
       final matchesCat =
-          _selectedCategory == 'All' ||
-          card.category == _selectedCategory ||
-          (_selectedCategory == 'No Topic' &&
+          _selectedCategories.contains('All') ||
+          _selectedCategories.isEmpty ||
+          _selectedCategories.contains(card.category ?? 'No Topic') ||
+          (_selectedCategories.contains('No Topic') &&
               (card.category == null ||
                   card.category!.isEmpty ||
                   card.category == 'No Topic'));
@@ -85,9 +85,11 @@ class _StudyScreenState extends State<StudyScreen> {
             Builder(
               builder: (context) {
                 final hasActiveFilter =
-                    _selectedCategory != 'All' || _onlyFavorites;
+                    (!_selectedCategories.contains('All') &&
+                            _selectedCategories.isNotEmpty) ||
+                        _onlyFavorites;
                 return Padding(
-                  padding: EdgeInsets.only(right: 4.w),
+                  padding: EdgeInsets.only(right: 12.w),
                   child: PressScale(
                     onTap: () {
                       final cardsState =
@@ -98,12 +100,12 @@ class _StudyScreenState extends State<StudyScreen> {
 
                       CategoryFilterHelper.showCategoryFilterModal(
                         context: context,
-                        selectedCategory: _selectedCategory,
+                        selectedCategories: _selectedCategories,
                         onlyFavorites: _onlyFavorites,
                         cards: cards,
-                        onCategorySelected: (cat) {
+                        onCategoriesChanged: (cats) {
                           setState(() {
-                            _selectedCategory = cat;
+                            _selectedCategories = cats;
                             _currentIndex = 0;
                             _flipKeys.clear();
                           });
@@ -117,7 +119,7 @@ class _StudyScreenState extends State<StudyScreen> {
                         },
                         onResetFilters: () {
                           setState(() {
-                            _selectedCategory = 'All';
+                            _selectedCategories = {'All'};
                             _onlyFavorites = false;
                             _currentIndex = 0;
                             _flipKeys.clear();
@@ -144,7 +146,7 @@ class _StudyScreenState extends State<StudyScreen> {
                             ),
                           ),
                           child: Icon(
-                            CupertinoIcons.slider_horizontal_3,
+                            CupertinoIcons.line_horizontal_3_decrease,
                             color: hasActiveFilter
                                 ? AppColors.primaryCyan
                                 : AppColors.lavenderGray,
@@ -174,22 +176,6 @@ class _StudyScreenState extends State<StudyScreen> {
                 );
               },
             ),
-            IconButton(
-              tooltip: 'Favorites only',
-              icon: Icon(
-                _onlyFavorites
-                    ? CupertinoIcons.heart_fill
-                    : CupertinoIcons.heart,
-                color: _onlyFavorites
-                    ? AppColors.softAmber
-                    : AppColors.lavenderGray,
-              ),
-              onPressed: () => setState(() {
-                _onlyFavorites = !_onlyFavorites;
-                _currentIndex = 0;
-                _flipKeys.clear();
-              }),
-            ),
           ],
         ),
         body: SafeArea(
@@ -210,11 +196,11 @@ class _StudyScreenState extends State<StudyScreen> {
                   return Column(
                     children: [
                       ActiveFilterBanner(
-                        selectedCategory: _selectedCategory,
+                        selectedCategories: _selectedCategories,
                         onlyFavorites: _onlyFavorites,
                         onClearFilters: () {
                           setState(() {
-                            _selectedCategory = 'All';
+                            _selectedCategories = {'All'};
                             _onlyFavorites = false;
                             _currentIndex = 0;
                             _flipKeys.clear();
@@ -243,29 +229,18 @@ class _StudyScreenState extends State<StudyScreen> {
                       child: Column(
                         children: [
                           ActiveFilterBanner(
-                            selectedCategory: _selectedCategory,
+                            selectedCategories: _selectedCategories,
                             onlyFavorites: _onlyFavorites,
                             onClearFilters: () {
                               setState(() {
-                                _selectedCategory = 'All';
+                                _selectedCategories = {'All'};
                                 _onlyFavorites = false;
                                 _currentIndex = 0;
                                 _flipKeys.clear();
                               });
                             },
                           ),
-                          // Category picker
-                          GenreChipPicker(
-                            selectedCategory: _selectedCategory,
-                            onCategorySelected: (cat) {
-                              setState(() {
-                                _selectedCategory = cat;
-                                _currentIndex = 0;
-                                _flipKeys.clear();
-                              });
-                            },
-                          ),
-                          verticalSpacing(12),
+                          verticalSpacing(10),
 
                           // Progress bar + counter row
                           _ProgressRow(
@@ -475,10 +450,10 @@ class _StudyFlashCard extends StatelessWidget {
                 width: double.infinity,
                 padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
                 decoration: BoxDecoration(
-                  color: AppColors.softAmber.withValues(alpha: 0.08),
+                  color: AppColors.primaryCyan.withValues(alpha: 0.08),
                   borderRadius: BorderRadius.circular(12.r),
                   border: Border.all(
-                    color: AppColors.softAmber.withValues(alpha: 0.25),
+                    color: AppColors.primaryCyan.withValues(alpha: 0.25),
                   ),
                 ),
                 child: Column(
@@ -491,14 +466,14 @@ class _StudyFlashCard extends StatelessWidget {
                       children: [
                         Icon(
                           CupertinoIcons.lightbulb_fill,
-                          color: AppColors.softAmber,
+                          color: AppColors.primaryCyan,
                           size: 14.sp,
                         ),
                         horizontalSpacing(6),
                         Text(
                           'Hint',
                           style: AppStyles.font12LavenderGrayFaded.copyWith(
-                            color: AppColors.softAmber,
+                            color: AppColors.primaryCyan,
                             fontWeight: FontWeight.w700,
                             fontSize: 11.sp,
                           ),
@@ -511,7 +486,7 @@ class _StudyFlashCard extends StatelessWidget {
                       child: Text(
                         hintText,
                         style: AppStyles.font12LavenderGrayFaded.copyWith(
-                          color: AppColors.softAmber.withValues(alpha: 0.95),
+                          color: AppColors.white.withValues(alpha: 0.90),
                           fontStyle: FontStyle.italic,
                           fontSize: 12.sp,
                           height: 1.4,

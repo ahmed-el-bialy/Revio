@@ -1,9 +1,8 @@
 import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-// ignore: depend_on_referenced_packages
 import 'package:material_ui/material_ui.dart';
 
-import '../../../../core/helpers/category_manager.dart';
+import '../../../../core/helpers/category_filter_helper.dart';
 import '../../../../core/helpers/routing_extension.dart';
 import '../../../../core/helpers/spacing.dart';
 import '../../../../core/theming/app_colors.dart';
@@ -33,119 +32,46 @@ class QuizSetupView extends StatefulWidget {
 }
 
 class _QuizSetupViewState extends State<QuizSetupView> {
-  String _selectedCategory = 'All';
+  Set<String> _selectedCategories = {'All'};
   bool _onlyFavorites = false;
   QuizMode _selectedMode = QuizMode.multipleChoice;
 
   List<CardModel> get _filteredCards {
     return widget.cards.where((card) {
       final matchesCat =
-          _selectedCategory == 'All' || card.category == _selectedCategory;
+          _selectedCategories.contains('All') ||
+          _selectedCategories.isEmpty ||
+          _selectedCategories.contains(card.category ?? 'No Topic') ||
+          (_selectedCategories.contains('No Topic') &&
+              (card.category == null ||
+                  card.category!.isEmpty ||
+                  card.category == 'No Topic'));
       final matchesFav = !_onlyFavorites || (card.isFavorite ?? false);
       return matchesCat && matchesFav;
     }).toList();
   }
 
   void _openTopicSelectionModal(BuildContext context) {
-    final core = CategoryManager.getActiveCoreCategories();
-    final custom = CategoryManager.getCustomCategories();
-    final allCategories = ['All', ...core, ...custom];
-
-    showModalBottomSheet(
+    CategoryFilterHelper.showCategoryFilterModal(
       context: context,
-      backgroundColor: AppColors.surfaceDark,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
-      ),
-      builder: (context) {
-        return Container(
-          padding: EdgeInsets.all(20.w),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Text(
-                    "Select Quiz Topic",
-                    style: AppStyles.font18BoldIndigoAccent.copyWith(
-                      color: AppColors.white,
-                      fontSize: 18.sp,
-                    ),
-                  ),
-                  const Spacer(),
-                  IconButton(
-                    icon: const Icon(CupertinoIcons.xmark, color: AppColors.lavenderGray),
-                    onPressed: () => context.pop(),
-                  ),
-                ],
-              ),
-              verticalSpacing(12),
-              Flexible(
-                child: ListView.separated(
-                  shrinkWrap: true,
-                  itemCount: allCategories.length,
-                  separatorBuilder: (context, _) => verticalSpacing(8),
-                  itemBuilder: (context, index) {
-                    final cat = allCategories[index];
-                    final isSelected = cat == _selectedCategory;
-                    final catColor = cat == 'All'
-                        ? AppColors.primaryTeal
-                        : (AppColors.categoryColors[cat] ?? AppColors.primaryTeal);
-
-                    return GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onTap: () {
-                        setState(() => _selectedCategory = cat);
-                        context.pop();
-                      },
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
-                        decoration: BoxDecoration(
-                          color: isSelected
-                              ? catColor.withValues(alpha: 0.2)
-                              : AppColors.cardSurface,
-                          borderRadius: BorderRadius.circular(14.r),
-                          border: Border.all(
-                            color: isSelected ? catColor : AppColors.white.withValues(alpha: 0.08),
-                            width: isSelected ? 1.5 : 1,
-                          ),
-                        ),
-                        child: Row(
-                          children: [
-                            Container(
-                              width: 10.w,
-                              height: 10.h,
-                              decoration: BoxDecoration(
-                                color: catColor,
-                                shape: BoxShape.circle,
-                              ),
-                            ),
-                            horizontalSpacing(12),
-                            Text(
-                              cat,
-                              style: AppStyles.font16WhiteSemiBold.copyWith(
-                                color: isSelected ? AppColors.white : AppColors.lavenderGray,
-                                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                              ),
-                            ),
-                            const Spacer(),
-                            if (isSelected)
-                              Icon(
-                                CupertinoIcons.checkmark_alt_circle_fill,
-                                color: catColor,
-                                size: 20.sp,
-                              ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        );
+      selectedCategories: _selectedCategories,
+      onlyFavorites: _onlyFavorites,
+      cards: widget.cards,
+      onCategoriesChanged: (cats) {
+        setState(() {
+          _selectedCategories = cats;
+        });
+      },
+      onFavoritesToggled: (fav) {
+        setState(() {
+          _onlyFavorites = fav;
+        });
+      },
+      onResetFilters: () {
+        setState(() {
+          _selectedCategories = {'All'};
+          _onlyFavorites = false;
+        });
       },
     );
   }
@@ -153,6 +79,10 @@ class _QuizSetupViewState extends State<QuizSetupView> {
   @override
   Widget build(BuildContext context) {
     final activeSubset = _filteredCards;
+    final topicDisplayText =
+        _selectedCategories.contains('All') || _selectedCategories.isEmpty
+        ? 'All Topics'
+        : _selectedCategories.join(', ');
 
     return SafeArea(
       child: Center(
@@ -217,7 +147,7 @@ class _QuizSetupViewState extends State<QuizSetupView> {
                         ),
                         verticalSpacing(6),
                         Text(
-                          "Choose your topic, options, and quiz mode.",
+                          "Choose your topics, options, and quiz mode.",
                           style: AppStyles.font14White70,
                         ),
                         verticalSpacing(20),
@@ -232,7 +162,9 @@ class _QuizSetupViewState extends State<QuizSetupView> {
                               color: AppColors.surfaceDark,
                               borderRadius: BorderRadius.circular(18.r),
                               border: Border.all(
-                                color: AppColors.primaryCyan.withValues(alpha: 0.3),
+                                color: AppColors.primaryCyan.withValues(
+                                  alpha: 0.3,
+                                ),
                                 width: 1.5,
                               ),
                             ),
@@ -241,7 +173,9 @@ class _QuizSetupViewState extends State<QuizSetupView> {
                                 Container(
                                   padding: EdgeInsets.all(10.w),
                                   decoration: BoxDecoration(
-                                    color: AppColors.primaryCyan.withValues(alpha: 0.15),
+                                    color: AppColors.primaryCyan.withValues(
+                                      alpha: 0.15,
+                                    ),
                                     shape: BoxShape.circle,
                                   ),
                                   child: Icon(
@@ -253,21 +187,26 @@ class _QuizSetupViewState extends State<QuizSetupView> {
                                 horizontalSpacing(14),
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        "Quiz Topic",
-                                        style: AppStyles.font13GrayMedium.copyWith(
-                                          color: AppColors.lavenderGray,
-                                        ),
+                                        "Quiz Topics",
+                                        style: AppStyles.font13GrayMedium
+                                            .copyWith(
+                                              color: AppColors.lavenderGray,
+                                            ),
                                       ),
                                       verticalSpacing(2),
                                       Text(
-                                        _selectedCategory,
-                                        style: AppStyles.font16WhiteSemiBold.copyWith(
-                                          fontWeight: FontWeight.w700,
-                                          color: AppColors.white,
-                                        ),
+                                        topicDisplayText,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: AppStyles.font16WhiteSemiBold
+                                            .copyWith(
+                                              fontWeight: FontWeight.w700,
+                                              color: AppColors.white,
+                                            ),
                                       ),
                                     ],
                                   ),
@@ -286,7 +225,8 @@ class _QuizSetupViewState extends State<QuizSetupView> {
                         // 2. Favorites Only Toggle Card
                         GestureDetector(
                           behavior: HitTestBehavior.opaque,
-                          onTap: () => setState(() => _onlyFavorites = !_onlyFavorites),
+                          onTap: () =>
+                              setState(() => _onlyFavorites = !_onlyFavorites),
                           child: Container(
                             padding: EdgeInsets.all(16.w),
                             decoration: BoxDecoration(
@@ -305,7 +245,9 @@ class _QuizSetupViewState extends State<QuizSetupView> {
                                   padding: EdgeInsets.all(10.w),
                                   decoration: BoxDecoration(
                                     color: _onlyFavorites
-                                        ? AppColors.primaryCyan.withValues(alpha: 0.15)
+                                        ? AppColors.primaryCyan.withValues(
+                                            alpha: 0.15,
+                                          )
                                         : AppColors.cardSurface,
                                     shape: BoxShape.circle,
                                   ),
@@ -322,22 +264,23 @@ class _QuizSetupViewState extends State<QuizSetupView> {
                                 horizontalSpacing(14),
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         "Favorites Only",
                                         style: AppStyles.font16WhiteSemiBold
                                             .copyWith(
-                                          fontWeight: FontWeight.w700,
-                                        ),
+                                              fontWeight: FontWeight.w700,
+                                            ),
                                       ),
                                       verticalSpacing(2),
                                       Text(
                                         "Test only your starred flashcards",
                                         style: AppStyles.font13GrayMedium
                                             .copyWith(
-                                          color: AppColors.lavenderGray,
-                                        ),
+                                              color: AppColors.lavenderGray,
+                                            ),
                                       ),
                                     ],
                                   ),
@@ -369,8 +312,11 @@ class _QuizSetupViewState extends State<QuizSetupView> {
                                 title: "Multiple Choice",
                                 subtitle: "Pick from 4 options",
                                 icon: CupertinoIcons.list_bullet,
-                                isSelected: _selectedMode == QuizMode.multipleChoice,
-                                onTap: () => setState(() => _selectedMode = QuizMode.multipleChoice),
+                                isSelected:
+                                    _selectedMode == QuizMode.multipleChoice,
+                                onTap: () => setState(
+                                  () => _selectedMode = QuizMode.multipleChoice,
+                                ),
                               ),
                             ),
                             horizontalSpacing(12),
@@ -380,7 +326,9 @@ class _QuizSetupViewState extends State<QuizSetupView> {
                                 subtitle: "Type the answer",
                                 icon: CupertinoIcons.keyboard,
                                 isSelected: _selectedMode == QuizMode.typing,
-                                onTap: () => setState(() => _selectedMode = QuizMode.typing),
+                                onTap: () => setState(
+                                  () => _selectedMode = QuizMode.typing,
+                                ),
                               ),
                             ),
                           ],
@@ -394,7 +342,9 @@ class _QuizSetupViewState extends State<QuizSetupView> {
                             color: AppColors.cardSurface,
                             borderRadius: BorderRadius.circular(20.r),
                             border: Border.all(
-                              color: AppColors.primaryCyan.withValues(alpha: 0.2),
+                              color: AppColors.primaryCyan.withValues(
+                                alpha: 0.2,
+                              ),
                             ),
                           ),
                           child: Row(
@@ -428,9 +378,9 @@ class _QuizSetupViewState extends State<QuizSetupView> {
                             onPressed: activeSubset.isEmpty
                                 ? null
                                 : () => widget.onStartQuiz(
-                                      _selectedMode,
-                                      activeSubset,
-                                    ),
+                                    _selectedMode,
+                                    activeSubset,
+                                  ),
                           ),
                         ),
                         verticalSpacing(20),
@@ -493,7 +443,9 @@ class _ModeCard extends StatelessWidget {
           children: [
             Icon(
               icon,
-              color: isSelected ? AppColors.primaryCyan : AppColors.lavenderGray,
+              color: isSelected
+                  ? AppColors.primaryCyan
+                  : AppColors.lavenderGray,
               size: 22.sp,
             ),
             verticalSpacing(10),
@@ -534,9 +486,7 @@ class _BackChip extends StatelessWidget {
         decoration: BoxDecoration(
           color: AppColors.surfaceDark,
           borderRadius: BorderRadius.circular(14.r),
-          border: Border.all(
-            color: AppColors.white.withValues(alpha: 0.08),
-          ),
+          border: Border.all(color: AppColors.white.withValues(alpha: 0.08)),
         ),
         child: Row(
           children: [

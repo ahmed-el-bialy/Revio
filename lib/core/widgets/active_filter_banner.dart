@@ -6,20 +6,22 @@ import '../theming/app_colors.dart';
 import '../theming/app_styles.dart';
 
 class ActiveFilterBanner extends StatelessWidget {
-  final String selectedCategory;
+  final Set<String> selectedCategories;
   final bool onlyFavorites;
   final VoidCallback onClearFilters;
   final double horizontalPadding;
 
   const ActiveFilterBanner({
     super.key,
-    required this.selectedCategory,
+    required this.selectedCategories,
     required this.onlyFavorites,
     required this.onClearFilters,
     this.horizontalPadding = 16,
   });
 
-  bool get hasActiveFilter => selectedCategory != 'All' || onlyFavorites;
+  bool get hasActiveFilter =>
+      (!selectedCategories.contains('All') && selectedCategories.isNotEmpty) ||
+      onlyFavorites;
 
   @override
   Widget build(BuildContext context) {
@@ -28,8 +30,10 @@ class ActiveFilterBanner extends StatelessWidget {
     }
 
     final filters = <String>[];
-    if (selectedCategory != 'All') {
-      filters.add(selectedCategory);
+    final activeTopics =
+        selectedCategories.where((c) => c != 'All').toList();
+    if (activeTopics.isNotEmpty) {
+      filters.add(activeTopics.join(', '));
     }
     if (onlyFavorites) {
       filters.add('Favorites Only');
@@ -55,7 +59,7 @@ class ActiveFilterBanner extends StatelessWidget {
         child: Row(
           children: [
             Icon(
-              CupertinoIcons.slider_horizontal_3,
+              CupertinoIcons.line_horizontal_3_decrease,
               color: AppColors.primaryCyan,
               size: 15.sp,
             ),
