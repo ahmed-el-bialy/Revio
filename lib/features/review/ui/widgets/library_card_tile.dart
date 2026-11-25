@@ -31,16 +31,15 @@ class LibraryCardTile extends StatelessWidget {
     final isBackArabic = _isArabic(cardModel.back);
 
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 6.h),
+      padding: EdgeInsets.symmetric(vertical: 5.h),
       child: AppCard(
-        borderRadius: 18,
+        borderRadius: 16,
         borderColor: AppColors.white.withValues(alpha: 0.08),
-        padding: EdgeInsets.all(16.w),
+        padding: EdgeInsets.all(14.w),
         onTap: onTap,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Favorite toggle button
             GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: () => CardsRepo().toggleFavorite(cardModel.id),
@@ -50,7 +49,7 @@ class LibraryCardTile extends StatelessWidget {
                   color: (cardModel.isFavorite ?? false)
                       ? AppColors.primaryCyan.withValues(alpha: 0.15)
                       : AppColors.cardSurface,
-                  borderRadius: BorderRadius.circular(14.r),
+                  borderRadius: BorderRadius.circular(12.r),
                   border: Border.all(
                     color: (cardModel.isFavorite ?? false)
                         ? AppColors.primaryCyan.withValues(alpha: 0.4)
@@ -64,23 +63,21 @@ class LibraryCardTile extends StatelessWidget {
                   color: (cardModel.isFavorite ?? false)
                       ? AppColors.primaryCyan
                       : AppColors.lavenderGray,
-                  size: 18.sp,
+                  size: 16.sp,
                 ),
               ),
             ),
-            horizontalSpacing(14),
-            // Card Content (Front, Back, Topic, Hint)
+            horizontalSpacing(12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Badges Row (Topic & Hint)
                   Row(
                     children: [
                       Container(
                         padding: EdgeInsets.symmetric(
-                          horizontal: 9.w,
-                          vertical: 3.h,
+                          horizontal: 8.w,
+                          vertical: 2.5.h,
                         ),
                         decoration: BoxDecoration(
                           color: AppColors.primaryCyan.withValues(alpha: 0.12),
@@ -98,8 +95,8 @@ class LibraryCardTile extends StatelessWidget {
                         horizontalSpacing(6),
                         Container(
                           padding: EdgeInsets.symmetric(
-                            horizontal: 7.w,
-                            vertical: 3.h,
+                            horizontal: 6.w,
+                            vertical: 2.5.h,
                           ),
                           decoration: BoxDecoration(
                             color: AppColors.indigoAccent.withValues(alpha: 0.15),
@@ -111,7 +108,7 @@ class LibraryCardTile extends StatelessWidget {
                               Icon(
                                 CupertinoIcons.lightbulb_fill,
                                 color: AppColors.indigoAccent,
-                                size: 10.sp,
+                                size: 9.sp,
                               ),
                               horizontalSpacing(3),
                               Text(
@@ -128,8 +125,7 @@ class LibraryCardTile extends StatelessWidget {
                       ],
                     ],
                   ),
-                  verticalSpacing(8),
-                  // Question (Front)
+                  verticalSpacing(6),
                   Directionality(
                     textDirection: isFrontArabic
                         ? TextDirection.rtl
@@ -142,13 +138,12 @@ class LibraryCardTile extends StatelessWidget {
                           ? TextAlign.right
                           : TextAlign.left,
                       style: AppStyles.font16WhiteSemiBold.copyWith(
-                        fontSize: 15.sp,
+                        fontSize: 14.5.sp,
                         fontWeight: FontWeight.w800,
                       ),
                     ),
                   ),
-                  verticalSpacing(3),
-                  // Answer (Back)
+                  verticalSpacing(2),
                   Directionality(
                     textDirection: isBackArabic
                         ? TextDirection.rtl
@@ -162,17 +157,18 @@ class LibraryCardTile extends StatelessWidget {
                           : TextAlign.left,
                       style: AppStyles.font13GrayMedium.copyWith(
                         color: AppColors.lavenderGray,
+                        fontSize: 12.5.sp,
                       ),
                     ),
                   ),
                 ],
               ),
             ),
-            horizontalSpacing(8),
+            horizontalSpacing(6),
             Icon(
               CupertinoIcons.chevron_right,
               color: AppColors.lavenderGray.withValues(alpha: 0.4),
-              size: 16.sp,
+              size: 15.sp,
             ),
           ],
         ),

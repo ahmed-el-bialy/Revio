@@ -20,10 +20,10 @@ class CardsNumberContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20.w),
+      padding: EdgeInsets.symmetric(horizontal: 16.w),
       child: AppCard(
-        borderRadius: 22,
-        padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 16.h),
+        borderRadius: 20,
+        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
         child: Row(
           children: [
             Expanded(
@@ -37,7 +37,7 @@ class CardsNumberContainer extends StatelessWidget {
             const _StatDivider(),
             Expanded(
               child: Padding(
-                padding: EdgeInsets.only(left: 10.w),
+                padding: EdgeInsets.only(left: 8.w),
                 child: HomeStatItem(
                   icon: CupertinoIcons.heart_fill,
                   iconColor: AppColors.favoriteColor,
@@ -49,7 +49,7 @@ class CardsNumberContainer extends StatelessWidget {
             const _StatDivider(),
             Expanded(
               child: Padding(
-                padding: EdgeInsets.only(left: 10.w),
+                padding: EdgeInsets.only(left: 8.w),
                 child: HomeStatItem(
                   icon: CupertinoIcons.tag_fill,
                   iconColor: AppColors.softAmber,
@@ -72,7 +72,7 @@ class _StatDivider extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 1,
-      height: 38.h,
+      height: 34.h,
       color: AppColors.white.withValues(alpha: 0.08),
     );
   }

@@ -19,10 +19,10 @@ class QuizResultsStatsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppCard(
-      borderRadius: 22,
+      borderRadius: 20,
       padding: EdgeInsets.symmetric(
-        horizontal: 20.w,
-        vertical: 20.h,
+        horizontal: 18.w,
+        vertical: 18.h,
       ),
       child: Column(
         children: [
@@ -60,7 +60,7 @@ class QuizResultsStatsCard extends StatelessWidget {
 
   Widget _buildDivider() {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 12.h),
+      padding: EdgeInsets.symmetric(vertical: 10.h),
       child: Container(
         height: 1,
         color: AppColors.white.withValues(alpha: 0.08),

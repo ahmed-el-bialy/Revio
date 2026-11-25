@@ -14,20 +14,21 @@ class HomeHeroGreeting extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Welcome back, Ready to learn?",
+          "Welcome back, ready to learn?",
           style: AppStyles.font14White70.copyWith(
             color: AppColors.lavenderGray,
-            fontSize: 13.5.sp,
+            fontSize: 13.sp,
+            fontWeight: FontWeight.w500,
           ),
         ),
-        verticalSpacing(6),
+        verticalSpacing(4),
         RichText(
           text: TextSpan(
             children: [
               TextSpan(
                 text: "Master Your ",
                 style: AppStyles.font24BoldIceBlueManrope.copyWith(
-                  fontSize: 26.sp,
+                  fontSize: 25.sp,
                   fontWeight: FontWeight.w800,
                   color: AppColors.white,
                 ),
@@ -35,7 +36,7 @@ class HomeHeroGreeting extends StatelessWidget {
               TextSpan(
                 text: "Knowledge",
                 style: AppStyles.font24BoldIceBlueManrope.copyWith(
-                  fontSize: 26.sp,
+                  fontSize: 25.sp,
                   color: AppColors.primaryCyan,
                   fontWeight: FontWeight.w900,
                 ),
@@ -43,13 +44,13 @@ class HomeHeroGreeting extends StatelessWidget {
             ],
           ),
         ),
-        verticalSpacing(8),
+        verticalSpacing(6),
         Text(
-          "Review your flashcards and test your memory effortlessly.",
+          "Review flashcards and test your memory effortlessly.",
           style: AppStyles.font14White70.copyWith(
-            fontSize: 13.sp,
-            color: AppColors.lavenderGray.withValues(alpha: 0.8),
-            height: 1.35,
+            fontSize: 12.5.sp,
+            color: AppColors.lavenderGray.withValues(alpha: 0.75),
+            height: 1.3,
           ),
         ),
       ],

@@ -17,23 +17,23 @@ class HeroQuizCard extends StatelessWidget {
 
     return AppCard(
       onTap: () => context.pushNamed(AppConstants.quizScreen),
-      borderRadius: 22,
-      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
+      borderRadius: 20,
+      padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 16.h),
       child: Row(
         children: [
           Container(
-            padding: EdgeInsets.all(14.w),
+            padding: EdgeInsets.all(12.w),
             decoration: BoxDecoration(
               color: accentColor.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(16.r),
+              borderRadius: BorderRadius.circular(14.r),
             ),
             child: Icon(
               CupertinoIcons.bolt_fill,
               color: accentColor,
-              size: 26.sp,
+              size: 24.sp,
             ),
           ),
-          horizontalSpacing(16),
+          horizontalSpacing(14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -44,7 +44,7 @@ class HeroQuizCard extends StatelessWidget {
                       child: Text(
                         "Start Quiz Challenge",
                         style: AppStyles.font18WhiteBold.copyWith(
-                          fontSize: 16.sp,
+                          fontSize: 15.sp,
                           fontWeight: FontWeight.w800,
                         ),
                         overflow: TextOverflow.ellipsis,
@@ -71,16 +71,16 @@ class HeroQuizCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                verticalSpacing(4),
+                verticalSpacing(3),
                 Text(
                   "MCQ & Smart Typing with fuzzy matching",
                   style: AppStyles.font12LavenderGrayFaded.copyWith(
-                    fontSize: 11.5.sp,
+                    fontSize: 11.sp,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                verticalSpacing(10),
+                verticalSpacing(8),
                 Row(
                   children: [
                     Text(
@@ -88,14 +88,14 @@ class HeroQuizCard extends StatelessWidget {
                       style: AppStyles.font13GrayMedium.copyWith(
                         color: accentColor,
                         fontWeight: FontWeight.w700,
-                        fontSize: 12.5.sp,
+                        fontSize: 12.sp,
                       ),
                     ),
                     horizontalSpacing(4),
                     Icon(
                       CupertinoIcons.arrow_right,
                       color: accentColor,
-                      size: 13.sp,
+                      size: 12.sp,
                     ),
                   ],
                 ),
