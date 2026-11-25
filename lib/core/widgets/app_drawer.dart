@@ -26,17 +26,10 @@ class AppDrawer extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 20.w),
               child: Row(
                 children: [
-                  Container(
-                    padding: EdgeInsets.all(10.w),
-                    decoration: BoxDecoration(
-                      gradient: AppColors.primaryGradient,
-                      borderRadius: BorderRadius.circular(14.r),
-                    ),
-                    child: Icon(
-                      Icons.style_rounded,
-                      color: AppColors.darkBackground,
-                      size: 22.sp,
-                    ),
+                  Icon(
+                    Icons.style_rounded,
+                    color: AppColors.primaryCyan,
+                    size: 28.sp,
                   ),
                   horizontalSpacing(14),
                   Column(
@@ -63,12 +56,12 @@ class AppDrawer extends StatelessWidget {
                 ],
               ),
             ),
-            verticalSpacing(24),
+            verticalSpacing(20),
             Divider(
               color: AppColors.white.withValues(alpha: 0.08),
               height: 1,
             ),
-            verticalSpacing(16),
+            verticalSpacing(8),
             // Drawer Navigation Tiles
             Expanded(
               child: SingleChildScrollView(
@@ -78,6 +71,7 @@ class AppDrawer extends StatelessWidget {
                     _DrawerTile(
                       icon: CupertinoIcons.home,
                       label: "Dashboard",
+                      subtitle: "Overview & quick actions",
                       isSelected: currentRoute == AppConstants.homeScreen,
                       onTap: () {
                         context.pop();
@@ -90,19 +84,9 @@ class AppDrawer extends StatelessWidget {
                       },
                     ),
                     _DrawerTile(
-                      icon: CupertinoIcons.layers,
-                      label: "Flashcard Deck",
-                      isSelected: currentRoute == AppConstants.reviewDeckScreen,
-                      onTap: () {
-                        context.pop();
-                        if (currentRoute != AppConstants.reviewDeckScreen) {
-                          context.pushNamed(AppConstants.reviewDeckScreen);
-                        }
-                      },
-                    ),
-                    _DrawerTile(
                       icon: CupertinoIcons.book,
                       label: "Study Mode",
+                      subtitle: "Interactive study session",
                       isSelected: currentRoute == AppConstants.studyScreen,
                       onTap: () {
                         context.pop();
@@ -114,6 +98,7 @@ class AppDrawer extends StatelessWidget {
                     _DrawerTile(
                       icon: CupertinoIcons.search,
                       label: "Card Library",
+                      subtitle: "Search, filter & manage cards",
                       isSelected: currentRoute == AppConstants.reviewCardsScreen,
                       onTap: () {
                         context.pop();
@@ -122,9 +107,17 @@ class AppDrawer extends StatelessWidget {
                         }
                       },
                     ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8.h),
+                      child: Divider(
+                        color: AppColors.white.withValues(alpha: 0.05),
+                        height: 1,
+                      ),
+                    ),
                     _DrawerTile(
                       icon: CupertinoIcons.bolt_fill,
                       label: "Quiz Arena",
+                      subtitle: "MCQ & smart typing tests",
                       isSelected: currentRoute == AppConstants.quizScreen,
                       onTap: () {
                         context.pop();
@@ -136,6 +129,7 @@ class AppDrawer extends StatelessWidget {
                     _DrawerTile(
                       icon: CupertinoIcons.clock,
                       label: "Quiz History",
+                      subtitle: "Review past scores & results",
                       isSelected: currentRoute == AppConstants.quizHistoryScreen,
                       onTap: () {
                         context.pop();
@@ -147,6 +141,7 @@ class AppDrawer extends StatelessWidget {
                     _DrawerTile(
                       icon: CupertinoIcons.tag_fill,
                       label: "Topics",
+                      subtitle: "Manage custom categories",
                       isSelected: currentRoute == AppConstants.genresScreen,
                       onTap: () {
                         context.pop();
@@ -203,12 +198,14 @@ class AppDrawer extends StatelessWidget {
 class _DrawerTile extends StatelessWidget {
   final IconData icon;
   final String label;
+  final String subtitle;
   final bool isSelected;
   final VoidCallback onTap;
 
   const _DrawerTile({
     required this.icon,
     required this.label,
+    required this.subtitle,
     required this.isSelected,
     required this.onTap,
   });
@@ -216,14 +213,14 @@ class _DrawerTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 4.h),
+      padding: EdgeInsets.symmetric(vertical: 3.h),
       child: ListTile(
         onTap: onTap,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(14.r),
         ),
         tileColor: isSelected
-            ? AppColors.primaryCyan.withValues(alpha: 0.15)
+        ? AppColors.primaryCyan.withValues(alpha: 0.15)
             : Colors.transparent,
         leading: Icon(
           icon,
@@ -235,7 +232,14 @@ class _DrawerTile extends StatelessWidget {
           style: AppStyles.font16WhiteSemiBold.copyWith(
             color: isSelected ? AppColors.primaryCyan : AppColors.white,
             fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
-            fontSize: 15.sp,
+            fontSize: 14.5.sp,
+          ),
+        ),
+        subtitle: Text(
+          subtitle,
+          style: AppStyles.font12LavenderGray.copyWith(
+            color: AppColors.lavenderGray.withValues(alpha: 0.6),
+            fontSize: 11.sp,
           ),
         ),
       ),
