@@ -114,6 +114,7 @@ class AppThemes {
           fontFamily: 'Manrope',
           fontSize: 14.sp,
           fontWeight: FontWeight.w600,
+          decoration: TextDecoration.none,
         ),
       ),
     ),

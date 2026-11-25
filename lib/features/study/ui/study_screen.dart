@@ -154,10 +154,27 @@ class _StudyScreenState extends State<StudyScreen> {
                           // Flash card (flip to reveal)
                           Expanded(
                             child: Center(
-                              child: _StudyFlashCard(
-                                key: ValueKey(currentCard.id),
-                                card: currentCard,
-                                flipKey: _getFlipKey(currentCard.id),
+                              child: GestureDetector(
+                                onHorizontalDragEnd: (details) {
+                                  if (details.primaryVelocity! < 0) {
+                                    // Swiped left -> Next card
+                                    if (_currentIndex < allFiltered.length - 1) {
+                                      _resetFlipKey(currentCard.id);
+                                      setState(() => _currentIndex++);
+                                    }
+                                  } else if (details.primaryVelocity! > 0) {
+                                    // Swiped right -> Previous card
+                                    if (_currentIndex > 0) {
+                                      _resetFlipKey(currentCard.id);
+                                      setState(() => _currentIndex--);
+                                    }
+                                  }
+                                },
+                                child: _StudyFlashCard(
+                                  key: ValueKey(currentCard.id),
+                                  card: currentCard,
+                                  flipKey: _getFlipKey(currentCard.id),
+                                ),
                               ),
                             ),
                           ),
@@ -310,6 +327,8 @@ class _StudyFlashCard extends StatelessWidget {
     final isFrontArabic = _isArabic(card.front);
     final isBackArabic = _isArabic(card.back);
     final hasHint = card.hint != null && card.hint!.trim().isNotEmpty;
+    final hintText = card.hint ?? '';
+    final isHintArabic = hasHint && _isArabic(hintText);
 
     return FlipCard(
       key: flipKey,
@@ -322,30 +341,59 @@ class _StudyFlashCard extends StatelessWidget {
         content: card.front,
         isArabic: isFrontArabic,
         footer: hasHint
-            ? Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    CupertinoIcons.lightbulb_fill,
-                    color: AppColors.softAmber,
-                    size: 13.sp,
+            ? Container(
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+                decoration: BoxDecoration(
+                  color: AppColors.softAmber.withValues(alpha: 0.08),
+                  borderRadius: BorderRadius.circular(12.r),
+                  border: Border.all(
+                    color: AppColors.softAmber.withValues(alpha: 0.25),
                   ),
-                  horizontalSpacing(5),
-                  Text(
-                    card.hint!,
-                    style: AppStyles.font12LavenderGrayFaded.copyWith(
-                      color: AppColors.softAmber.withValues(alpha: 0.85),
-                      fontStyle: FontStyle.italic,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          CupertinoIcons.lightbulb_fill,
+                          color: AppColors.softAmber,
+                          size: 14.sp,
+                        ),
+                        horizontalSpacing(6),
+                        Text(
+                          'Hint',
+                          style: AppStyles.font12LavenderGrayFaded.copyWith(
+                            color: AppColors.softAmber,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 11.sp,
+                          ),
+                        ),
+                      ],
                     ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
+                    verticalSpacing(4),
+                    Directionality(
+                      textDirection: isHintArabic ? TextDirection.rtl : TextDirection.ltr,
+                      child: Text(
+                        hintText,
+                        style: AppStyles.font12LavenderGrayFaded.copyWith(
+                          color: AppColors.softAmber.withValues(alpha: 0.95),
+                          fontStyle: FontStyle.italic,
+                          fontSize: 12.sp,
+                          height: 1.4,
+                        ),
+                        textAlign: isHintArabic ? TextAlign.right : TextAlign.center,
+                      ),
+                    ),
+                  ],
+                ),
               )
             : null,
-        topBadge: card.category != null && card.category!.isNotEmpty
-            ? card.category!
-            : null,
+        topBadge: null,
       ),
       back: _CardFace(
         width: cardWidth,
