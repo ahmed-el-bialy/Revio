@@ -125,8 +125,7 @@ class _CardFace extends StatelessWidget {
     required this.isArabic,
     this.isFront = true,
     this.footer,
-    this.topBadge,
-  });
+  }) : topBadge = null;
 
   @override
   Widget build(BuildContext context) {
