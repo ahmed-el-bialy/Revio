@@ -1,3 +1,4 @@
+import java.io.File
 import java.io.FileInputStream
 import java.util.Properties
 
@@ -35,7 +36,7 @@ android {
         create("release") {
             val storeFilePath = keystoreProperties.getProperty("storeFile")
             if (storeFilePath != null) {
-                storeFile = file(storeFilePath)
+                storeFile = File(storeFilePath).absoluteFile
             }
             storePassword = keystoreProperties.getProperty("storePassword")
             keyAlias = keystoreProperties.getProperty("keyAlias")

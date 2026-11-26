@@ -18,13 +18,13 @@
   <a href="https://play.google.com/store/apps/details?id=com.ahmed.revio&hl=en_US">
     <img src="https://img.shields.io/badge/Google%20Play-Available-4285F4.svg?style=for-the-badge&logo=googleplay&logoColor=white" alt="Google Play">
   </a>
-</p>
+<p>
 
-<p><strong>A dark-themed, offline-first Flutter flashcard app with topic management, a searchable library, Study Mode, and Multiple Choice & Smart Typing quizzes powered by a custom 5-tier typo-tolerant answer matcher. Built with Clean Architecture, Cubit state management, Hive CE persistence, and adaptive responsive design across 9 screens and 7 feature modules.</strong></p>
+<p><strong>A dark-themed, offline-first Flutter flashcard app with topic management, a searchable library, Study Mode, and Multiple Choice & Smart Typing quizzes powered by a custom 5-tier typo-tolerant answer matcher. Built with Clean Architecture, Cubit state management, Hive CE persistence, and adaptive responsive design across 9 screens and 7 feature modules.</strong><p>
 
 
 
-</p align="center">
+<p align="center">
   <a href="https://play.google.com/store/apps/details?id=com.ahmed.revio&hl=en_US"><img src="https://img.shields.io/badge/▶_Get_on-Google_Play-22C55E?style=for-the-badge&logo=googleplay&logoColor=white" alt="Get Revio on Google Play"></a>
   &nbsp;&nbsp;
   <a href="https://youtu.be/U_NKt3eMoHA"><img src="https://img.shields.io/badge/🎬_Latest_Update-Watch_Now-8B5CF6?style=for-the-badge" alt="Latest Update"></a>
