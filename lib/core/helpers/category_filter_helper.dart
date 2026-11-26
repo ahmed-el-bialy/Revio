@@ -218,7 +218,7 @@ class CategoryFilterHelper {
                     Row(
                       children: [
                         Text(
-                          "Topics & Genres (Select Multiple)",
+                          "Topics (Select Multiple)",
                           style: AppStyles.font14White70.copyWith(
                             fontWeight: FontWeight.w700,
                             color: AppColors.lavenderGray,

@@ -3,6 +3,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../core/constants/app_constants.dart';
 import '../../../core/helpers/category_filter_helper.dart';
 import '../../../core/helpers/snackbar_helper.dart';
 import '../../../core/helpers/spacing.dart';
@@ -113,8 +114,9 @@ class _ReviewCardsScreenState extends State<ReviewCardsScreen> {
                 AppSheet.show(
                   context,
                   builder: (_) => AddCardModalBottomSheet(
-                    initialCategory: _selectedCategories.contains('All')
-                        ? 'General'
+                    initialCategory: _selectedCategories.contains('All') ||
+                            _selectedCategories.isEmpty
+                        ? AppConstants.defaultTopic
                         : _selectedCategories.first,
                   ),
                 );

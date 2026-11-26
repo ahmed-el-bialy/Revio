@@ -32,9 +32,11 @@ class _AddCardModalBottomSheetState extends State<AddCardModalBottomSheet> {
   void initState() {
     super.initState();
     _selectedCategory =
-        widget.initialCategory != null && widget.initialCategory != 'All'
+        widget.initialCategory != null &&
+        widget.initialCategory != 'All' &&
+        widget.initialCategory!.isNotEmpty
             ? widget.initialCategory!
-            : AppConstants.categories.first;
+            : AppConstants.defaultTopic;
   }
 
   @override
