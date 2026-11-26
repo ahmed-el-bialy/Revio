@@ -4,10 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/helpers/routing_extension.dart';
-import '../../../../core/helpers/spacing.dart';
 import '../../../../core/theming/app_colors.dart';
 import '../../../../core/theming/app_styles.dart';
-import '../../../../core/widgets/app_confirm_dialog.dart';
 import '../../logic/quiz_cubit.dart';
 import '../../logic/quiz_state.dart';
 import 'quiz_exit_dialog.dart';
@@ -63,8 +61,6 @@ class QuizAppBar extends StatelessWidget {
               ),
             ),
             _InfoChip(isMcq: isMcq),
-            horizontalSpacing(8),
-            _ShuffleButton(isShuffled: state.isShuffled),
           ],
         ),
       ),
@@ -97,47 +93,6 @@ class _InfoChip extends StatelessWidget {
           color: AppColors.primaryCyan,
           size: 16.sp,
         ),
-      ),
-    );
-  }
-}
-
-class _ShuffleButton extends StatelessWidget {
-  final bool isShuffled;
-
-  const _ShuffleButton({required this.isShuffled});
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      tooltip: 'Shuffle remaining cards',
-      onPressed: () async {
-        final confirm = await AppConfirmDialog.show(
-          context,
-          title: 'Shuffle remaining?',
-          message:
-              'Only unanswered cards will be shuffled. Your score stays the same.',
-          confirmLabel: 'Shuffle',
-          icon: CupertinoIcons.shuffle,
-        );
-        if (confirm && context.mounted) {
-          context.read<QuizCubit>().emitShuffleRemaining();
-        }
-      },
-      style: IconButton.styleFrom(
-        backgroundColor: isShuffled
-            ? AppColors.primaryCyan.withValues(alpha: 0.15)
-            : AppColors.surfaceDark,
-        side: BorderSide(
-          color: isShuffled
-              ? AppColors.primaryCyan.withValues(alpha: 0.4)
-              : AppColors.gray.withValues(alpha: 0.2),
-        ),
-      ),
-      icon: Icon(
-        CupertinoIcons.shuffle,
-        color: isShuffled ? AppColors.primaryCyan : AppColors.gray,
-        size: 16.sp,
       ),
     );
   }

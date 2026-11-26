@@ -77,8 +77,8 @@ class _QuizInProgressViewState extends State<QuizInProgressView> {
           Expanded(
             child: LayoutBuilder(
               builder: (context, constraints) {
-                final cardHeight = (constraints.maxHeight * 0.28)
-                    .clamp(150.0, 230.0);
+                final cardHeight = (constraints.maxHeight * 0.25)
+                    .clamp(135.0, 200.0);
 
                 return Center(
                   child: ConstrainedBox(
@@ -95,7 +95,7 @@ class _QuizInProgressViewState extends State<QuizInProgressView> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           QuizProgressBar(state: widget.state),
-                          verticalSpacing(14),
+                          verticalSpacing(12),
                           FlashCard(
                             flipKey: _getFlipKey(currentCard.id),
                             cardModel: currentCard,
@@ -103,7 +103,7 @@ class _QuizInProgressViewState extends State<QuizInProgressView> {
                             showHint: _isHintVisible,
                             cardHeight: cardHeight,
                           ),
-                          verticalSpacing(14),
+                          verticalSpacing(12),
                           if (widget.state.showCorrectAnswer &&
                               widget.state.lastCorrectAnswer != null) ...[
                             CorrectAnswerBanner(

@@ -62,7 +62,7 @@ class CardFace extends StatelessWidget {
             width: double.infinity,
             height: cardHeight,
             borderRadius: 22,
-            padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 20.h),
+            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
             child: Center(
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
@@ -73,12 +73,12 @@ class CardFace extends StatelessWidget {
                     if (cat != null && cat.isNotEmpty) ...[
                       Container(
                         padding: EdgeInsets.symmetric(
-                          horizontal: 10.w,
-                          vertical: 4.h,
+                          horizontal: 9.w,
+                          vertical: 3.h,
                         ),
                         decoration: BoxDecoration(
                           color: catColor.withValues(alpha: 0.12),
-                          borderRadius: BorderRadius.circular(10.r),
+                          borderRadius: BorderRadius.circular(8.r),
                           border: Border.all(
                             color: catColor.withValues(alpha: 0.3),
                             width: 1.0,
@@ -88,26 +88,27 @@ class CardFace extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Container(
-                              width: 6.w,
-                              height: 6.w,
+                              width: 5.w,
+                              height: 5.w,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 color: catColor,
                               ),
                             ),
-                            horizontalSpacing(6),
+                            horizontalSpacing(5),
                             Text(
                               cat,
                               style: AppStyles.font11GrayRegular.copyWith(
                                 color: catColor,
                                 fontWeight: FontWeight.w700,
+                                fontSize: 10.5.sp,
                                 letterSpacing: 0.3,
                               ),
                             ),
                           ],
                         ),
                       ),
-                      verticalSpacing(12),
+                      verticalSpacing(8),
                     ],
                     Directionality(
                       textDirection: isTextArabic
@@ -116,14 +117,15 @@ class CardFace extends StatelessWidget {
                       child: Text(
                         textToShow,
                         style: AppStyles.font18WhiteMedium.copyWith(
+                          fontSize: isInQuiz ? 15.5.sp : 17.sp,
                           fontWeight: FontWeight.w600,
-                          height: 1.4,
+                          height: 1.35,
                         ),
                         textAlign: TextAlign.center,
                       ),
                     ),
                     if (shouldDisplayHint) ...[
-                      verticalSpacing(14),
+                      verticalSpacing(10),
                       Directionality(
                         textDirection: _isArabic(cardModel.hint!)
                             ? TextDirection.rtl
@@ -134,15 +136,15 @@ class CardFace extends StatelessWidget {
                             Icon(
                               CupertinoIcons.lightbulb_fill,
                               color: AppColors.softAmber,
-                              size: 15.sp,
+                              size: 14.sp,
                             ),
-                            horizontalSpacing(5),
+                            horizontalSpacing(4),
                             Flexible(
                               child: Text(
                                 cardModel.hint!,
                                 style: AppStyles.font14AccentCyan.copyWith(
                                   color: AppColors.softAmber,
-                                  fontSize: 13.sp,
+                                  fontSize: 12.sp,
                                   fontWeight: FontWeight.w600,
                                 ),
                                 textAlign: TextAlign.center,

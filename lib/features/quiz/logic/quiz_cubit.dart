@@ -31,7 +31,7 @@ class QuizCubit extends Cubit<QuizState> {
   }
 
   void emitProceedToModeSelection(List<CardModel> selectedCards) {
-    if (selectedCards.isEmpty) return;
+    if (selectedCards.length < 3) return;
     _sessionId++;
     emit(QuizModeSelection(selectedCards: selectedCards));
   }
@@ -40,14 +40,16 @@ class QuizCubit extends Cubit<QuizState> {
     List<CardModel> cards, {
     QuizMode mode = QuizMode.multipleChoice,
   }) {
-    if (cards.isEmpty) return;
+    if (cards.length < 3) return;
 
     _sessionId++;
     _skippedCount = 0;
     _stopwatch = Stopwatch()..start();
 
+    final shuffledCards = List<CardModel>.from(cards)..shuffle();
+
     _uniqueAnswers.clear();
-    for (var card in cards) {
+    for (var card in shuffledCards) {
       final answer = card.back.trim();
       if (answer.isNotEmpty && !_uniqueAnswers.contains(answer)) {
         _uniqueAnswers.add(answer);
@@ -56,14 +58,15 @@ class QuizCubit extends Cubit<QuizState> {
 
     emit(
       QuizInProgress(
-        cards: cards,
+        cards: shuffledCards,
         currentIndex: 0,
         correctCount: 0,
         wrongCount: 0,
         answeredCardIds: const {},
         quizMode: mode,
+        isShuffled: true,
         currentOptions: mode == QuizMode.multipleChoice
-            ? _generateOptions(cards, 0)
+            ? _generateOptions(shuffledCards, 0)
             : null,
       ),
     );
@@ -147,7 +150,7 @@ class QuizCubit extends Cubit<QuizState> {
         cards: currentState.cards,
         currentIndex: currentState.currentIndex,
         correctCount: currentState.correctCount,
-        wrongCount: currentState.wrongCount + 1,
+        wrongCount: currentState.wrongCount,
         answeredCardIds: updatedCardIds,
         quizMode: currentState.quizMode,
         isShuffled: currentState.isShuffled,
@@ -162,18 +165,6 @@ class QuizCubit extends Cubit<QuizState> {
         _moveToNextOrComplete(state as QuizInProgress);
       }
     });
-  }
-
-  void emitShuffleCurrentQuiz() {
-    if (state is! QuizInProgress) return;
-    final currentState = state as QuizInProgress;
-
-    final newCards = List<CardModel>.from(currentState.cards)..shuffle();
-    emit(currentState.copyWith(cards: newCards, isShuffled: true));
-  }
-
-  void emitShuffleRemaining() {
-    emitShuffleCurrentQuiz();
   }
 
   void emitAdvanceNext() {

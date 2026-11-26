@@ -71,7 +71,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
                 child: Text(
-                  "v2.5",
+                  "v2.2",
                   style: AppStyles.font11GrayRegular.copyWith(
                     color: AppColors.primaryCyan,
                     fontWeight: FontWeight.w700,
