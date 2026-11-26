@@ -1,7 +1,7 @@
 flutter_launcher_icons:
   android: true
   ios: true
-  image_path: "assets/images/lunch_app.png"
+  image_path: "assets/images/lunch_icon.png"
   adaptive_icon_background: "#030114"
-  adaptive_icon_foreground: "assets/images/lunch_app.png"
+  adaptive_icon_foreground: "assets/images/lunch_icon.png"
   min_sdk_android: 21
