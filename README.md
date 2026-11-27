@@ -9,6 +9,9 @@
   <a href="https://dart.dev">
     <img src="https://img.shields.io/badge/Dart-%230175C2.svg?style=for-the-badge&logo=dart&logoColor=white" alt="Dart">
   </a>
+  <a href="CASE_STUDY.md">
+    <img src="https://img.shields.io/badge/Case%20Study-Read%20Doc-00F5D4.svg?style=for-the-badge&logo=markdown&logoColor=black" alt="Case Study">
+  </a>
   <a href="LICENSE">
     <img src="https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge" alt="License">
   </a>
@@ -27,6 +30,8 @@
 <p align="center">
   <a href="https://play.google.com/store/apps/details?id=com.ahmed.revio&hl=en_US"><img src="https://img.shields.io/badge/▶_Get_on-Google_Play-22C55E?style=for-the-badge&logo=googleplay&logoColor=white" alt="Get Revio on Google Play"></a>
   &nbsp;&nbsp;
+  <a href="CASE_STUDY.md"><img src="https://img.shields.io/badge/📑_Case_Study-Read_Doc-00F5D4?style=for-the-badge&logo=markdown&logoColor=black" alt="Case Study"></a>
+  &nbsp;&nbsp;
   <a href="https://youtu.be/U_NKt3eMoHA"><img src="https://img.shields.io/badge/🎬_Latest_Update-Watch_Now-8B5CF6?style=for-the-badge" alt="Latest Update"></a>
   &nbsp;&nbsp;
   <a href="https://www.youtube.com/playlist?list=PLb61g0A7n4BA"><img src="https://img.shields.io/badge/▶_Full_Playlist-Watch_All-38BDF8?style=for-the-badge" alt="Revio Full Playlist"></a>
@@ -34,6 +39,7 @@
 
 
 <p>
+  <a href="#-case-study">📌 Case Study</a> •
   <a href="#-features">✨ Features</a> •
   <a href="#-screenshots">📷 Screenshots</a> •
   <a href="#-study-mode">📖 Study Mode</a> •
@@ -51,6 +57,7 @@
 
 - [Demo Video](#-demo-video)
 - [Overview](#-overview)
+- [Case Study](#-case-study)
 - [Features](#-features)
 - [Study Mode](#-study-mode)
 - [Responsive Layout & Adaptability](#-responsive-layout--adaptability)
@@ -96,6 +103,35 @@
 - Fully refined **Midnight Obsidian & Cyber Cyan** Material 3 dark interface
 
 It is a personal portfolio project built to practise Clean Architecture, Cubit/BLoC state management, and local persistence in a real, shippable app.
+
+---
+
+<div align="center">
+
+## 📌 Case Study
+
+> 📑 **Looking for a deep technical engineering breakdown? Check out the complete [Revio Case Study (`CASE_STUDY.md`)](CASE_STUDY.md).**
+
+</div>
+
+Revio was architected and built from scratch to demonstrate production-ready Flutter development, Clean Architecture principles, and algorithmic problem-solving.
+
+### 🔍 Key Engineering Highlights Covered in the Case Study
+
+- **Product Vision & Problem Solving**: Designing a 100% offline-first flashcard system with topic organization, custom quiz modes, and persistent accuracy tracking.
+- **Clean Architecture & State Management**: 7 feature modules (`add_new_card`, `cards`, `home`, `quiz`, `review`, `study`, `genres`) powered by 5 Cubits, 21 explicit state classes, and stream-based reactive persistence via `watchCards()`.
+- **Custom 5-Tier Typo-Tolerant Answer Matcher**: Algorithmic answer validation (*Exact → Alternative Split → Numeric → Partial with Negation Conflict Guard → Adaptive Levenshtein Fuzzy Matcher*).
+- **Critical Architectural Decisions**:
+  - **Shared `CategoryFilterHelper`**: Static modal helper eliminating duplicate UI logic across Library, Study, and Quiz.
+  - **3D Flip Card State Management**: Dynamic key lifecycle management storing `GlobalKey<FlipCardState>` by card ID to ensure fresh card orientation.
+  - **Async Session Guards**: Preventing stale cubit state transitions when users exit mid-quiz via auto-incrementing `_sessionId`.
+- **Key Challenges & Retrospective**: Managing stream lifecycles, fine-tuning Levenshtein fuzzy thresholds, and designing responsive layouts across phones and tablets.
+
+<p align="center">
+  <a href="CASE_STUDY.md">
+    <img src="https://img.shields.io/badge/📖_Read_Full_Case_Study-CASE__STUDY.md-00F5D4?style=for-the-badge&logo=markdown&logoColor=black" alt="Read Full Case Study">
+  </a>
+</p>
 
 ---
 
@@ -596,6 +632,8 @@ class QuizResultModel {
 **Negation conflict guard** — if exactly one of the two strings contains a negation word (*not, no, never, non, without, don't, isn't, aren't, cannot*) the partial match is blocked, so "correct" ≠ "not correct".
 
 Returns an `AnswerResult` with `.isCorrect`, `.matchType` (enum), and `.similarity` (double). Multiple Choice mode bypasses tiers 2–5 and uses plain `trim()` equality between the chosen option and `card.back`.
+
+> 💡 *For the full engineering rationale and deep dive behind this matcher, see [Case Study: The 5-Tier Answer Matcher](CASE_STUDY.md#1--the-5-tier-answer-matcher).*
 
 ---
 
